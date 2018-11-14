@@ -1,0 +1,5 @@
+/.nb-gradle/
+.db
+build/
+.tmp
+gradle.properties
