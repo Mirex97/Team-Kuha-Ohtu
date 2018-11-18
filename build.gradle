@@ -6,7 +6,7 @@ apply plugin: 'jacoco'
 
 apply plugin: 'checkstyle'
 
-mainClassName = 'main.Main'
+mainClassName = 'vinkkikirjasto.Main'
 
 run  {
     standardInput = System.in
@@ -18,11 +18,12 @@ repositories {
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.21'
+    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11'
     testCompile 'junit:junit:4.12'
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'main.Main'
+        attributes 'Main-Class': 'vinkkikirjasto.Main'
     }
 }

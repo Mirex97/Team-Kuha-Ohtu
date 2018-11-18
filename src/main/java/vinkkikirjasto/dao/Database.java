@@ -13,9 +13,10 @@ public class Database {
     public Connection getConnection() {
         Connection conn = null;
         try {
-
+            conn = DriverManager.getConnection(databaseAddress);
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
+            System.exit(-1);
         }
         return conn;
     }
@@ -26,15 +27,17 @@ public class Database {
                 + "otsikko varchar(25) NOT NULL,\n"
                 + "tyyppi varchar(25) NOT NULL,\n"
                 + "kommentti varchar(25), \n"
-                + "tagit Integer,\n"
-                + "FOREIGN KEY (tagit) REFERENCES base_tag(id)\n"
+                + "isbn varchar(25), \n"
+                + "kirjoittaja varchar(25), \n"
+                + "url varchar(25),\n"
+                + "author varchar(25),\n"
+                + "nimi varchar(25),\n"
+                + "kuvaus varchar(100)\n"
                 + ");";
 
         String tag = "CREATE TABLE Tag (\n"
                 + "id Integer PRIMARY KEY,\n"
-                + "tag varchar(25),\n"
-                + "bases Integer,\n"
-                + "FOREIGN KEY (bases) REFERENCES base_tag(id)\n"
+                + "tag varchar(25)\n"
                 + ");";
 
         String base_tag = "CREATE TABLE base_tag (\n"
@@ -45,47 +48,13 @@ public class Database {
                 + "FOREIGN KEY (tag_id) REFERENCES Tag(id)\n"
                 + ");";
 
-        String kirja = "CREATE TABLE Kirja (\n"
-                + "id Integer,\n"
-                + "otsikko varchar(25) NOT NULL,\n"
-                + "tyyppi varchar(25) NOT NULL,\n"
-                + "FOREIGN KEY (id) REFERENCES Base(id)\n"
-                + ");";
-
-        String video = "CREATE TABLE Video (\n"
-                + "id Integer,\n"
-                + "url varchar(25) NOT NULL,\n"
-                + "FOREIGN KEY (id) REFERENCES Base(id)\n"
-                + ");";
-
-        String blogpost = "CREATE TABLE blogpost (\n"
-                + "id Integer,\n"
-                + "url varchar(25) NOT NULL,\n"
-                + "FOREIGN KEY (id) REFERENCES Base(id)\n"
-                + ");";
-
-        String podcast = "CREATE TABLE podcast (\n"
-                + "id Integer,\n"
-                + "author varchar(25) NOT NULL,\n"
-                + "nimi varchar(25) NOT NULL,\n"
-                + "kuvaus varchar(100) NOT NULL, \n"
-                + "FOREIGN KEY (id) REFERENCES Base(id)\n"
-                + ");";
-
         try (Connection conn = DriverManager.getConnection(this.databaseAddress)) {
             Statement prof = conn.createStatement();
             prof.execute(base);
             prof.execute(tag);
             prof.execute(base_tag);
-            prof.execute(kirja);
-            prof.execute(video);
-            prof.execute(blogpost);
-            prof.execute(podcast);
         } catch (SQLException e) {
-            System.out.println("UH OH ERRORED!");
-            e.printStackTrace();
-            //Do not let this happen!
-            System.exit(-1);
+
         }
     }
 }
