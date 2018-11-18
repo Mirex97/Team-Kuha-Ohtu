@@ -24,7 +24,7 @@ public class Main {
         BaseDao baseDao = new BaseDao(base);
         try {
 //            baseDao.saveOrUpdate(new Base(0, "Ei Otsikkoa", "Kirja", "Ei Kommenttia", "12345", "Minä", null));
-            baseDao.delete(4);
+//            baseDao.delete(4);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("DID NOT SAVE!!!");
