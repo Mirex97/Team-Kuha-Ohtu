@@ -23,7 +23,8 @@ public class Main {
         boolean errored = false;
         BaseDao baseDao = new BaseDao(base);
         try {
-            baseDao.saveOrUpdate(new Base(2, "Ei Otsikkoa", "Kirja", "Ei Kommenttia", "12345", "Minä", null));
+//            baseDao.saveOrUpdate(new Base(0, "Ei Otsikkoa", "Kirja", "Ei Kommenttia", "12345", "Minä", null));
+            baseDao.delete(4);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("DID NOT SAVE!!!");
