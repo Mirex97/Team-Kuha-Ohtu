@@ -40,12 +40,31 @@ public class EntryDao implements Dao<Entry, Integer> {
 		PreparedStatement statement = connection.prepareStatement(
 				"SELECT * FROM entry");
 		ResultSet rs = statement.executeQuery();
-		List<Entry> bases = read(rs);
+		List<Entry> entries = read(rs);
 		statement.close();
 		connection.close();
 
-		return bases;
+		return entries;
 	}
+        
+	public List<Entry> findAllWithType(String key) throws SQLException {
+		Connection conn = database.getConnection();
+		PreparedStatement stmt = conn.prepareStatement(
+				"SELECT * FROM entry WHERE type IS ?");
+		stmt.setString(1, key);
+		ResultSet rs = stmt.executeQuery();
+		boolean hasOne = rs.next();
+		if (!hasOne) {
+			return null;
+		}
+		List<Entry> entries = read(rs);
+		rs.close();
+		stmt.close();
+		conn.close();
+		return entries;
+	}
+
+        
 
 	private Entry readOne(ResultSet rs) throws SQLException {
 		return new Entry(
