@@ -1,7 +1,5 @@
-
 package vinkkikirjasto.dao;
 
+public class EntryMetadataDao {
 
-public class BaseTagDao {
-    
 }

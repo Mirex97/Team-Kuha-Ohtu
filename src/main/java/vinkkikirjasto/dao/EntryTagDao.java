@@ -1,5 +1,5 @@
 package vinkkikirjasto.dao;
 
-public class TagDao {
+public class EntryTagDao {
 
 }

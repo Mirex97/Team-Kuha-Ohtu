@@ -4,57 +4,62 @@ import java.sql.*;
 
 public class Database {
 
-    private String databaseAddress;
+	private String databaseAddress;
 
-    public Database(String databaseAddress) {
-        this.databaseAddress = databaseAddress;
-    }
+	public Database(String databaseAddress) {
+		this.databaseAddress = databaseAddress;
+	}
 
-    public Connection getConnection() {
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(databaseAddress);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-        return conn;
-    }
+	public Connection getConnection() {
+		Connection conn = null;
+		try {
+			conn = DriverManager.getConnection(databaseAddress);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		return conn;
+	}
 
-    public void createNewTables() {
-        String base = "CREATE TABLE Base (\n"
-                + "id Integer PRIMARY KEY,\n"
-                + "otsikko varchar(25) NOT NULL,\n"
-                + "tyyppi varchar(25) NOT NULL,\n"
-                + "kommentti varchar(25), \n"
-                + "isbn varchar(25), \n"
-                + "kirjoittaja varchar(25), \n"
-                + "url varchar(25),\n"
-                + "author varchar(25),\n"
-                + "nimi varchar(25),\n"
-                + "kuvaus varchar(100)\n"
-                + ");";
+	public void createNewTables() {
+		String entry = "CREATE TABLE entry ("
+				+ "id INTEGER PRIMARY KEY,"
+				+ "title VARCHAR(255) NOT NULL,"
+				+ "type VARCHAR(255) NOT NULL,"
+				+ "author VARCHAR(255),"
+				+ "description TEXT,"
+				+ "comment TEXT"
+				+ ");";
 
-        String tag = "CREATE TABLE Tag (\n"
-                + "id Integer PRIMARY KEY,\n"
-                + "tag varchar(25)\n"
-                + ");";
+		String entryMetadata = "CREATE TABLE entry_metadata ("
+				+ "entry_id INTEGER,"
+				+ "key VARCHAR(255),"
+				+ "value TEXT,"
+				+ ");";
 
-        String base_tag = "CREATE TABLE base_tag (\n"
-                + "id Integer PRIMARY KEY,\n"
-                + "base_id Integer,\n"
-                + "tag_id Integer,\n"
-                + "FOREIGN KEY (base_id) REFERENCES Base(id),\n"
-                + "FOREIGN KEY (tag_id) REFERENCES Tag(id)\n"
-                + ");";
+		String tag = "CREATE TABLE tag ("
+				+ "entry_id INTEGER PRIMARY KEY,"
+				+ "tag VARCHAR(255),"
+				+ "PRIMARY KEY (entry_id, tag),"
+				+ "FOREIGN KEY (entry_id) REFERENCES entry(id)"
+				+ ");";
 
-        try (Connection conn = DriverManager.getConnection(this.databaseAddress)) {
-            Statement prof = conn.createStatement();
-            prof.execute(base);
-            prof.execute(tag);
-            prof.execute(base_tag);
-        } catch (SQLException e) {
+		String entryTag = "CREATE TABLE entry_tag ("
+				+ "id INTEGER PRIMARY KEY,"
+				+ "entry_id INTEGER,"
+				+ "tag_id INTEGER,"
+				+ "FOREIGN KEY (entry_id) REFERENCES entry(id),"
+				+ "FOREIGN KEY (tag_id) REFERENCES tag(id)"
+				+ ");";
 
-        }
-    }
+		try (Connection conn = DriverManager.getConnection(this.databaseAddress)) {
+			Statement prof = conn.createStatement();
+			prof.execute(entry);
+			prof.execute(entryMetadata);
+			prof.execute(tag);
+			prof.execute(entryTag);
+		} catch (SQLException e) {
+
+		}
+	}
 }

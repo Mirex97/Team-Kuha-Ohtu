@@ -1,6 +1,7 @@
 /.nb-gradle/
 *.db
 build/
+out/
 *.tmp
 gradle.properties
 /.gradle/

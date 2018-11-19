@@ -1,9 +1,9 @@
 package vinkkikirjasto;
 
-import vinkkikirjasto.luokat.Base;
 import java.util.List;
-import vinkkikirjasto.dao.BaseDao;
+import vinkkikirjasto.dao.EntryDao;
 import vinkkikirjasto.dao.Database;
+import vinkkikirjasto.luokat.Entry;
 
 public class Main {
 
@@ -16,33 +16,31 @@ public class Main {
         System.out.println("Hello Kuha!");
 
         testi();
-
     }
 
     public static void testi() {
         boolean errored = false;
-        BaseDao baseDao = new BaseDao(base);
+        EntryDao entryDao = new EntryDao(base);
         try {
-//            baseDao.saveOrUpdate(new Base(0, "Ei Otsikkoa", "Kirja", "Ei Kommenttia", "12345", "Minä", null));
-//            baseDao.delete(4);
+            entryDao.saveOrUpdate(new Entry(0, "Ei Otsikkoa", "book", "Minä", "12345", "Ei kommenttia", null, null));
+            entryDao.delete(4);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("DID NOT SAVE!!!");
         }
         
 
-        List<Base> bases = null;
-        Base basee = null;
+        List<Entry> entries = null;
+        Entry entry = null;
         try {
-            bases = baseDao.findAll();
-            basee = baseDao.findOne(1);
-
+            entries = entryDao.findAll();
+            entry = entryDao.findOne(1);
         } catch (Exception e) {
             errored = true;
         }
         if (!errored) {
-            for (Base base : bases) {
-                System.out.println(base);
+            for (Entry e : entries) {
+                System.out.println(e);
             }
         }
     }
