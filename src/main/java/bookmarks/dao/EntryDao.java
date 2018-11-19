@@ -1,6 +1,6 @@
-package vinkkikirjasto.dao;
+package bookmarks.dao;
 
-import vinkkikirjasto.luokat.Entry;
+import bookmarks.domain.Entry;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

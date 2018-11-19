@@ -1,11 +1,11 @@
 
-package vinkkikirjasto.luokat;
+package bookmarks.domain;
 
 import java.util.Objects;
 
 public class Tag {
-    private int id;
-    private String tag;
+	private int id;
+	private String tag;
 
 	public Tag(int id, String tag) {
 		this.id = id;

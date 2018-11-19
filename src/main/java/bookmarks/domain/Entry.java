@@ -1,4 +1,4 @@
-package vinkkikirjasto.luokat;
+package bookmarks.domain;
 
 import java.util.*;
 
