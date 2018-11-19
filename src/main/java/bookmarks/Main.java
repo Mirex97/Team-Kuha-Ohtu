@@ -1,6 +1,7 @@
 package bookmarks;
 
 import java.util.List;
+import java.util.Scanner;
 
 import bookmarks.dao.EntryDao;
 import bookmarks.dao.Database;
@@ -9,12 +10,29 @@ import bookmarks.domain.Entry;
 public class Main {
 	public static Database base;
 
-	public static void main(String[] args) {
+	public static void init() {
 		base = new Database("jdbc:sqlite:vinkit.db");
 		base.getConnection();
 		base.createNewTables();
+	}
 
-		tempTestDatabase();
+	public static void printHelp() {
+		System.out.println("quit: exits the program");
+	}
+
+	public static void main(String[] args) {
+		init();
+		
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("program started");
+		printHelp();
+
+		while(true) {
+			String comm = sc.nextLine();
+			System.out.println(comm);
+			break;
+		}
 	}
 
 	public static void tempTestDatabase() {
