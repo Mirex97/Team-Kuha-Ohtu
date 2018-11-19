@@ -17,7 +17,10 @@ public class Main {
 	}
 
 	public static void printHelp() {
+		System.out.println("add: add a new entry");
+		System.out.println("list: list all entries");
 		System.out.println("quit: exits the program");
+		System.out.println("help: print this screen");
 	}
 
 	public static void main(String[] args) {
@@ -30,8 +33,17 @@ public class Main {
 
 		while(true) {
 			String comm = sc.nextLine();
-			System.out.println(comm);
-			break;
+			if (comm.equals("add")) {
+				System.out.println("TODO");
+			} else if (comm.equals("list")) {
+				System.out.println("TODO");
+			} else if (comm.equals("quit")) {
+				break;
+			} else if (comm.equals("help")) {
+				printHelp();
+			} else {
+				System.out.println("unrecognized command");
+			}
 		}
 	}
 
