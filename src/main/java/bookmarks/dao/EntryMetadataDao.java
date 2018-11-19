@@ -1,4 +1,4 @@
-package vinkkikirjasto.dao;
+package bookmarks.dao;
 
 public class EntryMetadataDao {
 
