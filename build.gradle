@@ -14,16 +14,31 @@ run  {
 
 repositories {
     jcenter()
+    mavenCentral()
 }
+
+project.ext {
+    cucumberVersion = '1.2.5'
+    junitVersion = '4.12'
+}
+
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11'
     testCompile 'junit:junit:4.12'
+    testCompile 'info.cukes:cucumber-java:' + cucumberVersion
+    testCompile 'info.cukes:cucumber-junit:' + cucumberVersion
+    testCompile 'junit:junit:' + junitVersion
 }
 
 jar {
     manifest {
         attributes 'Main-Class': 'vinkkikirjasto.Main'
     }
+}
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
 }
