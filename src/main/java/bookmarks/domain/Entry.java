@@ -8,6 +8,10 @@ public class Entry {
 	private List<Tag> tags;
 	private Map<String, String> metadata;
 
+	public Entry(String title, String type, String author, String description, String comment, List<Tag> tags, Map<String, String> metadata) {
+		this(0, title, type, author, description, comment, tags, metadata);
+	}
+
 	public Entry(int id, String title, String type, String author, String description, String comment, List<Tag> tags, Map<String, String> metadata) {
 		this.id = id;
 		this.title = title;
