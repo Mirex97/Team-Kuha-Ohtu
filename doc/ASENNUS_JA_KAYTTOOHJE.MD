@@ -16,3 +16,5 @@
 *Kun ohjelma aukeaa esitt‰‰ ohjelma mahdolliset komennot
 *Kirjoita haluamasi komento ja paina enter
 *Ohjelma suorittaa komennon tai ilmoittaa virheellisest‰ komennosta
+
+
