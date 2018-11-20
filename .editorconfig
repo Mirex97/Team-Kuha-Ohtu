@@ -8,4 +8,4 @@ insert_final_newline = true
 
 # 8-wide tabs :Dd
 indent_style = tab
-indent_size = 8
+indent_size = 4
