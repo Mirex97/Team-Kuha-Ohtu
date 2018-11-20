@@ -12,9 +12,8 @@
 *Mene projekti kansioon tietokoneellasi edellisessä valitsemmallasi ohjelmalla
 *Projektin juuressa kirjoita ohjelmaan gradlew run
 
+
 #Käyttöohje
 *Kun ohjelma aukeaa esittää ohjelma mahdolliset komennot
 *Kirjoita haluamasi komento ja paina enter
 *Ohjelma suorittaa komennon tai ilmoittaa virheellisestä komennosta
-
-
