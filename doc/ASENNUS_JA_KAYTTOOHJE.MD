@@ -1,19 +1,19 @@
-#Asennus ja k‰yttˆohje
+#Asennus ja k√§ytt√∂ohje
 
 #Asennus
 *Tapa 1
 *Avaa terminaali/cmd
-*Mene projekti kansioon tietokoneellasi edellisess‰ valitsemmallasi ohjelmalla
+*Mene projekti kansioon tietokoneellasi edellisess√§ valitsemmallasi ohjelmalla
 *Mene kansiossa builds\libs
 *Kirjoita valitsemaasi ohjelmaan java -jar Team-Kuha-Vinkkikirjasto.jar
 
 *Tapa2
 *Avaa terminaali/cmd
-*Mene projekti kansioon tietokoneellasi edellisess‰ valitsemmallasi ohjelmalla
+*Mene projekti kansioon tietokoneellasi edellisess√§ valitsemmallasi ohjelmalla
 *Projektin juuressa kirjoita ohjelmaan gradlew run
 
 
-#K‰yttˆohje
-*Kun ohjelma aukeaa esitt‰‰ ohjelma mahdolliset komennot
+#K√§ytt√∂ohje
+*Kun ohjelma aukeaa esitt√§√§ ohjelma mahdolliset komennot
 *Kirjoita haluamasi komento ja paina enter
-*Ohjelma suorittaa komennon tai ilmoittaa virheellisest‰ komennosta
+*Ohjelma suorittaa komennon tai ilmoittaa virheellisest√§ komennosta
