@@ -8,10 +8,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class TagDao extends AbstractDao<Tag, Integer> {
+
 	public TagDao(Database database) {
 		super(database);
 	}
 
+	@Override
 	protected Tag readOne(ResultSet rs) throws SQLException {
 		return new Tag(rs.getInt("id"), rs.getString("type"), rs.getString("name"));
 	}
@@ -47,8 +49,8 @@ public class TagDao extends AbstractDao<Tag, Integer> {
 
 	@Override
 	protected PreparedStatement getExistenceCheckQuery(Connection conn, Tag object) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("SELECT id FROM tag WHERE id = ?");
-		stmt.setInt(1, object.getID());
+		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tag WHERE name IS ?");
+		stmt.setString(1, object.getName());
 		return stmt;
 	}
 
@@ -57,5 +59,38 @@ public class TagDao extends AbstractDao<Tag, Integer> {
 		PreparedStatement stmt = conn.prepareStatement("DELETE FROM tag WHERE id = ?");
 		stmt.setInt(1, id);
 		return stmt;
+	}
+	
+	
+	@Override
+	public Tag save(Tag object) throws SQLException {
+		Connection conn = database.getConnection();
+		PreparedStatement checkExistence = getExistenceCheckQuery(conn, object);
+		ResultSet rs = checkExistence.executeQuery();
+		boolean hasOne = rs.next();
+		
+		
+		if (hasOne) {
+			object.setID(rs.getInt("id"));
+			checkExistence.close();
+			rs.close();
+			return update(object);
+		} else {
+			checkExistence.close();
+			rs.close();
+			return insert(object);
+		}
+	}
+
+	public void deleteTagAndConnections(Integer id) throws SQLException {
+		Connection conn = database.getConnection();
+		PreparedStatement stmt = conn.prepareStatement("DELETE FROM tag WHERE id = ?");
+		stmt.setInt(1, id);
+		stmt.execute();
+		stmt = conn.prepareStatement("DELETE FROM entry_tag WHERE tag_id IS ?");
+		stmt.setInt(1, id);
+		stmt.execute();
+		stmt.close();
+		conn.close();
 	}
 }

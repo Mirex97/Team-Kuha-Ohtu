@@ -11,7 +11,11 @@ import bookmarks.io.ConsoleIO;
 import bookmarks.io.IO;
 
 public class Main {
+
 	private EntryDao entryDao;
+	private TagDao tagDao;
+	private EntryTagDao entryTagDao;
+	private EntryMetadataDao entryMetadataDao; 
 	private IO io;
 
 	public Main(IO io) {
@@ -20,9 +24,9 @@ public class Main {
 		database.getConnection();
 		database.createNewTables();
 
-		TagDao tagDao = new TagDao(database);
-		EntryTagDao entryTagDao = new EntryTagDao(database, tagDao);
-		EntryMetadataDao entryMetadataDao = new EntryMetadataDao(database);
+		tagDao = new TagDao(database);
+		entryTagDao = new EntryTagDao(database, tagDao);
+		entryMetadataDao = new EntryMetadataDao(database);
 		entryDao = new EntryDao(database, entryTagDao, entryMetadataDao);
 	}
 
@@ -93,6 +97,54 @@ public class Main {
 		}
 	}
 
+	public void deleteCommand() {
+		int id = io.readInt("ID to delete: ");
+		Entry entry;
+		try {
+			entry = entryDao.findOne(id);
+		} catch (SQLException e) {
+			io.print("Failed to fetch entry :(");
+			e.printStackTrace();
+			return;
+		}
+		if (entry == null) {
+			io.print("Entry not found");
+			return;
+		}
+
+		io.print(entry.toString());
+		boolean confirmation = false;
+		while (confirmation == false) {
+			io.print("[Y] or [N] for deletion?");
+			String query = io.readLine("> ").toUpperCase();
+			switch (query) {
+				case "YES":
+				case "Y":
+					confirmation = true;
+					break;
+				case "NO":
+				case "N":
+					io.print("Deletion aborted");
+					return;
+				default:
+					io.print("Try again!");
+					io.print("");
+
+			}
+
+		}
+		try {
+			entryDao.delete(id);
+			entryMetadataDao.delete(entry);
+			entryTagDao.delete(entry);
+			io.print("Deletion Successful!\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+			io.print("Deletion error. Check ID!");
+		}
+
+	}
+
 	public void listCommand() {
 		try {
 			List<Entry> entries = entryDao.findAll();
@@ -108,19 +160,29 @@ public class Main {
 		}
 	}
 
-	public void helpCommand() {
+	public void helpHomeCommand() {
 		io.print("add  - add a new entry");
 		io.print("edit - edit an existing entry");
+		io.print("delete - delete an existing entry");
 		io.print("list - list all entries");
+		io.print("tags - takes you to tag section");
 		io.print("quit - exits the program");
+		io.print("help - print this screen");
+	}
+	public void helpTagCommand() {
+		io.print("delete - delete an existing tag");
+		io.print("list - list all tags");
+		io.print("return - return back to home");
 		io.print("help - print this screen");
 	}
 
 	public void run() {
 		io.print("bookmarks v0.1.0");
-		helpCommand();
+		helpHomeCommand();
 		while (true) {
-			String comm = io.readLine("> ");
+			io.print("");
+			String comm = io.readLine("> ").toLowerCase();
+			io.print("");
 			switch (comm) {
 				case "":
 					break;
@@ -130,18 +192,113 @@ public class Main {
 				case "edit":
 					editCommand();
 					break;
+				case "delete":
+					deleteCommand();
+					break;
 				case "list":
 					listCommand();
+					break;
+				case "tags":
+					tagsSubSection();
+					io.print("bookmarks v0.1.0");
 					break;
 				case "quit":
 					return;
 				case "help":
-					helpCommand();
+					helpHomeCommand();
 					break;
 				default:
 					io.print("unrecognized command");
 			}
 		}
+	}
+	
+	
+	public void listTags() {
+		try {
+			List<Tag> tags = tagDao.findAll();
+			if (tags.isEmpty()) {
+				io.print("No tags!");
+			}
+			for (Tag tag : tags) {
+				io.print(tag.toString());
+			}
+		} catch (Exception e) {
+			io.print("Failed to get list :(");
+			e.printStackTrace();
+		}
+	}
+	
+	public void deleteTag() {
+		int id = io.readInt("ID to delete: ");
+		Tag tag;
+		try {
+			tag = tagDao.findOne(id);
+		} catch (SQLException e) {
+			io.print("Failed to fetch tag :(");
+			e.printStackTrace();
+			return;
+		}
+		if (tag == null) {
+			io.print("Tag not found");
+			return;
+		}
+
+		io.print(tag.toString());
+		boolean confirmation = false;
+		while (confirmation == false) {
+			io.print("[Y] or [N] for deletion?");
+			String query = io.readLine("> ").toUpperCase();
+			switch (query) {
+				case "YES":
+				case "Y":
+					confirmation = true;
+					break;
+				case "NO":
+				case "N":
+					io.print("Deletion aborted");
+					return;
+				default:
+					io.print("Try again!");
+					io.print("");
+
+			}
+
+		}
+		try {
+			tagDao.deleteTagAndConnections(id);
+			io.print("Deletion Successful!\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+			io.print("Deletion error. Check ID!");
+		}
+	}
+
+	public void tagsSubSection() {
+		io.print("Tags - Section");
+		while (true) {
+			io.print("");
+			String comm = io.readLine("> ").toLowerCase();
+			io.print("");
+			switch (comm) {
+				case "":
+					break;
+				case "list":
+					listTags();
+					break;
+				case "delete":
+					deleteTag();
+					break;
+				case "return":
+					return;
+				case "help":
+					helpTagCommand();
+					break;
+				default:
+					io.print("unrecognized command");
+			}
+		}
+
 	}
 
 	public static void main(String[] args) {
