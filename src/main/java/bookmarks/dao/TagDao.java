@@ -30,9 +30,9 @@ public class TagDao extends AbstractDao<Tag, Integer> {
 
 	@Override
 	protected PreparedStatement getInsertQuery(Connection conn, Tag object) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("INSERT INTO tag (`type`, name) VALUES (?, ?, ?)");
-		stmt.setString(2, object.getType());
-		stmt.setString(3, object.getName());
+		PreparedStatement stmt = conn.prepareStatement("INSERT INTO tag (`type`, name) VALUES (?, ?)");
+		stmt.setString(1, object.getType());
+		stmt.setString(2, object.getName());
 		return stmt;
 	}
 

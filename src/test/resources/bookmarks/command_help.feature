@@ -1,10 +1,8 @@
-Feature: User can list help
+Feature: User can get help
 
-#  Scenario: User can list help
-#    Given command help is selected
-#    When application is run
-#    Then system will respond with "add: add a new entry"
+	Scenario: User can type help to get command list
+		Given command help is selected
+		Then system will respond with "add  - add a new entry"
 
-#  Scenario: User can list help
-#    Given new application is run
-#    Then system will respond with "Anna komento:"
+	Scenario: Command list is printed at startup
+		Then system will respond with "add  - add a new entry"

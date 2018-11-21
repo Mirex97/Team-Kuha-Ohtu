@@ -1,15 +1,16 @@
 package bookmarks.io;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 public class StubIO implements IO {
-	private List<String> lines;
-	private int i = 0;
+	private Queue<String> lines = new ArrayDeque<String>();
 	private List<String> prints = new ArrayList<>();
 
-	public StubIO(List<String> values) {
-		this.lines = values;
+	public void write(String input) {
+		lines.add(input);
 	}
 
 	public void print(String toPrint) {
@@ -18,7 +19,10 @@ public class StubIO implements IO {
 
 	public int readInt(String prompt) {
 		print(prompt);
-		return Integer.parseInt(lines.get(i++));
+		if (lines.isEmpty()) {
+			return 0;
+		}
+		return Integer.parseInt(lines.poll());
 	}
 
 	public List<String> getPrints() {
@@ -28,9 +32,9 @@ public class StubIO implements IO {
 	public String readLine(String prompt) {
 		print(prompt);
 
-		if (i < lines.size()) {
-			return lines.get(i++);
+		if (lines.isEmpty()) {
+			return "";
 		}
-		return "";
+		return lines.poll();
 	}
 }

@@ -27,8 +27,8 @@ public class Main {
 
 	public void addCommand() {
 		Map<String, String> metadata = new HashMap<>();
-		metadata.put("title", io.readLine("Title: "));
 		metadata.put("type", io.readLine("Type: "));
+		metadata.put("title", io.readLine("Title: "));
 		metadata.put("author", io.readLine("Author: "));
 		metadata.put("description", io.readLine("Description: "));
 		metadata.put("comment", io.readLine("Comment: "));
@@ -70,7 +70,7 @@ public class Main {
 	}
 
 	public void run() {
-		io.print("program started");
+		io.print("bookmarks v0.1.0");
 		helpCommand();
 		while (true) {
 			String comm = io.readLine("> ").trim();
