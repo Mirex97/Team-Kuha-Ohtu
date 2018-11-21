@@ -135,6 +135,8 @@ public class Main {
 		}
 		try {
 			entryDao.delete(id);
+			entryMetadataDao.delete(entry);
+			entryTagDao.delete(entry);
 			io.print("Deletion Successful!\n");
 		} catch (Exception e) {
 			e.printStackTrace();
