@@ -68,10 +68,44 @@ public class Main {
             io.print("Exception :(");
         }
     }
+    
+    public void editCommand() { //Tällä hetkellä voi editoida vain id:n mukaan
+        int id = io.readInt("ID you want to edit: ");
+        
+        try {
+            String title, type, author, description, comment;
+            Entry entry = entryDao.findOne(id);
+        
+            title = io.readLine("title [" + entry.getTitle() + "]: ");
+            if (!title.isEmpty()) entry.setTitle(title);
+            
+            type = io.readLine("type [" + entry.getType() + "]: ");
+            if (!type.isEmpty()) entry.setType(type);
+            
+            author = io.readLine("author [" + entry.getAuthor() + "]: ");
+            if (!author.isEmpty()) entry.setAuthor(author);
+            
+            description = io.readLine("description [" + entry.getDescription() + "]: ");
+            if (!description.isEmpty()) entry.setDescription(description);
+            
+            comment = io.readLine("comment [" + entry.getComment() + "]: ");
+            if (!comment.isEmpty()) entry.setComment(comment);
+            
+            
+            entryDao.update(entry);
+            
+            io.print("Edited");
+        } catch (Exception e) {
+            io.print("Exception!");
+        }
+        
+    }
+    
 
     public void helpCommand() {
         io.print("add: add a new entry");
         io.print("list: list all entries");
+        io.print("edit: edit entry");
         io.print("quit: exits the program");
         io.print("help: print this screen");
     }
@@ -99,6 +133,8 @@ public class Main {
                 listCommand();
             } else if (comm.equals("quit")) {
                 break;
+            } else if (comm.equals("edit")) {
+                editCommand();
             } else if (comm.equals("help")) {
                 helpCommand();
             } else {
