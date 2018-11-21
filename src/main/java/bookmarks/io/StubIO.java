@@ -43,11 +43,9 @@ public class StubIO implements IO {
 
     public String readLine(String prompt) {
         
-            print(prompt);
-            System.out.println(prompt);
+        print(prompt);
+        System.out.println(prompt);
         
-
-            
         
         if (i < lines.size()) {
             String palautus = lines.get(i);
