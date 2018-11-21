@@ -1,37 +1,34 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package bookmarks.io;
 
-import bookmarks.domain.Entry;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-/**
- *
- * @author Harri
- */
 public class ConsoleIO implements IO {
-    private Scanner scanner = new Scanner(System.in);
-    
-    public void print(String toPrint) {
-        System.out.println(toPrint);
-    }
+	private Scanner scanner = new Scanner(System.in);
 
-    public int readInt(String prompt) {
-        System.out.println(prompt);
-        return Integer.parseInt(scanner.nextLine());
-    }
+	public void print(String toPrint) {
+		System.out.println(toPrint);
+	}
 
-    public String readLine(String prompt) {
-        System.out.println(prompt);
-        return scanner.nextLine();
-    }
+	public int readInt(String prompt) {
+		System.out.print(prompt);
+		try {
+			return Integer.parseInt(scanner.nextLine());
+		} catch (NoSuchElementException e) {
+			System.out.print("\n");
+			System.exit(0);
+			return 0;
+		}
+	}
 
-//    @Override
-//    public void printEntry(Entry toPrint) {
-//        System.out.println(toPrint);
-//    }
-    
+	public String readLine(String prompt) {
+		System.out.print(prompt);
+		try {
+			return scanner.nextLine();
+		} catch (NoSuchElementException e) {
+			System.out.print("\n");
+			System.exit(0);
+			return "";
+		}
+	}
 }

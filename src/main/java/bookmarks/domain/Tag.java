@@ -1,39 +1,65 @@
 
 package bookmarks.domain;
 
-import java.util.Objects;
-
-public class Tag {
+public class Tag implements IDObject {
 	private int id;
-	private String tag;
+	private String type, name;
 
-	public Tag(int id, String tag) {
-		this.id = id;
-		this.tag = tag;
+	public Tag(String type, String name) {
+		this(0, type, name);
 	}
 
-	public int getId() {
+	public Tag(int id, String type, String name) {
+		this.id = id;
+		this.type = type;
+		this.name = name;
+	}
+
+	public int getID() {
 		return id;
 	}
 
-	public String getTag() {
-		return tag;
+	public void setID(int id) {
+		this.id = id;
 	}
 
-	public void setTag(String tag) {
-		this.tag = tag;
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Tag tag1 = (Tag) o;
-		return id == tag1.id && tag.equals(tag1.tag);
+		Tag tag = (Tag) o;
+		return id == tag.id &&
+			type.equals(tag.type) &&
+			name.equals(tag.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, tag);
+		return id;
+	}
+
+	@Override
+	public String toString() {
+		return "Tag{" +
+			"id=" + id +
+			", type='" + type + '\'' +
+			", name='" + name + '\'' +
+			'}';
 	}
 }

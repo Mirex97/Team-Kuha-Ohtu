@@ -1,160 +1,101 @@
 package bookmarks;
 
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import bookmarks.dao.EntryDao;
-import bookmarks.dao.Database;
+import bookmarks.dao.*;
 import bookmarks.domain.Entry;
+import bookmarks.domain.Tag;
 import bookmarks.io.ConsoleIO;
 import bookmarks.io.IO;
 
 public class Main {
+	private EntryDao entryDao;
+	private IO io;
 
-    public static Database base;
-//    public static Scanner sc;
-    public static EntryDao entryDao;
+	public Main(IO io) {
+		this.io = io;
+		Database database = new Database("jdbc:sqlite:bookmarks.db");
+		database.getConnection();
+		database.createNewTables();
 
-    private IO io;
+		TagDao tagDao = new TagDao(database);
+		EntryTagDao entryTagDao = new EntryTagDao(database, tagDao);
+		EntryMetadataDao entryMetadataDao = new EntryMetadataDao(database);
+		entryDao = new EntryDao(database, entryTagDao, entryMetadataDao);
+	}
 
-    public Main(IO io) {
-        this.io = io;
-    }
+	public void addCommand() {
+		Map<String, String> metadata = new HashMap<>();
+		metadata.put("title", io.readLine("Title: "));
+		metadata.put("type", io.readLine("Type: "));
+		metadata.put("author", io.readLine("Author: "));
+		metadata.put("description", io.readLine("Description: "));
+		metadata.put("comment", io.readLine("Comment: "));
+		Set<Tag> tags = Arrays.stream(
+			io.readLine("Tags: ")
+				.split(","))
+			.map(s -> new Tag("tag", s.trim()))
+			.collect(Collectors.toSet());
 
-    public static void init() {
-        base = new Database("jdbc:sqlite:vinkit.db");
-        base.getConnection();
-        base.createNewTables();
+		try {
+			entryDao.save(new Entry(tags, metadata));
+			io.print("Entry saved");
+		} catch (Exception e) {
+			io.print("Failed to save :(");
+			e.printStackTrace();
+		}
+	}
 
-//        sc = new Scanner(System.in);
+	public void listCommand() {
+		try {
+			List<Entry> entries = entryDao.findAll();
+			if (entries.isEmpty()) {
+				io.print("No entries :(");
+			}
+			for (Entry entry : entries) {
+				io.print(entry.toString());
+			}
+		} catch (Exception e) {
+			io.print("Failed to get list :(");
+			e.printStackTrace();
+		}
+	}
 
-        entryDao = new EntryDao(base);
-    }
+	public void helpCommand() {
+		io.print("add  - add a new entry");
+		io.print("list - list all entries");
+		io.print("quit - exits the program");
+		io.print("help - print this screen");
+	}
 
-    public void addCommand() {
-        String title, type, author, description, comment;
+	public void run() {
+		io.print("program started");
+		helpCommand();
+		while (true) {
+			String comm = io.readLine("> ").trim();
+			switch (comm) {
+				case "":
+					break;
+				case "add":
+					addCommand();
+					break;
+				case "list":
+					listCommand();
+					break;
+				case "quit":
+					return;
+				case "help":
+					helpCommand();
+					break;
+				default:
+					io.print("unrecognized command");
+			}
+		}
+	}
 
-//        System.out.print("title: ");
-        title = io.readLine("title: ");
-
-//        System.out.print("type: ");
-        type = io.readLine("type: ");
-
-//        System.out.print("author: ");
-        author = io.readLine("author: ");
-
-//        System.out.print("description: ");
-        description = io.readLine("description: ");
-
-//        System.out.print("comment: ");
-        comment = io.readLine("comment: ");
-
-        try {
-            entryDao.saveOrUpdate(new Entry(title, type, author, description, comment, null, null));
-        } catch (Exception e) {
-            io.print("Exception :(");
-        }
-        io.print("Added");
-    }
-
-    public void listCommand() {
-        try {
-            List<Entry> entries = entryDao.findAll();
-            entries = entryDao.findAll();
-            for (Entry entry : entries) {
-                io.print(entry.toString());
-            }
-        } catch (Exception e) {
-            io.print("Exception :(");
-        }
-    }
-
-    public void helpCommand() {
-        io.print("add: add a new entry");
-        io.print("list: list all entries");
-        io.print("quit: exits the program");
-        io.print("help: print this screen");
-    }
-
-    public void run() {
-
-        init();
-
-        io.print("program started");
-        
-        helpCommand();
-        
-
-        
-        
-        while (true) {
-            
-            String comm = io.readLine("Anna komento:");
-            
-//            String comm = sc.nextLine();
-
-            if (comm.equals("add")) {
-                addCommand();
-            } else if (comm.equals("list")) {
-                listCommand();
-            } else if (comm.equals("quit")) {
-                break;
-            } else if (comm.equals("help")) {
-                helpCommand();
-            } else {
-                io.print("unrecognized command: " + comm);
-                
-            }
-        }
-
-    }
-
-    public static void main(String[] args) {
-
-        IO io = new ConsoleIO();
-        new Main(io).run();
-
-//        init();
-//        System.out.println("program started");
-//        helpCommand();
-//
-//        while (true) {
-//            String comm = sc.nextLine();
-//            if (comm.equals("add")) {
-//                addCommand();
-//            } else if (comm.equals("list")) {
-//                listCommand();
-//            } else if (comm.equals("quit")) {
-//                break;
-//            } else if (comm.equals("help")) {
-//                helpCommand();
-//            } else {
-//                System.out.println("unrecognized command");
-//            }
-//        }
-    }
-
-    public static void tempTestDatabase() {
-        boolean errored = false;
-        try {
-            entryDao.delete(4);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("DID NOT SAVE!!!");
-        }
-
-        List<Entry> entries = null;
-        Entry entry = null;
-        try {
-            entries = entryDao.findAll();
-            entry = entryDao.findOne(1);
-        } catch (Exception e) {
-            errored = true;
-        }
-        if (!errored) {
-            for (Entry e : entries) {
-                System.out.println(e);
-            }
-        }
-    }
+	public static void main(String[] args) {
+		IO io = new ConsoleIO();
+		new Main(io).run();
+	}
 }
