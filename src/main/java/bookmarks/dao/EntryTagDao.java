@@ -48,9 +48,9 @@ public class EntryTagDao {
 	protected void insert(Connection conn, Entry e) throws SQLException {
 		PreparedStatement stmt = conn.prepareStatement("INSERT INTO entry_tag (entry_id, tag_id) VALUES (?, ?)");
 		for (Tag t : e.getTags()) {
-			tagDao.save(t);
+			Tag returnT = tagDao.save(t);
 			stmt.setInt(1, e.getID());
-			stmt.setInt(2, t.getID());
+			stmt.setInt(2, returnT.getID());
 			stmt.addBatch();
 		}
 		stmt.executeBatch();
