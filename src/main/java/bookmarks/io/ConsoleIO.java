@@ -13,7 +13,7 @@ public class ConsoleIO implements IO {
 	public int readInt(String prompt) {
 		System.out.print(prompt);
 		try {
-			return Integer.parseInt(scanner.nextLine());
+			return Integer.parseInt(scanner.nextLine().trim());
 		} catch (NoSuchElementException e) {
 			System.out.print("\n");
 			System.exit(0);
@@ -24,7 +24,7 @@ public class ConsoleIO implements IO {
 	public String readLine(String prompt) {
 		System.out.print(prompt);
 		try {
-			return scanner.nextLine();
+			return scanner.nextLine().trim();
 		} catch (NoSuchElementException e) {
 			System.out.print("\n");
 			System.exit(0);

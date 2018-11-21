@@ -1,5 +1,6 @@
 package bookmarks;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,9 +41,54 @@ public class Main {
 
 		try {
 			entryDao.save(new Entry(tags, metadata));
-			io.print("Entry saved");
+			io.print("Entry created");
 		} catch (Exception e) {
 			io.print("Failed to save :(");
+			e.printStackTrace();
+		}
+	}
+
+	public void editCommand() {
+		int id = io.readInt("ID to edit: ");
+		Entry entry;
+		try {
+			entry = entryDao.findOne(id);
+		} catch (SQLException e) {
+			io.print("Failed to fetch entry :(");
+			e.printStackTrace();
+			return;
+		}
+
+		if (entry == null) {
+			io.print("Entry not found");
+			return;
+		}
+
+		Map<String, String> metadata = entry.getMetadata();
+		for (Map.Entry<String, String> meta : metadata.entrySet()) {
+			String key = meta.getKey();
+			key = key.substring(0, 1).toUpperCase() + key.substring(1);
+			String newVal = io.readLine(String.format("%s [%s]: ", key, meta.getValue()));
+			if (!newVal.isEmpty()) {
+				metadata.put(meta.getKey(), newVal);
+			}
+		}
+		String newTags = io.readLine(String.format("Tags [%s]: ", entry
+			.getTags().stream()
+			.map(Tag::getName)
+			.collect(Collectors.joining(", "))));
+		if (!newTags.isEmpty()) {
+			entry.setTags(Arrays.stream(
+				newTags.split(","))
+				.map(s -> new Tag("tag", s.trim()))
+				.collect(Collectors.toSet()));
+		}
+
+		try {
+			entryDao.save(entry);
+			io.print("Entry updated");
+		} catch (SQLException e) {
+			io.print("Failed to save entry :(");
 			e.printStackTrace();
 		}
 	}
@@ -64,6 +110,7 @@ public class Main {
 
 	public void helpCommand() {
 		io.print("add  - add a new entry");
+		io.print("edit - edit an existing entry");
 		io.print("list - list all entries");
 		io.print("quit - exits the program");
 		io.print("help - print this screen");
@@ -73,12 +120,15 @@ public class Main {
 		io.print("bookmarks v0.1.0");
 		helpCommand();
 		while (true) {
-			String comm = io.readLine("> ").trim();
+			String comm = io.readLine("> ");
 			switch (comm) {
 				case "":
 					break;
 				case "add":
 					addCommand();
+					break;
+				case "edit":
+					editCommand();
 					break;
 				case "list":
 					listCommand();
