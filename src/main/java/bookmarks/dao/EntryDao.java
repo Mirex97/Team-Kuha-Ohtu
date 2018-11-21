@@ -116,7 +116,7 @@ public class EntryDao implements Dao<Entry, Integer> {
 		return object;
 	}
 
-        @Override
+	@Override
 	public Entry update(Entry object) throws SQLException {
 		Connection conn = database.getConnection();
 		PreparedStatement updateStatement = conn.prepareStatement(
