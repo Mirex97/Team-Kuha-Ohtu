@@ -7,7 +7,8 @@ public class Entry implements IDObject {
 	private Set<Tag> tags;
 	private Map<String, String> metadata;
 
-	private static HashMap<String, String[]> typeFields = new HashMap<String, String[]>();
+	private static HashMap<String, String[]> typeFields = new HashMap<>();
+
 	static {
 		typeFields.put("book", new String[]{"Title", "Author", "ISBN", "Description", "Comment"});
 		typeFields.put("article", new String[]{"Title", "Author", "Paper", "Description", "Comment"});
@@ -15,6 +16,7 @@ public class Entry implements IDObject {
 		typeFields.put("video", new String[]{"Title", "Author", "Link", "Description", "Comment"});
 		typeFields.put("meme", new String[]{"Title", "Author", "Image", "Up text", "Bottom text", "Comment"});
 	}
+
 	public static String[] getFieldsOfType(String type) {
 		return typeFields.get(type);
 	}
@@ -22,7 +24,6 @@ public class Entry implements IDObject {
 		// maybe get this from the hashmap keys?
 		return new String[]{"book","article","blog","video","meme"};
 	}
-
 
 	public Entry() {
 		this(0, new HashSet<>(), new HashMap<>());

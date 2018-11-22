@@ -30,14 +30,17 @@ public class Main {
 
 	public void addCommand() {
 		Map<String, String> metadata = new HashMap<>();
-		
+
 		String type = null;
 		String[] fields = null;
 
-		// Select type
-		while(fields == null) {
-			type = io.readLine(String.format("%s: ", "Type"));
-			fields = Entry.getFieldsOfType(type);
+		while (fields == null) {
+			type = io.readLine("Type: ");
+			if (type == null) {
+				io.print("Adding cancelled");
+				return;
+			}
+			fields = Entry.getFieldsOfType(type.toLowerCase());
 			if (fields == null) {
 				String concatTypes = "";
 				for (String str : Entry.getTypes()) concatTypes += " " + str;
@@ -46,36 +49,17 @@ public class Main {
 		}
 		metadata.put("type", type);
 
-		// Fill fields
-		for (String field : fields) {
-			String label = field.substring(0, 1).toUpperCase() + field.substring(1);
-			String val = io.readLine(String.format("%s: ", label));
-			if (val == null) {
-				io.print("Adding cancelled");
-				return;
-			}
-			metadata.put(field, val);
-		}
-
-		// Read tags
-		String tagsStr = io.readLine("Tags: ");
-		if (tagsStr == null) {
+		if (!readFields(metadata, fields)) {
 			io.print("Adding cancelled");
 			return;
 		}
-		Set<Tag> tags = Arrays.stream(
-			tagsStr.split(","))
-			.map(s -> new Tag("tag", s.trim()))
-			.collect(Collectors.toSet());
-
-		// Save
-		try {
-			entryDao.save(new Entry(tags, metadata));
-			io.print("Entry created");
-		} catch (Exception e) {
-			io.print("Failed to save :(");
-			e.printStackTrace();
+		Set<Tag> tags = readTags(null);
+		if (tags == null) {
+			io.print("Adding cancelled");
+			return;
 		}
+
+		saveEntry(new Entry(tags, metadata), "created");
 	}
 
 	public void editCommand() {
@@ -85,40 +69,60 @@ public class Main {
 		}
 
 		Map<String, String> metadata = entry.getMetadata();
-		for (Map.Entry<String, String> meta : metadata.entrySet()) {
-			String key = meta.getKey();
-			key = key.substring(0, 1).toUpperCase() + key.substring(1);
-			String newVal = io.readLine(String.format("%s [%s]: ", key, meta.getValue()));
-			if (newVal == null) {
-				io.print("Editing cancelled");
-				return;
-			}
-			if (!newVal.isEmpty()) {
-				metadata.put(meta.getKey(), newVal);
-			}
-		}
-		String newTags = io.readLine(String.format("Tags [%s]: ", entry
-			.getTags().stream()
-			.map(Tag::getName)
-			.collect(Collectors.joining(", "))));
-		if (newTags == null) {
+		String[] fields = Entry.getFieldsOfType(metadata.get("type"));
+		if (!readFields(metadata, fields)) {
 			io.print("Editing cancelled");
 			return;
 		}
-		if (!newTags.isEmpty()) {
-			entry.setTags(Arrays.stream(
+		Set<Tag> tags = readTags(entry.getTags());
+		if (tags == null) {
+			io.print("Editing cancelled");
+			return;
+		}
+		entry.setTags(tags);
+		saveEntry(entry, "updated");
+	}
+
+	private void saveEntry(Entry e, String action) {
+		try {
+			entryDao.save(e);
+			io.print("Entry " + action);
+		} catch (Exception err) {
+			io.print("Failed to save :(");
+			err.printStackTrace();
+		}
+	}
+
+	private boolean readFields(Map<String, String> metadata, String[] fields) {
+		for (String field : fields) {
+			String label = field.substring(0, 1).toUpperCase() + field.substring(1);
+			String currentVal = metadata.get(field);
+			String val = io.readLine(String.format(currentVal == null ? "%s: " : "%s [%s]: ", label, currentVal));
+			if (val == null) {
+				return false;
+			}
+			if (currentVal == null || !val.isEmpty()) {
+				metadata.put(field, val);
+			}
+		}
+		return true;
+	}
+
+	private Set<Tag> readTags(Set<Tag> existingTags) {
+		String existingTagsStr = existingTags != null ? existingTags.stream()
+			.map(Tag::getName)
+			.collect(Collectors.joining(", ")) : null;
+		String newTags = io.readLine(String.format(existingTags != null ? "Tags [%s]: " : "Tags: ", existingTagsStr));
+		if (newTags == null) {
+			return null;
+		}
+		if (existingTags == null || !newTags.isEmpty()) {
+			return Arrays.stream(
 				newTags.split(","))
 				.map(s -> new Tag("tag", s.trim()))
-				.collect(Collectors.toSet()));
+				.collect(Collectors.toSet());
 		}
-
-		try {
-			entryDao.save(entry);
-			io.print("Entry updated");
-		} catch (SQLException e) {
-			io.print("Failed to save entry :(");
-			e.printStackTrace();
-		}
+		return existingTags;
 	}
 
 	private Entry getEntryTo(String action) {
