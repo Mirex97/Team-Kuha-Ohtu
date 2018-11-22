@@ -20,9 +20,9 @@ public class Entry implements IDObject {
 	public static String[] getFieldsOfType(String type) {
 		return typeFields.get(type);
 	}
-	public static String[] getTypes() {
-		// maybe get this from the hashmap keys?
-		return new String[]{"book","article","blog","video","meme"};
+
+	public static Set<String> getTypes() {
+		return typeFields.keySet();
 	}
 
 	public Entry() {

@@ -42,9 +42,7 @@ public class Main {
 			}
 			fields = Entry.getFieldsOfType(type.toLowerCase());
 			if (fields == null) {
-				String concatTypes = "";
-				for (String str : Entry.getTypes()) concatTypes += " " + str;
-				io.print("Unrecognized type. Choose one of:" + concatTypes);
+				io.print("Unrecognized type. Choose one of: " + String.join(" ", Entry.getTypes()));
 			}
 		}
 		metadata.put("type", type);
