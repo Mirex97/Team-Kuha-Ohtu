@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Queue;
 
 public class StubIO implements IO {
-	private Queue<String> lines = new ArrayDeque<String>();
+	private Queue<String> lines = new ArrayDeque<>();
 	private List<String> prints = new ArrayList<>();
 
 	public void write(String input) {
@@ -20,7 +20,7 @@ public class StubIO implements IO {
 	public int readInt(String prompt) {
 		print(prompt);
 		if (lines.isEmpty()) {
-			return 0;
+			throw new RuntimeException("Not enough input lines provided");
 		}
 		return Integer.parseInt(lines.poll());
 	}
@@ -33,7 +33,7 @@ public class StubIO implements IO {
 		print(prompt);
 
 		if (lines.isEmpty()) {
-			return "";
+			throw new RuntimeException("Not enough input lines provided");
 		}
 		return lines.poll();
 	}

@@ -1,6 +1,5 @@
 package bookmarks;
 
-import bookmarks.domain.Entry;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -28,11 +27,12 @@ public class Stepdefs {
 		io.write("help");
 	}
 
-	@When("^type \"([^\"]*)\", title \"([^\"]*)\", author \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
-	public void titleTypeAuthorDescriptionCommentAndTagsAreGiven(String type, String title, String author, String description, String comment, String tags) throws Throwable {
+	@When("^type \"([^\"]*)\", title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+	public void titleTypeAuthorISBNDescriptionCommentAndTagsAreGiven(String type, String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
 		io.write(type);
 		io.write(title);
 		io.write(author);
+		io.write(isbn);
 		io.write(description);
 		io.write(comment);
 		io.write(tags);
