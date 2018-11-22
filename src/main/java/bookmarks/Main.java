@@ -39,7 +39,9 @@ public class Main {
 			type = io.readLine(String.format("%s: ", "Type"));
 			fields = Entry.getFieldsOfType(type);
 			if (fields == null) {
-				io.print("Unrecognized type. Choose one of: book article blog video meme");
+				String concatTypes = "";
+				for (String str : Entry.getTypes()) concatTypes += " " + str;
+				io.print("Unrecognized type. Choose one of:" + concatTypes);
 			}
 		}
 		metadata.put("type", type);

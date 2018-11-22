@@ -9,14 +9,18 @@ public class Entry implements IDObject {
 
 	private static HashMap<String, String[]> typeFields = new HashMap<String, String[]>();
 	static {
-		typeFields.put("book", new String[]{"title", "author", "isbn", "description", "comment"});
-		typeFields.put("article", new String[]{"title", "author", "paper", "description", "comment"});
-		typeFields.put("blog", new String[]{"title", "author", "link", "description", "comment"});
-		typeFields.put("video", new String[]{"title", "author", "link", "description", "comment"});
-		typeFields.put("meme", new String[]{"title", "author", "image", "up-text", "bottom-text", "comment"});
+		typeFields.put("book", new String[]{"Title", "Author", "ISBN", "Description", "Comment"});
+		typeFields.put("article", new String[]{"Title", "Author", "Paper", "Description", "Comment"});
+		typeFields.put("blog", new String[]{"Title", "Author", "Link", "Description", "Comment"});
+		typeFields.put("video", new String[]{"Title", "Author", "Link", "Description", "Comment"});
+		typeFields.put("meme", new String[]{"Title", "Author", "Image", "Up text", "Bottom text", "Comment"});
 	}
 	public static String[] getFieldsOfType(String type) {
 		return typeFields.get(type);
+	}
+	public static String[] getTypes() {
+		// maybe get this from the hashmap keys?
+		return new String[]{"book","article","blog","video","meme"};
 	}
 
 
