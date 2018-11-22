@@ -66,9 +66,7 @@ public class Main {
 			return;
 		}
 
-		Map<String, String> metadata = entry.getMetadata();
-		String[] fields = Entry.getFieldsOfType(metadata.get("type"));
-		if (!readFields(metadata, fields)) {
+		if (!readFields(entry.getMetadata(), entry.getFields())) {
 			io.print("Editing cancelled");
 			return;
 		}
@@ -149,8 +147,8 @@ public class Main {
 		if (entry == null) {
 			return;
 		}
-		io.print(entry.toString());
-		String confirmation = io.readLine("Are you sure you want to delete the entry [y/N]? ").toLowerCase();
+		io.print(entry.toLongString());
+		String confirmation = io.readLine("\nAre you sure you want to delete the entry [y/N]? ").toLowerCase();
 		if (!confirmation.startsWith("y")) {
 			io.print("Deletion cancelled");
 			return;
@@ -163,7 +161,14 @@ public class Main {
 			e.printStackTrace();
 			io.print("Failed to delete entry :(");
 		}
+	}
 
+	public void viewCommand() {
+		Entry entry = getEntryTo("view");
+		if (entry == null) {
+			return;
+		}
+		io.print(entry.toLongString());
 	}
 
 	public void listCommand() {
@@ -173,7 +178,7 @@ public class Main {
 				io.print("No entries :(");
 			}
 			for (Entry entry : entries) {
-				io.print(entry.toString());
+				io.print(entry.toShortString());
 			}
 		} catch (Exception e) {
 			io.print("Failed to get list :(");
@@ -182,20 +187,21 @@ public class Main {
 	}
 
 	public void helpHomeCommand() {
-		io.print("add  - add a new entry");
-		io.print("edit - edit an existing entry");
+		io.print("add    - add a new entry");
+		io.print("edit   - edit an existing entry");
 		io.print("delete - delete an existing entry");
-		io.print("list - list all entries");
-		io.print("tags - takes you to tag section");
-		io.print("quit - exits the program");
-		io.print("help - print this screen");
+		io.print("view   - view an existing entry");
+		io.print("list   - list all entries");
+		io.print("tags   - takes you to tag section");
+		io.print("quit   - exits the program");
+		io.print("help   - print this screen");
 	}
 
 	public void helpTagCommand() {
 		io.print("delete - delete an existing tag");
-		io.print("list - list all tags");
+		io.print("list   - list all tags");
 		io.print("return - return back to home");
-		io.print("help - print this screen");
+		io.print("help   - print this screen");
 	}
 
 	public void run() {
@@ -220,6 +226,11 @@ public class Main {
 				case "delete":
 				case "d":
 					deleteCommand();
+					break;
+				case "view":
+				case "show":
+				case "v":
+					viewCommand();
 					break;
 				case "list":
 				case "ls":

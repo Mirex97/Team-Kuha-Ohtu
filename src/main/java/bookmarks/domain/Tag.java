@@ -56,10 +56,7 @@ public class Tag implements IDObject {
 
 	@Override
 	public String toString() {
-		return "Tag{" +
-			"id=" + id +
-			", type='" + type + '\'' +
-			", name='" + name + '\'' +
-			'}';
+		return String.format("%s #%d:" +
+			" %s", type, id, name);
 	}
 }

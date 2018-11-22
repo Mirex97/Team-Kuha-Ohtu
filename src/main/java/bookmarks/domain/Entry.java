@@ -59,6 +59,14 @@ public class Entry implements IDObject {
 		this.tags = tags;
 	}
 
+	public String getType() {
+		return this.metadata.get("type");
+	}
+
+	public String[] getFields() {
+		return getFieldsOfType(getType());
+	}
+
 	public void setTags(List<Tag> tags) {
 		this.tags = new HashSet<>(tags);
 	}
@@ -88,10 +96,25 @@ public class Entry implements IDObject {
 
 	@Override
 	public String toString() {
-		return "Entry{" +
-			"id=" + id +
-			", tags=" + tags.toString() +
-			", metadata=" + metadata.toString() +
-			'}';
+		return String.format("Entry{id=%d, tags=%s, metadata=%s}", id, tags.toString(), metadata.toString());
+	}
+
+	public String toShortString() {
+		return String.format("%d. \"%s\" by %s", id, metadata.get("Title"), metadata.get("Author"));
+	}
+
+	public String toLongString() {
+		StringBuffer str = new StringBuffer();
+		str.append(String.format("\nEntry %d: %s by %s\n", id, metadata.get("Title"), metadata.get("Author")));
+		for (String field : getFields()) {
+			if (field.equals("Title") || field.equals("Author")) {
+				continue;
+			}
+			String val = metadata.get(field);
+			if (val != null && !val.isEmpty()) {
+				str.append(String.format("\n%s: %s", field, val));
+			}
+		}
+		return str.toString();
 	}
 }
