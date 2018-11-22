@@ -14,9 +14,9 @@ public class ConsoleIO implements IO {
 		System.out.print(prompt);
 		try {
 			return Integer.parseInt(scanner.nextLine().trim());
-		} catch (NoSuchElementException e) {
-			System.out.print("\n");
-			System.exit(0);
+		} catch (NoSuchElementException | NumberFormatException e) {
+			print("");
+			scanner = new Scanner(System.in);
 			return 0;
 		}
 	}
@@ -26,9 +26,9 @@ public class ConsoleIO implements IO {
 		try {
 			return scanner.nextLine().trim();
 		} catch (NoSuchElementException e) {
-			System.out.print("\n");
-			System.exit(0);
-			return "";
+			print("");
+			scanner = new Scanner(System.in);
+			return null;
 		}
 	}
 }

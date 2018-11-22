@@ -14,8 +14,6 @@ public class Main {
 
 	private EntryDao entryDao;
 	private TagDao tagDao;
-	private EntryTagDao entryTagDao;
-	private EntryMetadataDao entryMetadataDao; 
 	private IO io;
 
 	public Main(IO io) {
@@ -25,21 +23,30 @@ public class Main {
 		database.createNewTables();
 
 		tagDao = new TagDao(database);
-		entryTagDao = new EntryTagDao(database, tagDao);
-		entryMetadataDao = new EntryMetadataDao(database);
+		EntryTagDao entryTagDao = new EntryTagDao(database, tagDao);
+		EntryMetadataDao entryMetadataDao = new EntryMetadataDao(database);
 		entryDao = new EntryDao(database, entryTagDao, entryMetadataDao);
 	}
 
 	public void addCommand() {
 		Map<String, String> metadata = new HashMap<>();
-		metadata.put("type", io.readLine("Type: "));
-		metadata.put("title", io.readLine("Title: "));
-		metadata.put("author", io.readLine("Author: "));
-		metadata.put("description", io.readLine("Description: "));
-		metadata.put("comment", io.readLine("Comment: "));
+		String[] fields = new String[]{"type", "title", "author", "description", "comment"};
+		for (String field : fields) {
+			String label = field.substring(0, 1).toUpperCase() + field.substring(1);
+			String val = io.readLine(String.format("%s: ", label));
+			if (val == null) {
+				io.print("Adding cancelled");
+				return;
+			}
+			metadata.put(field, val);
+		}
+		String tagsStr = io.readLine("Tags: ");
+		if (tagsStr == null) {
+			io.print("Adding cancelled");
+			return;
+		}
 		Set<Tag> tags = Arrays.stream(
-			io.readLine("Tags: ")
-				.split(","))
+			tagsStr.split(","))
 			.map(s -> new Tag("tag", s.trim()))
 			.collect(Collectors.toSet());
 
@@ -53,18 +60,8 @@ public class Main {
 	}
 
 	public void editCommand() {
-		int id = io.readInt("ID to edit: ");
-		Entry entry;
-		try {
-			entry = entryDao.findOne(id);
-		} catch (SQLException e) {
-			io.print("Failed to fetch entry :(");
-			e.printStackTrace();
-			return;
-		}
-
+		Entry entry = getEntryTo("edit");
 		if (entry == null) {
-			io.print("Entry not found");
 			return;
 		}
 
@@ -73,6 +70,10 @@ public class Main {
 			String key = meta.getKey();
 			key = key.substring(0, 1).toUpperCase() + key.substring(1);
 			String newVal = io.readLine(String.format("%s [%s]: ", key, meta.getValue()));
+			if (newVal == null) {
+				io.print("Editing cancelled");
+				return;
+			}
 			if (!newVal.isEmpty()) {
 				metadata.put(meta.getKey(), newVal);
 			}
@@ -81,6 +82,10 @@ public class Main {
 			.getTags().stream()
 			.map(Tag::getName)
 			.collect(Collectors.joining(", "))));
+		if (newTags == null) {
+			io.print("Editing cancelled");
+			return;
+		}
 		if (!newTags.isEmpty()) {
 			entry.setTags(Arrays.stream(
 				newTags.split(","))
@@ -97,50 +102,45 @@ public class Main {
 		}
 	}
 
-	public void deleteCommand() {
-		int id = io.readInt("ID to delete: ");
+	private Entry getEntryTo(String action) {
+		int id = io.readInt("ID of entry to " + action + ": ");
+		if (id <= 0) {
+			io.print("Invalid entry ID");
+			return null;
+		}
 		Entry entry;
 		try {
 			entry = entryDao.findOne(id);
 		} catch (SQLException e) {
 			io.print("Failed to fetch entry :(");
 			e.printStackTrace();
-			return;
+			return null;
 		}
 		if (entry == null) {
 			io.print("Entry not found");
+			return null;
+		}
+		return entry;
+	}
+
+	public void deleteCommand() {
+		Entry entry = getEntryTo("delete");
+		if (entry == null) {
+			return;
+		}
+		io.print(entry.toString());
+		String confirmation = io.readLine("Are you sure you want to delete the entry [y/N]? ").toLowerCase();
+		if (!confirmation.startsWith("y")) {
+			io.print("Deletion cancelled");
 			return;
 		}
 
-		io.print(entry.toString());
-		boolean confirmation = false;
-		while (confirmation == false) {
-			io.print("[Y] or [N] for deletion?");
-			String query = io.readLine("> ").toUpperCase();
-			switch (query) {
-				case "YES":
-				case "Y":
-					confirmation = true;
-					break;
-				case "NO":
-				case "N":
-					io.print("Deletion aborted");
-					return;
-				default:
-					io.print("Try again!");
-					io.print("");
-
-			}
-
-		}
 		try {
-			entryDao.delete(id);
-			entryMetadataDao.delete(entry);
-			entryTagDao.delete(entry);
-			io.print("Deletion Successful!\n");
+			entryDao.delete(entry.getID());
+			io.print("Entry deleted successfully.");
 		} catch (Exception e) {
 			e.printStackTrace();
-			io.print("Deletion error. Check ID!");
+			io.print("Failed to delete entry :(");
 		}
 
 	}
@@ -169,6 +169,7 @@ public class Main {
 		io.print("quit - exits the program");
 		io.print("help - print this screen");
 	}
+
 	public void helpTagCommand() {
 		io.print("delete - delete an existing tag");
 		io.print("list - list all tags");
@@ -180,45 +181,54 @@ public class Main {
 		io.print("bookmarks v0.1.0");
 		helpHomeCommand();
 		while (true) {
-			io.print("");
-			String comm = io.readLine("> ").toLowerCase();
-			io.print("");
-			switch (comm) {
+			String comm = io.readLine("> ");
+			if (comm == null) {
+				return;
+			}
+			switch (comm.toLowerCase()) {
 				case "":
-					break;
+					continue;
 				case "add":
+				case "a":
 					addCommand();
 					break;
 				case "edit":
+				case "e":
 					editCommand();
 					break;
 				case "delete":
+				case "d":
 					deleteCommand();
 					break;
 				case "list":
+				case "ls":
+				case "l":
 					listCommand();
 					break;
 				case "tags":
+				case "t":
 					tagsSubSection();
-					io.print("bookmarks v0.1.0");
 					break;
 				case "quit":
+				case "exit":
+				case "q":
 					return;
 				case "help":
+				case "h":
 					helpHomeCommand();
 					break;
 				default:
-					io.print("unrecognized command");
+					io.print("Unrecognized command");
 			}
+			io.print("");
 		}
 	}
-	
-	
+
 	public void listTags() {
 		try {
 			List<Tag> tags = tagDao.findAll();
 			if (tags.isEmpty()) {
-				io.print("No tags!");
+				io.print("No tags");
 			}
 			for (Tag tag : tags) {
 				io.print(tag.toString());
@@ -228,9 +238,9 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void deleteTag() {
-		int id = io.readInt("ID to delete: ");
+		int id = io.readInt("ID of tag to delete: ");
 		Tag tag;
 		try {
 			tag = tagDao.findOne(id);
@@ -245,60 +255,52 @@ public class Main {
 		}
 
 		io.print(tag.toString());
-		boolean confirmation = false;
-		while (confirmation == false) {
-			io.print("[Y] or [N] for deletion?");
-			String query = io.readLine("> ").toUpperCase();
-			switch (query) {
-				case "YES":
-				case "Y":
-					confirmation = true;
-					break;
-				case "NO":
-				case "N":
-					io.print("Deletion aborted");
-					return;
-				default:
-					io.print("Try again!");
-					io.print("");
-
-			}
-
+		String confirmation = io.readLine("Are you sure you want to delete the tag [y/N]? ").toLowerCase();
+		if (!confirmation.startsWith("y")) {
+			io.print("Deletion cancelled");
+			return;
 		}
+
 		try {
-			tagDao.deleteTagAndConnections(id);
-			io.print("Deletion Successful!\n");
+			tagDao.delete(id);
+			io.print("Tag deleted successfully");
 		} catch (Exception e) {
 			e.printStackTrace();
-			io.print("Deletion error. Check ID!");
+			io.print("Failed to delete tag :(");
 		}
 	}
 
 	public void tagsSubSection() {
-		io.print("Tags - Section");
 		while (true) {
-			io.print("");
-			String comm = io.readLine("> ").toLowerCase();
-			io.print("");
-			switch (comm) {
+			String comm = io.readLine("tags> ");
+			if (comm == null) {
+				return;
+			}
+			switch (comm.toLowerCase()) {
 				case "":
-					break;
+					continue;
 				case "list":
+				case "ls":
+				case "l":
 					listTags();
 					break;
 				case "delete":
+				case "d":
 					deleteTag();
 					break;
 				case "return":
+				case "exit":
+				case "r":
 					return;
 				case "help":
+				case "h":
 					helpTagCommand();
 					break;
 				default:
-					io.print("unrecognized command");
+					io.print("Unrecognized command");
 			}
+			io.print("");
 		}
-
 	}
 
 	public static void main(String[] args) {

@@ -30,7 +30,7 @@ public class Database {
 			+ "key VARCHAR(255),"
 			+ "value TEXT,"
 			+ "PRIMARY KEY (entry_id, key),"
-			+ "FOREIGN KEY (entry_id) REFERENCES entry(id)"
+			+ "FOREIGN KEY (entry_id) REFERENCES entry(id) ON DELETE CASCADE"
 			+ ");";
 
 		String tag = "CREATE TABLE tag ("
@@ -42,8 +42,8 @@ public class Database {
 		String entryTag = "CREATE TABLE entry_tag ("
 			+ "entry_id INTEGER,"
 			+ "tag_id INTEGER,"
-			+ "FOREIGN KEY (entry_id) REFERENCES entry(id),"
-			+ "FOREIGN KEY (tag_id) REFERENCES tag(id)"
+			+ "FOREIGN KEY (entry_id) REFERENCES entry(id) ON DELETE CASCADE,"
+			+ "FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE CASCADE"
 			+ ");";
 
 		try (Connection conn = DriverManager.getConnection(this.databaseAddress)) {
