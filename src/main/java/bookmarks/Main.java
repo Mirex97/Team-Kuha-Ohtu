@@ -30,7 +30,21 @@ public class Main {
 
 	public void addCommand() {
 		Map<String, String> metadata = new HashMap<>();
-		String[] fields = new String[]{"type", "title", "author", "description", "comment"};
+		
+		String type = null;
+		String[] fields = null;
+
+		// Select type
+		while(fields == null) {
+			type = io.readLine(String.format("%s: ", "Type"));
+			fields = Entry.getFieldsOfType(type);
+			if (fields == null) {
+				io.print("Unrecognized type. Choose one of: book article blog video meme");
+			}
+		}
+		metadata.put("type", type);
+
+		// Fill fields
 		for (String field : fields) {
 			String label = field.substring(0, 1).toUpperCase() + field.substring(1);
 			String val = io.readLine(String.format("%s: ", label));
@@ -40,6 +54,8 @@ public class Main {
 			}
 			metadata.put(field, val);
 		}
+
+		// Read tags
 		String tagsStr = io.readLine("Tags: ");
 		if (tagsStr == null) {
 			io.print("Adding cancelled");
@@ -50,6 +66,7 @@ public class Main {
 			.map(s -> new Tag("tag", s.trim()))
 			.collect(Collectors.toSet());
 
+		// Save
 		try {
 			entryDao.save(new Entry(tags, metadata));
 			io.print("Entry created");
