@@ -39,6 +39,7 @@ public class Database {
 
 		try {
 			Statement prof = conn.createStatement();
+			prof.execute("PRAGMA foreign_keys = ON");
 			prof.execute(entry);
 			prof.execute(entryMetadata);
 			prof.execute(tag);
