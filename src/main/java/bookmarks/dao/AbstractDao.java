@@ -22,6 +22,8 @@ public abstract class AbstractDao<T extends IDObject, K> implements Dao<T, K> {
 
 	abstract protected PreparedStatement getFindAllQuery(Connection conn) throws SQLException;
 
+	abstract protected PreparedStatement getSearchQuery(Connection conn, String query) throws SQLException;
+
 	abstract protected PreparedStatement getInsertQuery(Connection conn, T object) throws SQLException;
 
 	abstract protected PreparedStatement getUpdateQuery(Connection conn, T object) throws SQLException;
@@ -59,6 +61,16 @@ public abstract class AbstractDao<T extends IDObject, K> implements Dao<T, K> {
 	public List<T> findAll() throws SQLException {
 		Connection conn = database.getConnection();
 		PreparedStatement stmt = getFindAllQuery(conn);
+		ResultSet rs = stmt.executeQuery();
+		List<T> items = read(rs);
+		stmt.close();
+		conn.close();
+		return items;
+	}
+
+	public List<T> search(String query) throws SQLException {
+		Connection conn = database.getConnection();
+		PreparedStatement stmt = getSearchQuery(conn, query);
 		ResultSet rs = stmt.executeQuery();
 		List<T> items = read(rs);
 		stmt.close();

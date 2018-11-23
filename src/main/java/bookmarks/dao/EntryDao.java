@@ -36,7 +36,14 @@ public class EntryDao extends AbstractDao<Entry, Integer> {
 
 	@Override
 	protected PreparedStatement getFindAllQuery(Connection conn) throws SQLException {
-		return conn.prepareStatement("SELECT * FROM entry;");
+		return conn.prepareStatement("SELECT * FROM entry");
+	}
+
+	@Override
+	protected PreparedStatement getSearchQuery(Connection conn, String query) throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT entry_id AS id FROM entry_metadata WHERE value LIKE %?%");
+		stmt.setString(1, query);
+		return stmt;
 	}
 
 	@Override

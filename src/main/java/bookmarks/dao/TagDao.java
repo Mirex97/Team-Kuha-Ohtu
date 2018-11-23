@@ -30,6 +30,14 @@ public class TagDao extends AbstractDao<Tag, Integer> {
 	}
 
 	@Override
+	protected PreparedStatement getSearchQuery(Connection conn, String query) throws SQLException {
+		PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT id FROM tag WHERE `name` LIKE %?%");
+		stmt.setString(1, query);
+		return stmt;
+	}
+
+
+	@Override
 	protected PreparedStatement getInsertQuery(Connection conn, Tag object) throws SQLException {
 		PreparedStatement stmt = conn.prepareStatement("INSERT INTO tag (`type`, `name`) VALUES (?, ?)");
 		stmt.setString(1, object.getType());
