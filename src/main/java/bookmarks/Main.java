@@ -11,9 +11,8 @@ import bookmarks.io.ConsoleIO;
 import bookmarks.io.IO;
 
 public class Main {
-
-	private EntryDao entryDao;
-	private TagDao tagDao;
+	public EntryDao entryDao;
+	public TagDao tagDao;
 	private IO io;
 
 	public Main(IO io, String db) {
