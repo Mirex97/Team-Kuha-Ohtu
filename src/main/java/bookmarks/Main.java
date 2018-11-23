@@ -16,10 +16,16 @@ public class Main {
 	private TagDao tagDao;
 	private IO io;
 
-	public Main(IO io) {
+	public Main(IO io, String db) {
 		this.io = io;
-		Database database = new Database("jdbc:sqlite:bookmarks.db");
-		database.getConnection();
+		Database database;
+		try {
+			database = new Database("jdbc:sqlite:" + db);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(1);
+			return;
+		}
 		database.createNewTables();
 
 		tagDao = new TagDao(database);
@@ -363,6 +369,6 @@ public class Main {
 
 	public static void main(String[] args) {
 		IO io = new ConsoleIO();
-		new Main(io).run();
+		new Main(io, "bookmarks.db").run();
 	}
 }

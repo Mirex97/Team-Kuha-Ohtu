@@ -4,20 +4,11 @@ import java.sql.*;
 
 public class Database {
 	private String databaseAddress;
+	protected Connection conn;
 
-	public Database(String databaseAddress) {
+	public Database(String databaseAddress) throws SQLException {
 		this.databaseAddress = databaseAddress;
-	}
-
-	public Connection getConnection() {
-		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection(databaseAddress);
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		return conn;
+		conn = DriverManager.getConnection(databaseAddress);
 	}
 
 	public void createNewTables() {
@@ -46,14 +37,12 @@ public class Database {
 			+ "FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE CASCADE"
 			+ ");";
 
-		try (Connection conn = DriverManager.getConnection(this.databaseAddress)) {
+		try {
 			Statement prof = conn.createStatement();
 			prof.execute(entry);
 			prof.execute(entryMetadata);
 			prof.execute(tag);
 			prof.execute(entryTag);
-		} catch (SQLException e) {
-
-		}
+		} catch (SQLException e) {}
 	}
 }

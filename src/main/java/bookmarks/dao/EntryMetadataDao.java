@@ -10,15 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EntryMetadataDao {
-	protected Database database;
+	protected Database db;
 
-	public EntryMetadataDao(Database database) {
-		this.database = database;
+	public EntryMetadataDao(Database db) {
+		this.db = db;
 	}
 
 	public Map<String, String> find(Entry e) throws SQLException {
-		Connection conn = database.getConnection();
-		PreparedStatement stmt = conn.prepareStatement(
+		PreparedStatement stmt = db.conn.prepareStatement(
 			"SELECT key, value FROM entry_metadata WHERE entry_id = ?");
 		stmt.setInt(1, e.getID());
 		ResultSet rs = stmt.executeQuery();
@@ -27,25 +26,18 @@ public class EntryMetadataDao {
 			result.put(rs.getString("key"), rs.getString("value"));
 		}
 		stmt.close();
-		conn.close();
 		return result;
 	}
 
 	public void delete(Entry e) throws SQLException {
-		Connection conn = database.getConnection();
-		delete(conn, e);
-		conn.close();
-	}
-
-	protected void delete(Connection conn, Entry e) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("DELETE FROM entry_metadata WHERE entry_id=?");
+		PreparedStatement stmt = db.conn.prepareStatement("DELETE FROM entry_metadata WHERE entry_id=?");
 		stmt.setInt(1, e.getID());
 		stmt.execute();
 		stmt.close();
 	}
 
-	protected void insert(Connection conn, Entry e) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("INSERT INTO entry_metadata (entry_id, key, value) VALUES (?, ?, ?)");
+	protected void insert(Entry e) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("INSERT INTO entry_metadata (entry_id, key, value) VALUES (?, ?, ?)");
 		for (Map.Entry<String, String> meta : e.getMetadata().entrySet()) {
 			stmt.setInt(1, e.getID());
 			stmt.setString(2, meta.getKey());
@@ -57,9 +49,7 @@ public class EntryMetadataDao {
 	}
 
 	public void save(Entry e) throws SQLException {
-		Connection conn = database.getConnection();
-		delete(conn, e);
-		insert(conn, e);
-		conn.close();
+		delete(e);
+		insert(e);
 	}
 }

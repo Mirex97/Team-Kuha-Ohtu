@@ -10,7 +10,7 @@ import bookmarks.io.StubIO;
 
 public class Stepdefs {
 	StubIO io = new StubIO();
-	Main main = new Main(io);
+	Main main = new Main(io, ":memory:");
 
 	@Given("^command add is selected$")
 	public void command_add_selected() throws Throwable {

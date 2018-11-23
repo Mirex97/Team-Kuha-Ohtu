@@ -28,27 +28,27 @@ public class EntryDao extends AbstractDao<Entry, Integer> {
 	}
 
 	@Override
-	protected PreparedStatement getFindOneQuery(Connection conn, Integer id) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM entry WHERE id = ?");
+	protected PreparedStatement getFindOneQuery(Integer id) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("SELECT * FROM entry WHERE id = ?");
 		stmt.setInt(1, id);
 		return stmt;
 	}
 
 	@Override
-	protected PreparedStatement getFindAllQuery(Connection conn) throws SQLException {
-		return conn.prepareStatement("SELECT * FROM entry");
+	protected PreparedStatement getFindAllQuery() throws SQLException {
+		return db.conn.prepareStatement("SELECT * FROM entry");
 	}
 
 	@Override
-	protected PreparedStatement getSearchQuery(Connection conn, String query) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT entry_id AS id FROM entry_metadata WHERE value LIKE ?");
+	protected PreparedStatement getSearchQuery(String query) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("SELECT DISTINCT entry_id AS id FROM entry_metadata WHERE value LIKE ?");
 		stmt.setString(1, "%" + query + "%");
 		return stmt;
 	}
 
 	@Override
-	protected PreparedStatement getInsertQuery(Connection conn, Entry object) throws SQLException {
-		return conn.prepareStatement("INSERT INTO entry (id) VALUES (NULL)");
+	protected PreparedStatement getInsertQuery(Entry object) throws SQLException {
+		return db.conn.prepareStatement("INSERT INTO entry (id) VALUES (NULL)");
 	}
 
 	protected Entry insert(Entry object) throws SQLException {
@@ -59,7 +59,7 @@ public class EntryDao extends AbstractDao<Entry, Integer> {
 	}
 
 	@Override
-	protected PreparedStatement getUpdateQuery(Connection conn, Entry object) {
+	protected PreparedStatement getUpdateQuery(Entry object) {
 		// update() is overridden so this is not used.
 		return null;
 	}
@@ -72,15 +72,15 @@ public class EntryDao extends AbstractDao<Entry, Integer> {
 	}
 
 	@Override
-	protected PreparedStatement getExistenceCheckQuery(Connection conn, Entry object) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("SELECT id FROM entry WHERE id = ?");
+	protected PreparedStatement getExistenceCheckQuery(Entry object) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("SELECT id FROM entry WHERE id = ?");
 		stmt.setInt(1, object.getID());
 		return stmt;
 	}
 
 	@Override
-	protected PreparedStatement getDeleteQuery(Connection conn, Integer id) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("DELETE FROM entry WHERE id = ?");
+	protected PreparedStatement getDeleteQuery(Integer id) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("DELETE FROM entry WHERE id = ?");
 		stmt.setInt(1, id);
 		return stmt;
 	}

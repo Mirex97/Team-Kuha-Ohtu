@@ -18,36 +18,36 @@ public class TagDao extends AbstractDao<Tag, Integer> {
 	}
 
 	@Override
-	protected PreparedStatement getFindOneQuery(Connection conn, Integer id) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tag WHERE id = ?");
+	protected PreparedStatement getFindOneQuery(Integer id) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("SELECT * FROM tag WHERE id = ?");
 		stmt.setInt(1, id);
 		return stmt;
 	}
 
 	@Override
-	protected PreparedStatement getFindAllQuery(Connection conn) throws SQLException {
-		return conn.prepareStatement("SELECT * FROM tag");
+	protected PreparedStatement getFindAllQuery() throws SQLException {
+		return db.conn.prepareStatement("SELECT * FROM tag");
 	}
 
 	@Override
-	protected PreparedStatement getSearchQuery(Connection conn, String query) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT id FROM tag WHERE `name` LIKE ?");
+	protected PreparedStatement getSearchQuery(String query) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("SELECT DISTINCT id FROM tag WHERE `name` LIKE ?");
 		stmt.setString(1, "%" + query + "%");
 		return stmt;
 	}
 
 
 	@Override
-	protected PreparedStatement getInsertQuery(Connection conn, Tag object) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("INSERT INTO tag (`type`, `name`) VALUES (?, ?)");
+	protected PreparedStatement getInsertQuery(Tag object) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("INSERT INTO tag (`type`, `name`) VALUES (?, ?)");
 		stmt.setString(1, object.getType());
 		stmt.setString(2, object.getName());
 		return stmt;
 	}
 
 	@Override
-	protected PreparedStatement getUpdateQuery(Connection conn, Tag object) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("UPDATE tag SET `type`=?, `name`=? WHERE id=?");
+	protected PreparedStatement getUpdateQuery(Tag object) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("UPDATE tag SET `type`=?, `name`=? WHERE id=?");
 		stmt.setString(1, object.getType());
 		stmt.setString(2, object.getName());
 		stmt.setInt(3, object.getID());
@@ -55,15 +55,15 @@ public class TagDao extends AbstractDao<Tag, Integer> {
 	}
 
 	@Override
-	protected PreparedStatement getExistenceCheckQuery(Connection conn, Tag object) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tag WHERE `name` = ?");
+	protected PreparedStatement getExistenceCheckQuery(Tag object) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("SELECT * FROM tag WHERE `name` = ?");
 		stmt.setString(1, object.getName());
 		return stmt;
 	}
 
 	@Override
-	protected PreparedStatement getDeleteQuery(Connection conn, Integer id) throws SQLException {
-		PreparedStatement stmt = conn.prepareStatement("DELETE FROM tag WHERE id = ?");
+	protected PreparedStatement getDeleteQuery(Integer id) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("DELETE FROM tag WHERE id = ?");
 		stmt.setInt(1, id);
 		return stmt;
 	}
@@ -71,8 +71,7 @@ public class TagDao extends AbstractDao<Tag, Integer> {
 
 	@Override
 	public Tag save(Tag object) throws SQLException {
-		Connection conn = database.getConnection();
-		PreparedStatement checkExistence = getExistenceCheckQuery(conn, object);
+		PreparedStatement checkExistence = getExistenceCheckQuery(object);
 		ResultSet rs = checkExistence.executeQuery();
 		boolean hasOne = rs.next();
 
