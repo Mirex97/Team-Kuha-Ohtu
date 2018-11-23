@@ -1,4 +1,3 @@
-
 package bookmarks.domain;
 
 public class Tag implements IDObject {

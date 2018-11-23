@@ -264,7 +264,7 @@ public class Main {
 				case "tags":
 				case "t":
 					tagsSubSection();
-					break;
+					continue;
 				case "quit":
 				case "exit":
 				case "q":
@@ -327,6 +327,8 @@ public class Main {
 	}
 
 	public void tagsSubSection() {
+		io.print("");
+		helpTagCommand();
 		while (true) {
 			String comm = io.readLine("tags> ");
 			if (comm == null) {
