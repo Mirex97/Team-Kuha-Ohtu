@@ -170,6 +170,24 @@ public class Main {
 		}
 		io.print(entry.toLongString());
 	}
+	
+	public void searchCommand() {
+		String query = io.readLine("Term to search: ");
+		try {
+			List<Entry> entries = entryDao.search(query);
+			if (entries.isEmpty()) {
+				io.print("No matches :(");
+			} else {
+				io.print(entries.size() + " matches");
+				for (Entry entry : entries) {
+					io.print(entry.toShortString());
+				}
+			}
+		} catch (Exception e) {
+			io.print("Failed to search :(");
+			e.printStackTrace();
+		}
+	}
 
 	public void listCommand() {
 		try {
@@ -189,6 +207,7 @@ public class Main {
 	public void helpHomeCommand() {
 		io.print("add    - add a new entry");
 		io.print("edit   - edit an existing entry");
+		io.print("search - search for an entry");
 		io.print("delete - delete an existing entry");
 		io.print("view   - view an existing entry");
 		io.print("list   - list all entries");
@@ -222,6 +241,11 @@ public class Main {
 				case "edit":
 				case "e":
 					editCommand();
+					break;
+				case "search":
+				case "find":
+				case "s":
+					searchCommand();
 					break;
 				case "delete":
 				case "d":
