@@ -3,11 +3,9 @@ package bookmarks.dao;
 import java.sql.*;
 
 public class Database {
-	private String databaseAddress;
 	protected Connection conn;
 
 	public Database(String databaseAddress) throws SQLException {
-		this.databaseAddress = databaseAddress;
 		conn = DriverManager.getConnection(databaseAddress);
 	}
 
