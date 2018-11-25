@@ -1,6 +1,7 @@
 package bookmarks;
 
 import bookmarks.domain.Entry;
+import bookmarks.domain.Tag;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -15,6 +16,7 @@ import bookmarks.io.StubIO;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.*;
 
 public class Stepdefs {
@@ -126,6 +128,31 @@ public class Stepdefs {
 		io.writeInput(comment);
 		assertEquals("Tags: ", io.readOutput());
 		io.writeInput(tags);
+	}
+	
+	@Then("^entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
+	public void entryIDHasTitleAuthorIsbnDescriptionCommentAndTags(int id, String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
+		Entry entry = main.entryDao.findOne(id);
+		Map<String, String> metadata = entry.getMetadata();
+		
+		assertEquals(title, metadata.get("Title"));
+		assertEquals(author, metadata.get("Author"));
+		assertEquals(isbn, metadata.get("ISBN"));
+		assertEquals(description, metadata.get("Description"));
+		assertEquals(comment, metadata.get("Comment"));
+		
+		Set<Tag> tagsOfEntry = entry.getTags();
+		Set<String> tagNamesOfEntry = new HashSet<>();
+		for (Tag entryTag : tagsOfEntry) {
+			tagNamesOfEntry.add(entryTag.getName());
+		}
+		
+		String[] tagList = tags.split(",");
+		System.out.println(tagsOfEntry);
+		System.out.println(tags);
+		for (String tag : tagList) {
+			assertTrue(tagNamesOfEntry.contains(tag.trim()));
+		}
 	}
 
 	@Then("^system will respond with \"(.+)\"$")
