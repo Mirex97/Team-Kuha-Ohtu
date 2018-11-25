@@ -1,6 +1,8 @@
 package bookmarks;
 
 import bookmarks.domain.Entry;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -13,24 +15,67 @@ import bookmarks.io.StubIO;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.*;
 
 public class Stepdefs {
-	StubIO io = new StubIO();
-	Main main = new Main(io, ":memory:");
+	StubIO io;
+	Main main;
+	ExecutorService exec;
+	Future future;
+
+	@Before
+	public void setup() {
+		io = new StubIO();
+		main = new Main(io, ":memory:");
+		exec = Executors.newSingleThreadExecutor();
+		future = exec.submit(main::run);
+		assertEquals("bookmarks v0.1.0", io.readOutput());
+		for (int i = 0; i < 9; i++) {
+			io.readOutput();
+		}
+	}
+
+	@After
+	public void cleanup() {
+		io.writeInput("quit");
+		try {
+			future.get(1, TimeUnit.SECONDS);
+			exec.shutdownNow();
+		} catch (InterruptedException | ExecutionException | TimeoutException e) {
+			e.printStackTrace();
+			future.cancel(true);
+			exec.shutdownNow();
+		}
+	}
 
 	@When("^command add is selected$")
 	public void command_add_selected() throws Throwable {
-		io.write("add");
+		assertEquals("> ", io.readOutput());
+		io.writeInput("add");
 	}
 
 	@When("^command list is selected$")
 	public void command_list_selected() throws Throwable {
-		io.write("list");
+		assertEquals("> ", io.readOutput());
+		io.writeInput("list");
 	}
 
 	@When("^command help is selected$")
 	public void command_help_selected() throws Throwable {
-		io.write("help");
+		assertEquals("> ", io.readOutput());
+		io.writeInput("help");
+	}
+
+	@When("^command view is selected$")
+	public void commandViewIsSelected() {
+		assertEquals("> ", io.readOutput());
+		io.writeInput("view");
+	}
+
+	@And("^book ID (\\d+) is given$")
+	public void bookIDIsGiven(int id) {
+		assertEquals("ID of entry to view: ", io.readOutput());
+		io.writeInput(Integer.toString(id));
 	}
 	
 	@When("^command edit is selected$")
@@ -55,29 +100,30 @@ public class Stepdefs {
 
 	@When("^type \"([^\"]*)\", title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void titleTypeAuthorISBNDescriptionCommentAndTagsAreGiven(String type, String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
-		io.write(type);
-		io.write(title);
-		io.write(author);
-		io.write(isbn);
-		io.write(description);
-		io.write(comment);
-		io.write(tags);
+		assertEquals("Type: ", io.readOutput());
+		io.writeInput(type);
+		assertEquals("Title: ", io.readOutput());
+		io.writeInput(title);
+		assertEquals("Author: ", io.readOutput());
+		io.writeInput(author);
+		assertEquals("ISBN: ", io.readOutput());
+		io.writeInput(isbn);
+		assertEquals("Description: ", io.readOutput());
+		io.writeInput(description);
+		assertEquals("Comment: ", io.readOutput());
+		io.writeInput(comment);
+		assertEquals("Tags: ", io.readOutput());
+		io.writeInput(tags);
 	}
 
 	@Then("^system will respond with \"(.+)\"$")
 	public void systemWillRespondWithDQ(String expectedOutput) throws Throwable {
-		run(expectedOutput);
+		assertEquals(expectedOutput, io.readOutput());
 	}
 
 	@Then("^system will respond with '(.+)'$")
 	public void systemWillRespondWithSQ(String expectedOutput) throws Throwable {
-		run(expectedOutput);
-	}
-
-	private void run(String expectedOutput) throws Throwable {
-		io.write("quit");
-		main.run();
-		assertTrue(io.getPrints().contains(expectedOutput));
+		assertEquals(expectedOutput, io.readOutput());
 	}
 
 	@Given("^the book \"([^\"]*)\" by \"([^\"]*)\" has been added$")
@@ -87,15 +133,5 @@ public class Stepdefs {
 		metadata.put("Title", title);
 		metadata.put("Author", author);
 		main.entryDao.save(new Entry(new HashSet<>(), metadata));
-	}
-
-	@When("^command view is selected$")
-	public void commandViewIsSelected() {
-		io.write("view");
-	}
-
-	@And("^book ID (\\d+) is given$")
-	public void bookIDIsGiven(int id) {
-		io.write(Integer.toString(id));
 	}
 }

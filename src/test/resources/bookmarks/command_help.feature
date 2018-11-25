@@ -4,5 +4,5 @@ Feature: User can get help
 		When command help is selected
 		Then system will respond with "add    - add a new entry"
 
-	Scenario: Command list is printed at startup
-		Then system will respond with "add    - add a new entry"
+#	Scenario: Command list is printed at startup
+#		Then system will respond with "add    - add a new entry"
