@@ -50,26 +50,27 @@ public class Stepdefs {
 
 	@When("^command add is selected$")
 	public void command_add_selected() throws Throwable {
-		assertEquals("> ", io.readOutput());
-		io.writeInput("add");
+		selectCommand("add");
 	}
 
 	@When("^command list is selected$")
 	public void command_list_selected() throws Throwable {
-		assertEquals("> ", io.readOutput());
-		io.writeInput("list");
+		selectCommand("list");
 	}
 
 	@When("^command help is selected$")
 	public void command_help_selected() throws Throwable {
-		assertEquals("> ", io.readOutput());
-		io.writeInput("help");
+		selectCommand("help");
 	}
 
 	@When("^command view is selected$")
 	public void commandViewIsSelected() {
+		selectCommand("view");
+	}
+
+	private void selectCommand(String command) {
 		assertEquals("> ", io.readOutput());
-		io.writeInput("view");
+		io.writeInput(command);
 	}
 
 	@And("^book ID (\\d+) is given$")
