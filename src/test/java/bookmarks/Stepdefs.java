@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class Stepdefs {
 	StubIO io;
@@ -154,16 +155,9 @@ public class Stepdefs {
 		assertEquals(isbn, metadata.get("ISBN"));
 		assertEquals(description, metadata.get("Description"));
 		assertEquals(comment, metadata.get("Comment"));
-		
-		Set<Tag> tagsOfEntry = entry.getTags();
-		Set<String> tagNamesOfEntry = new HashSet<>();
-		for (Tag entryTag : tagsOfEntry) {
-			tagNamesOfEntry.add(entryTag.getName());
-		}
-		
+
+		Set<String> tagNamesOfEntry = entry.getTags().stream().map(Tag::getName).collect(Collectors.toSet());
 		String[] tagList = tags.split(",");
-		System.out.println(tagsOfEntry);
-		System.out.println(tags);
 		for (String tag : tagList) {
 			assertTrue(tagNamesOfEntry.contains(tag.trim()));
 		}
