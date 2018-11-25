@@ -50,6 +50,15 @@ public class Stepdefs {
 		}
 	}
 
+	@Given("^the book \"([^\"]*)\" by \"([^\"]*)\" has been added$")
+	public void theBookByHasBeenAdded(String title, String author) throws Throwable {
+		Map<String, String> metadata = new HashMap<>();
+		metadata.put("type", "book");
+		metadata.put("Title", title);
+		metadata.put("Author", author);
+		main.entryDao.save(new Entry(new HashSet<>(), metadata));
+	}
+
 	@When("^command add is selected$")
 	public void command_add_selected() throws Throwable {
 		selectCommand("add");
@@ -75,6 +84,11 @@ public class Stepdefs {
 		selectCommand("edit");
 	}
 
+	@When("^command search is selected$")
+	public void commandSearchIsSelected() {
+		selectCommand("search");
+	}
+
 	private void selectCommand(String command) {
 		assertEquals("> ", io.readOutput());
 		io.writeInput(command);
@@ -86,7 +100,7 @@ public class Stepdefs {
 		io.writeInput(Integer.toString(id));
 	}
 
-	@And("^book ID (\\d+) to edit is given$")
+	@When("^book ID (\\d+) to edit is given$")
 	public void bookIDToEditIsGiven(int id) {
 		assertEquals("ID of entry to edit: ", io.readOutput());
 		io.writeInput(Integer.toString(id));
@@ -108,7 +122,7 @@ public class Stepdefs {
 		io.writeInput(tags);
 	}
 
-	@And("^type \"([^\"]*)\" is given$")
+	@When("^type \"([^\"]*)\" is given$")
 	public void typeIsGiven(String type) throws Throwable {
 		assertEquals("Type: ", io.readOutput());
 		io.writeInput(type);
@@ -155,6 +169,12 @@ public class Stepdefs {
 		}
 	}
 
+	@When("^search query \"([^\"]*)\" is given$")
+	public void searchQueryIsGiven(String query) throws Throwable {
+		assertEquals("Term to search: ", io.readOutput());
+		io.writeInput(query);
+	}
+
 	@Then("^system will respond with \"(.+)\"$")
 	public void systemWillRespondWithDQ(String expectedOutput) throws Throwable {
 		assertEquals(expectedOutput, io.readOutput());
@@ -163,14 +183,5 @@ public class Stepdefs {
 	@Then("^system will respond with '(.+)'$")
 	public void systemWillRespondWithSQ(String expectedOutput) throws Throwable {
 		assertEquals(expectedOutput, io.readOutput());
-	}
-
-	@Given("^the book \"([^\"]*)\" by \"([^\"]*)\" has been added$")
-	public void theBookByHasBeenAdded(String title, String author) throws Throwable {
-		Map<String, String> metadata = new HashMap<>();
-		metadata.put("type", "book");
-		metadata.put("Title", title);
-		metadata.put("Author", author);
-		main.entryDao.save(new Entry(new HashSet<>(), metadata));
 	}
 }
