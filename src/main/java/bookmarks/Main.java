@@ -47,7 +47,7 @@ public class Main {
 			}
 			fields = Entry.getFieldsOfType(type.toLowerCase());
 			if (fields == null) {
-				io.print("Unrecognized type. Choose one of: " + String.join(" ", Entry.getTypes()));
+				io.printf("Unrecognized type. Choose one of: %s", String.join(" ", Entry.getTypes()));
 			}
 		}
 		metadata.put("type", type);
@@ -87,7 +87,7 @@ public class Main {
 	private void saveEntry(Entry e, String action) {
 		try {
 			entryDao.save(e);
-			io.print("Entry " + action);
+			io.printf("Entry %s", action);
 		} catch (Exception err) {
 			io.print("Failed to save :(");
 			err.printStackTrace();
@@ -183,7 +183,7 @@ public class Main {
 			if (entries.isEmpty()) {
 				io.print("No matches :(");
 			} else {
-				io.print(entries.size() + " matches");
+				io.printf("%d match%s", entries.size(), entries.size() > 1 ? "es" : "");
 				for (Entry entry : entries) {
 					io.print(entry.toShortString());
 				}

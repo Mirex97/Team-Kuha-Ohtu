@@ -17,6 +17,10 @@ public class StubIO implements IO {
 		prints.add(toPrint);
 	}
 
+	public void printf(String text, Object... args) {
+		print(String.format(text, args));
+	}
+
 	public int readInt(String prompt) {
 		print(prompt);
 		if (lines.isEmpty()) {

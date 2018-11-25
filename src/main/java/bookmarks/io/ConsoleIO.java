@@ -10,6 +10,10 @@ public class ConsoleIO implements IO {
 		System.out.println(toPrint);
 	}
 
+	public void printf(String text, Object... args) {
+		print(String.format(text, args));
+	}
+
 	public int readInt(String prompt) {
 		System.out.print(prompt);
 		try {
