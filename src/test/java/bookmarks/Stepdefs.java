@@ -36,7 +36,7 @@ public class Stepdefs {
 		}
 	}
 
-	@After(timeout = 4)
+	@After
 	public void cleanup() {
 		io.writeInput("quit");
 		try {
@@ -101,7 +101,7 @@ public class Stepdefs {
 	public void commandSearchIsSelected() {
 		selectCommand("search");
 	}
-	
+
 	@When("^command delete is selected$")
 	public void command_delete_selected() throws Throwable {
 		selectCommand("delete");
@@ -123,14 +123,14 @@ public class Stepdefs {
 		assertEquals("ID of entry to edit: ", io.readOutput());
 		io.writeInput(Integer.toString(id));
 	}
-	
+
 	@When("^book ID (\\d+) and confirmation \"([^\"]*)\" to delete is given$")
 	public void bookIDToDeleteIsGiven(int id, String confirmation) {
 		assertEquals("ID of entry to delete: ", io.readOutput());
 		io.writeInput(Integer.toString(id));
-		
+
 		assertTrue(io.readOutput().startsWith("Entry " + id));
-		assertTrue(io.readOutput().startsWith("Are you sure you want to delete the entry [y/N]?"));
+		assertEquals("Are you sure you want to delete the entry [y/N]? ", io.readOutput());
 		io.writeInput(confirmation);
 	}
 
