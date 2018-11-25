@@ -31,6 +31,26 @@ public class Stepdefs {
 	public void command_help_selected() throws Throwable {
 		io.write("help");
 	}
+	
+	@When("^command edit is selected$")
+	public void command_edit_selected() throws Throwable {
+		io.write("edit");
+	}
+	
+	@When("^input \"([^\"]*)\" is given$")
+	public void input_is_given(String input) throws Throwable {
+		io.write(input);
+	}
+	
+	@When("^edit title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+	public void edit_inputs_are_given(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
+		io.write(title);
+		io.write(author);
+		io.write(isbn);
+		io.write(description);
+		io.write(comment);
+		io.write(tags);
+	}
 
 	@When("^type \"([^\"]*)\", title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void titleTypeAuthorISBNDescriptionCommentAndTagsAreGiven(String type, String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
