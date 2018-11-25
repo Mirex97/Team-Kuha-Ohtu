@@ -1,53 +1,46 @@
-plugins {
-    id 'com.github.johnrengelman.shadow' version '2.0.1'
-}
-
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'jacoco'
-
 apply plugin: 'checkstyle'
+plugins {
+	id 'com.github.johnrengelman.shadow' version '2.0.1'
+}
 
 mainClassName = 'bookmarks.Main'
 
 run {
-    standardInput = System.in
+	standardInput = System.in
 }
 
 repositories {
-    jcenter()
-    mavenCentral()
+	jcenter()
+	mavenCentral()
 }
 
 project.ext {
-    cucumberVersion = '1.2.5'
-    junitVersion = '4.12'
+	cucumberVersion = '1.2.5'
+	junitVersion = '4.12'
+	sqliteVersion = '3.25.2'
 }
-
+jacoco { toolVersion = '0.8.2' }
 
 dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.21'
-    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.25.2'
-    testCompile 'junit:junit:4.12'
-    testCompile 'info.cukes:cucumber-java:' + cucumberVersion
-    testCompile 'info.cukes:cucumber-junit:' + cucumberVersion
-    testCompile 'junit:junit:' + junitVersion
-    testCompile "org.testfx:testfx-core:4.0.+"
-    testCompile "org.testfx:testfx-junit:4.0.+"    
-    testCompile "org.testfx:openjfx-monocle:8u76-b04"
+//	compile 'org.slf4j:slf4j-api:1.7.21'
+	compile group: 'org.xerial', name: 'sqlite-jdbc', version: sqliteVersion
+	testCompile 'info.cukes:cucumber-java:' + cucumberVersion
+	testCompile 'info.cukes:cucumber-junit:' + cucumberVersion
+	testCompile 'junit:junit:' + junitVersion
+//	testCompile "org.testfx:testfx-core:4.0.+"
+//	testCompile "org.testfx:testfx-junit:4.0.+"
+//	testCompile "org.testfx:openjfx-monocle:8u76-b04"
 }
 
 jar {
-    manifest {
-        attributes 'Main-Class': 'bookmarks.Main'
-    }
-}
-
-jacoco {
-	toolVersion = "0.8.2"
+	manifest {
+		attributes 'Main-Class': 'bookmarks.Main'
+	}
 }
 
 test {
-    testLogging.showStandardStreams = true
-    systemProperties System.getProperties()
+	testLogging.showStandardStreams = true
 }
