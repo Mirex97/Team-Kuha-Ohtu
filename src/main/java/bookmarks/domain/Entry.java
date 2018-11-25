@@ -15,6 +15,7 @@ public class Entry implements IDObject {
 		typeFields.put("article", new String[]{"Title", "Author", "Paper", "Description", "Comment"});
 		typeFields.put("blog", new String[]{"Title", "Author", "Link", "Description", "Comment"});
 		typeFields.put("video", new String[]{"Title", "Author", "Link", "Description", "Comment"});
+		typeFields.put("podcast", new String[]{"Title", "Author", "Podcast name", "Description", "Comment"});
 		typeFields.put("meme", new String[]{"Title", "Author", "Image", "Up text", "Bottom text", "Comment"});
 	}
 
