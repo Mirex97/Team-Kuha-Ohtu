@@ -1,6 +1,7 @@
 package bookmarks.domain;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Entry implements IDObject {
 	private int id;
@@ -115,7 +116,10 @@ public class Entry implements IDObject {
 				str.append(String.format("\n%s: %s", field, val));
 			}
 		}
-
+		String tags = getTags().stream().filter(t -> t.getType().equals("tag")).map(Tag::getName).collect(Collectors.joining(", "));
+		if (!tags.isEmpty()) {
+			str.append(String.format("\nTags: %s", tags));
+		}
 		return str.toString();
 	}
 }

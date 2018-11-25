@@ -13,10 +13,7 @@ import static org.junit.Assert.*;
 
 import bookmarks.io.StubIO;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
@@ -59,6 +56,20 @@ public class Stepdefs {
 		metadata.put("Title", title);
 		metadata.put("Author", author);
 		main.entryDao.save(new Entry(new HashSet<>(), metadata));
+	}
+
+	@Given("^the book \"([^\"]*)\" by \"([^\"]*)\" with ISBN \"([^\"]*)\", description \"([^\"]*)\" and tags \"([^\"]*)\" has been added$")
+	public void theBookByWithISBNDescriptionAndTagsHasBeenAdded(String title, String author, String isbn, String description, String tags) throws Throwable {
+		Map<String, String> metadata = new HashMap<>();
+		metadata.put("type", "book");
+		metadata.put("Title", title);
+		metadata.put("Author", author);
+		metadata.put("ISBN", isbn);
+		metadata.put("Description", description);
+		Set<Tag> tagSet = Arrays.stream(tags.split(","))
+			.map(t -> new Tag("tag", t.trim()))
+			.collect(Collectors.toSet());
+		main.entryDao.save(new Entry(tagSet, metadata));
 	}
 
 	@When("^command add is selected$")
@@ -107,7 +118,7 @@ public class Stepdefs {
 		assertEquals("ID of entry to edit: ", io.readOutput());
 		io.writeInput(Integer.toString(id));
 	}
-	
+
 	@When("^edit title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void edit_inputs_are_given(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
 		assertTrue(io.readOutput().startsWith("Title"));
@@ -145,12 +156,12 @@ public class Stepdefs {
 		assertEquals("Tags: ", io.readOutput());
 		io.writeInput(tags);
 	}
-	
+
 	@Then("^entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
 	public void entryIDHasTitleAuthorIsbnDescriptionCommentAndTags(int id, String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
 		Entry entry = main.entryDao.findOne(id);
 		Map<String, String> metadata = entry.getMetadata();
-		
+
 		assertEquals(title, metadata.get("Title"));
 		assertEquals(author, metadata.get("Author"));
 		assertEquals(isbn, metadata.get("ISBN"));
