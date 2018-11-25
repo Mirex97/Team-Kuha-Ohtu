@@ -33,12 +33,13 @@ public class Stepdefs {
 		exec = Executors.newSingleThreadExecutor();
 		future = exec.submit(main::run);
 		assertEquals("bookmarks v0.1.0", io.readOutput());
+		// Hack to skip the help printed when starting
 		for (int i = 0; i < 9; i++) {
 			io.readOutput();
 		}
 	}
 
-	@After
+	@After(timeout = 4)
 	public void cleanup() {
 		io.writeInput("quit");
 		try {
