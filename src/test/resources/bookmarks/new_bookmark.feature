@@ -15,11 +15,10 @@ Feature: User can add a new bookmark
 		And title "Northern Lights", author "Philip Pullman", isbn "978-0-590-54178-1", description "Good fantasy book", comment "" and tags "fantasy, steampunk" are given
 		Then system will respond with "Entry created"
 
-	# Note: these tests only emulate CTRL+D by inserting null into the app input
 	Scenario: Adding can be cancelled before giving type
 		When command add is selected
 		Then system will respond with "Type: "
-		And CTRL+D is pressed
+		When CTRL+D is pressed
 		Then system will respond with "Adding cancelled"
 
 	Scenario: Adding can be cancelled when entering metadata

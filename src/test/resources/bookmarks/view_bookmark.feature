@@ -13,3 +13,18 @@ Feature: User can view bookmarks
 		And system will respond with "ISBN: 978-1905586509"
 		And system will respond with "Description: First post-series Atlantis novel"
 		And system will respond with "Tags: scifi, stargate"
+
+	Scenario: Trying to view a non-existent bookmark ID produces error
+		When command view is selected
+		And book ID 123 to view is given
+		Then system will respond with "Entry not found"
+
+	Scenario: Trying to view an invalid bookmark ID produces error
+		When command view is selected
+		And book ID "foo" to view is given
+		Then system will respond with "Invalid entry ID"
+
+	Scenario: Trying to view a negative bookmark ID produces error
+		When command view is selected
+		And book ID "-123" to view is given
+		Then system will respond with "Invalid entry ID"

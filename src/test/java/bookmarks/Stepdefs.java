@@ -111,6 +111,12 @@ public class Stepdefs {
 		io.writeInput(Integer.toString(id));
 	}
 
+	@And("^book ID \"([^\"]*)\" to view is given$")
+	public void bookIDToViewIsGiven(String id) throws Throwable {
+		assertEquals("ID of entry to view: ", io.readOutput());
+		io.writeInput(id);
+	}
+
 	@When("^book ID (\\d+) to edit is given$")
 	public void bookIDToEditIsGiven(int id) {
 		assertEquals("ID of entry to edit: ", io.readOutput());
@@ -214,6 +220,7 @@ public class Stepdefs {
 
 	@When("CTRL\\+D is pressed")
 	public void ctrlDIsPressed() {
+		// Actual CTRL+D is obviously only applicable in ConsoleIO, so we emulate it by sending null to the app.
 		io.writeInput(null);
 	}
 }

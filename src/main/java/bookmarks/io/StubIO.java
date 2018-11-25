@@ -58,6 +58,8 @@ public class StubIO implements IO {
 			return Integer.parseInt(Objects.requireNonNull(readInput()));
 		} catch (InterruptedException e) {
 			throw new RuntimeException("Reading app input timed out");
+		} catch (NullPointerException | NumberFormatException e) {
+			return 0;
 		}
 	}
 

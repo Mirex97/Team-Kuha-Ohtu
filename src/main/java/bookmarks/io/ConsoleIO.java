@@ -18,9 +18,11 @@ public class ConsoleIO implements IO {
 		System.out.print(prompt);
 		try {
 			return Integer.parseInt(scanner.nextLine().trim());
-		} catch (NoSuchElementException | NumberFormatException e) {
+		} catch (NoSuchElementException e) {
 			print("");
 			scanner = new Scanner(System.in);
+			return 0;
+		} catch (NumberFormatException e) {
 			return 0;
 		}
 	}
