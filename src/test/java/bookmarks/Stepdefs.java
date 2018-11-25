@@ -42,7 +42,7 @@ public class Stepdefs {
 	public void cleanup() {
 		io.writeInput("quit");
 		try {
-			future.get(1, TimeUnit.SECONDS);
+			future.get(3, TimeUnit.SECONDS);
 			exec.shutdownNow();
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			e.printStackTrace();

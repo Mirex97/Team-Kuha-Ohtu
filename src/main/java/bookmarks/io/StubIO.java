@@ -16,7 +16,7 @@ public class StubIO implements IO {
 		try {
 			String s = "";
 			while (s != null && s.isEmpty()) {
-				s = output.poll(200, TimeUnit.MILLISECONDS);
+				s = output.poll(500, TimeUnit.MILLISECONDS);
 			}
 			if (s == null) {
 				throw new InterruptedException();
@@ -36,7 +36,7 @@ public class StubIO implements IO {
 	}
 
 	private String readInput() throws InterruptedException {
-		String val = input.poll(200, TimeUnit.MILLISECONDS);
+		String val = input.poll(500, TimeUnit.MILLISECONDS);
 		if (val == null) {
 			throw new InterruptedException();
 		}
