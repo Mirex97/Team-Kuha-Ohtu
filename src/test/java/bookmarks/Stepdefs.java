@@ -24,29 +24,22 @@ public class Stepdefs {
 	Future future;
 
 	@Before
-	public void setup() {
+	public void setup() throws Throwable {
 		io = new StubIO();
 		main = new Main(io, ":memory:");
 		exec = Executors.newSingleThreadExecutor();
 		future = exec.submit(main::run);
 		assertEquals("bookmarks v0.1.0", io.readOutput());
-		// Hack to skip the help printed when starting
-		for (int i = 0; i < 9; i++) {
-			io.readOutput();
-		}
+		systemWillRespondWithTheHelpPage();
 	}
 
 	@After
-	public void cleanup() {
+	public void cleanup() throws Throwable {
+		assertEquals("Failed to shut down task cleanly", "> ", io.readOutput());
 		io.writeInput("quit");
-		try {
-			future.get(3, TimeUnit.SECONDS);
-			exec.shutdownNow();
-		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			e.printStackTrace();
-			future.cancel(true);
-			exec.shutdownNow();
-		}
+		assertEquals("Failed to shut down task cleanly", "Bye!", io.readOutput());
+		future.get(3, TimeUnit.SECONDS);
+		exec.shutdownNow();
 	}
 
 	@Given("^the book \"([^\"]*)\" by \"([^\"]*)\" has been added$")
@@ -204,5 +197,23 @@ public class Stepdefs {
 	@Then("^system will respond with '(.+)'$")
 	public void systemWillRespondWithSQ(String expectedOutput) throws Throwable {
 		assertEquals(expectedOutput, io.readOutput());
+	}
+
+	@Then("^system will respond with the main help page$")
+	public void systemWillRespondWithTheHelpPage() throws Throwable {
+		assertEquals("add    - add a new entry", io.readOutput());
+		assertEquals("edit   - edit an existing entry", io.readOutput());
+		assertEquals("search - search for an entry", io.readOutput());
+		assertEquals("delete - delete an existing entry", io.readOutput());
+		assertEquals("view   - view an existing entry", io.readOutput());
+		assertEquals("list   - list all entries", io.readOutput());
+		assertEquals("tags   - takes you to tag section", io.readOutput());
+		assertEquals("quit   - exits the program", io.readOutput());
+		assertEquals("help   - print this screen", io.readOutput());
+	}
+
+	@When("CTRL\\+D is pressed")
+	public void ctrlDIsPressed() {
+		io.writeInput(null);
 	}
 }

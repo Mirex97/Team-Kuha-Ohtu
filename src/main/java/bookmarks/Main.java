@@ -234,6 +234,7 @@ public class Main {
 		while (true) {
 			String comm = io.readLine("> ");
 			if (comm == null) {
+				io.print("Bye!");
 				return;
 			}
 			switch (comm.toLowerCase()) {
@@ -273,6 +274,7 @@ public class Main {
 				case "quit":
 				case "exit":
 				case "q":
+					io.print("Bye!");
 					return;
 				case "help":
 				case "h":

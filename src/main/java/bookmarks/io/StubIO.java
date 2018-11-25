@@ -7,8 +7,12 @@ import java.util.concurrent.TimeUnit;
 public class StubIO implements IO {
 	private final LinkedBlockingQueue<String> input = new LinkedBlockingQueue<>();
 	private final LinkedBlockingQueue<String> output = new LinkedBlockingQueue<>();
+	private final String nullStr = new String(new char[]{0});
 
 	public void writeInput(String input) {
+		if (input == null) {
+			input = nullStr;
+		}
 		this.input.add(input);
 	}
 
@@ -20,6 +24,9 @@ public class StubIO implements IO {
 			}
 			if (s == null) {
 				throw new InterruptedException();
+			}
+			if (s.equals(nullStr)) {
+				return null;
 			}
 			return s;
 		} catch (InterruptedException e) {
@@ -39,6 +46,8 @@ public class StubIO implements IO {
 		String val = input.poll(500, TimeUnit.MILLISECONDS);
 		if (val == null) {
 			throw new InterruptedException();
+		} else if (val.equals(nullStr)) {
+			return null;
 		}
 		return val;
 	}
@@ -46,7 +55,7 @@ public class StubIO implements IO {
 	public int readInt(String prompt) {
 		print(prompt);
 		try {
-			return Integer.parseInt(readInput());
+			return Integer.parseInt(Objects.requireNonNull(readInput()));
 		} catch (InterruptedException e) {
 			throw new RuntimeException("Reading app input timed out");
 		}
