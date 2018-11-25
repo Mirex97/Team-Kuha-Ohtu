@@ -1,9 +1,6 @@
 package bookmarks.io;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class StubIO implements IO {
 	private Queue<String> lines = new ArrayDeque<>();
@@ -14,7 +11,7 @@ public class StubIO implements IO {
 	}
 
 	public void print(String toPrint) {
-		prints.add(toPrint);
+		prints.addAll(Arrays.asList(toPrint.split("\n")));
 	}
 
 	public void printf(String text, Object... args) {

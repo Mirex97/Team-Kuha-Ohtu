@@ -104,8 +104,8 @@ public class Entry implements IDObject {
 	}
 
 	public String toLongString() {
-		StringBuffer str = new StringBuffer();
-		str.append(String.format("\nEntry %d: %s by %s\n", id, metadata.get("Title"), metadata.get("Author")));
+		StringBuilder str = new StringBuilder();
+		str.append(String.format("\nEntry %d: \"%s\" by %s\n", id, metadata.get("Title"), metadata.get("Author")));
 		for (String field : getFields()) {
 			if (field.equals("Title") || field.equals("Author")) {
 				continue;
@@ -115,6 +115,7 @@ public class Entry implements IDObject {
 				str.append(String.format("\n%s: %s", field, val));
 			}
 		}
+
 		return str.toString();
 	}
 }
