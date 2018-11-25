@@ -101,6 +101,11 @@ public class Stepdefs {
 	public void commandSearchIsSelected() {
 		selectCommand("search");
 	}
+	
+	@When("^command delete is selected$")
+	public void command_delete_selected() throws Throwable {
+		selectCommand("delete");
+	}
 
 	private void selectCommand(String command) {
 		assertEquals("> ", io.readOutput());
@@ -117,6 +122,16 @@ public class Stepdefs {
 	public void bookIDToEditIsGiven(int id) {
 		assertEquals("ID of entry to edit: ", io.readOutput());
 		io.writeInput(Integer.toString(id));
+	}
+	
+	@When("^book ID (\\d+) and confirmation \"([^\"]*)\" to delete is given$")
+	public void bookIDToDeleteIsGiven(int id, String confirmation) {
+		assertEquals("ID of entry to delete: ", io.readOutput());
+		io.writeInput(Integer.toString(id));
+		
+		assertTrue(io.readOutput().startsWith("Entry " + id));
+		assertTrue(io.readOutput().startsWith("Are you sure you want to delete the entry [y/N]?"));
+		io.writeInput(confirmation);
 	}
 
 	@When("^edit title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
