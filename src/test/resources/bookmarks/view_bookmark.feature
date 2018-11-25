@@ -8,5 +8,5 @@ Feature: User can view bookmarks
 	Scenario: User can view a specific bookmark
 		Given the book "Stargate Atlantis: Homecoming" by "Jo Graham and Melissa Scott" has been added
 		When command view is selected
-		And book ID 1 is given
+		And book ID 1 to view is given
 		Then system will respond with 'Entry 1: "Stargate Atlantis: Homecoming" by Jo Graham and Melissa Scott'

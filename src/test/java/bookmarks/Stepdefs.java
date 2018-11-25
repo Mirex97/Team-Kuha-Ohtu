@@ -68,41 +68,52 @@ public class Stepdefs {
 		selectCommand("view");
 	}
 
+	@When("^command edit is selected$")
+	public void command_edit_selected() throws Throwable {
+		selectCommand("edit");
+	}
+
 	private void selectCommand(String command) {
 		assertEquals("> ", io.readOutput());
 		io.writeInput(command);
 	}
 
-	@And("^book ID (\\d+) is given$")
-	public void bookIDIsGiven(int id) {
+	@And("^book ID (\\d+) to view is given$")
+	public void bookIDToViewIsGiven(int id) {
 		assertEquals("ID of entry to view: ", io.readOutput());
 		io.writeInput(Integer.toString(id));
 	}
-	
-	@When("^command edit is selected$")
-	public void command_edit_selected() throws Throwable {
-		io.write("edit");
-	}
-	
-	@When("^input \"([^\"]*)\" is given$")
-	public void input_is_given(String input) throws Throwable {
-		io.write(input);
+
+	@And("^book ID (\\d+) to edit is given$")
+	public void bookIDToEditIsGiven(int id) {
+		assertEquals("ID of entry to edit: ", io.readOutput());
+		io.writeInput(Integer.toString(id));
 	}
 	
 	@When("^edit title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void edit_inputs_are_given(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
-		io.write(title);
-		io.write(author);
-		io.write(isbn);
-		io.write(description);
-		io.write(comment);
-		io.write(tags);
+		assertTrue(io.readOutput().startsWith("Title"));
+		io.writeInput(title);
+		assertTrue(io.readOutput().startsWith("Author"));
+		io.writeInput(author);
+		assertTrue(io.readOutput().startsWith("ISBN"));
+		io.writeInput(isbn);
+		assertTrue(io.readOutput().startsWith("Description"));
+		io.writeInput(description);
+		assertTrue(io.readOutput().startsWith("Comment"));
+		io.writeInput(comment);
+		assertTrue(io.readOutput().startsWith("Tags"));
+		io.writeInput(tags);
 	}
 
-	@When("^type \"([^\"]*)\", title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
-	public void titleTypeAuthorISBNDescriptionCommentAndTagsAreGiven(String type, String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
+	@And("^type \"([^\"]*)\" is given$")
+	public void typeIsGiven(String type) throws Throwable {
 		assertEquals("Type: ", io.readOutput());
 		io.writeInput(type);
+	}
+
+	@When("^title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+	public void titleAuthorISBNDescriptionCommentAndTagsAreGiven(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
 		assertEquals("Title: ", io.readOutput());
 		io.writeInput(title);
 		assertEquals("Author: ", io.readOutput());
