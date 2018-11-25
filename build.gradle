@@ -4,7 +4,7 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'application'
-// apply plugin: 'jacoco'
+apply plugin: 'jacoco'
 
 apply plugin: 'checkstyle'
 
@@ -41,6 +41,10 @@ jar {
     manifest {
         attributes 'Main-Class': 'bookmarks.Main'
     }
+}
+
+jacoco {
+	toolVersion = "0.8.2"
 }
 
 test {
