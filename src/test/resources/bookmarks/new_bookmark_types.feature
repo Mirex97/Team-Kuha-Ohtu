@@ -13,3 +13,9 @@ Feature: User can add a new bookmark of a different type
 		And title "Consistency models", author "Nicola Apicella", link "https://dev.to/napicellatwit/consistency-models-52l", description "", comment "" and tags "" are given
 		Then system will respond with "Entry created"
 		And blog entry ID 1 has title "Consistency models", author "Nicola Apicella", link "https://dev.to/napicellatwit/consistency-models-52l", description "", comment "" and tags ""
+
+	Scenario: User can add a podcast bookmark
+		When command add is selected
+		And type "podcast" is given
+		And title "Jim Benson on Personal Kanban, Lean Coffee and collaboration", author "Sami Honkonen", podcast name "Boss Level Podcast", description "Personal Kanban, which is an approach to dealing with the overload of stuff you need to deal with. We dig into into its two simple rules, visualizing work and limiting work in progress. We then walk through Lean Coffee, which is a simple and effective way to run your meetings.", comment "" and tags "" are given
+		Then system will respond with "Entry created"

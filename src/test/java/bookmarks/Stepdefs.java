@@ -2,6 +2,7 @@ package bookmarks;
 
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
+import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -126,19 +127,17 @@ public class Stepdefs {
 
 
 	@When("^edit title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
-	public void edit_inputs_are_given(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
-		assertTrue(io.readOutput().startsWith("Title"));
-		io.writeInput(title);
-		assertTrue(io.readOutput().startsWith("Author"));
-		io.writeInput(author);
-		assertTrue(io.readOutput().startsWith("ISBN"));
-		io.writeInput(isbn);
-		assertTrue(io.readOutput().startsWith("Description"));
-		io.writeInput(description);
-		assertTrue(io.readOutput().startsWith("Comment"));
-		io.writeInput(comment);
-		assertTrue(io.readOutput().startsWith("Tags"));
-		io.writeInput(tags);
+	public void editTitleAuthorISBNDescriptionCommentAndTagsAreGiven(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
+		giveEditInputs(new String[]{"Title", "Author", "ISBN", "Description", "Comment", "Tags"},
+			new String[]{title, author, isbn, description, comment, tags});
+	}
+
+	private void giveEditInputs(String[] keys, String[] values) {
+		assertEquals(keys.length, values.length);
+		for (int i = 0; i < keys.length; i++) {
+			assertTrue(io.readOutput().startsWith(keys[i]));
+			io.writeInput(values[i]);
+		}
 	}
 
 	@When("^type \"([^\"]*)\" is given$")
@@ -149,34 +148,28 @@ public class Stepdefs {
 
 	@When("^title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void titleAuthorISBNDescriptionCommentAndTagsAreGiven(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
-		assertEquals("Title: ", io.readOutput());
-		io.writeInput(title);
-		assertEquals("Author: ", io.readOutput());
-		io.writeInput(author);
-		assertEquals("ISBN: ", io.readOutput());
-		io.writeInput(isbn);
-		assertEquals("Description: ", io.readOutput());
-		io.writeInput(description);
-		assertEquals("Comment: ", io.readOutput());
-		io.writeInput(comment);
-		assertEquals("Tags: ", io.readOutput());
-		io.writeInput(tags);
+		giveInputs(new String[]{"Title", "Author", "ISBN", "Description", "Comment", "Tags"},
+			new String[]{title, author, isbn, description, comment, tags});
 	}
 
-	@And("^title \"([^\"]*)\", author \"([^\"]*)\", link \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+	@When("^title \"([^\"]*)\", author \"([^\"]*)\", link \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void titleAuthorLinkDescriptionCommentAndTagsAreGiven(String title, String author, String link, String description, String comment, String tags) throws Throwable {
-		assertEquals("Title: ", io.readOutput());
-		io.writeInput(title);
-		assertEquals("Author: ", io.readOutput());
-		io.writeInput(author);
-		assertEquals("Link: ", io.readOutput());
-		io.writeInput(link);
-		assertEquals("Description: ", io.readOutput());
-		io.writeInput(description);
-		assertEquals("Comment: ", io.readOutput());
-		io.writeInput(comment);
-		assertEquals("Tags: ", io.readOutput());
-		io.writeInput(tags);
+		giveInputs(new String[]{"Title", "Author", "Link", "Description", "Comment", "Tags"},
+			new String[]{title, author, link, description, comment, tags});
+	}
+
+	@When("^title \"([^\"]*)\", author \"([^\"]*)\", podcast name \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+	public void titleAuthorPodcastNameDescriptionCommentAndTagsAreGiven(String title, String author, String podcastName, String description, String comment, String tags) throws Throwable {
+		giveInputs(new String[]{"Title", "Author", "Podcast name", "Description", "Comment", "Tags"},
+			new String[]{title, author, podcastName, description, comment, tags});
+	}
+
+	private void giveInputs(String[] keys, String[] values) {
+		assertEquals(keys.length, values.length);
+		for (int i = 0; i < keys.length; i++) {
+			assertEquals(keys[i] + ": ", io.readOutput());
+			io.writeInput(values[i]);
+		}
 	}
 
 	@Then("^book entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
