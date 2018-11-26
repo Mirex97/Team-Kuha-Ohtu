@@ -185,9 +185,15 @@ public class Stepdefs {
 		assertEquals(isbn, entry.getMetadata().get("ISBN"));
 	}
 
-	@And("^video entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", link \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
+	@Then("^video entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", link \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
 	public void videoEntryIDHasTitleAuthorLinkDescriptionCommentAndTags(int id, String title, String author, String link, String description, String comment, String tags) throws Throwable {
 		Entry entry = checkCommonMeta("video", id, title, author, description, comment, tags);
+		assertEquals(link, entry.getMetadata().get("Link"));
+	}
+
+	@Then("^blog entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", link \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
+	public void blogEntryIDHasTitleAuthorLinkDescriptionCommentAndTags(int id, String title, String author, String link, String description, String comment, String tags) throws Throwable {
+		Entry entry = checkCommonMeta("blog", id, title, author, description, comment, tags);
 		assertEquals(link, entry.getMetadata().get("Link"));
 	}
 
