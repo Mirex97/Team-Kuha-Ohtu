@@ -163,22 +163,52 @@ public class Stepdefs {
 		io.writeInput(tags);
 	}
 
-	@Then("^entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
-	public void entryIDHasTitleAuthorIsbnDescriptionCommentAndTags(int id, String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
+	@And("^title \"([^\"]*)\", author \"([^\"]*)\", link \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+	public void titleAuthorLinkDescriptionCommentAndTagsAreGiven(String title, String author, String link, String description, String comment, String tags) throws Throwable {
+		assertEquals("Title: ", io.readOutput());
+		io.writeInput(title);
+		assertEquals("Author: ", io.readOutput());
+		io.writeInput(author);
+		assertEquals("Link: ", io.readOutput());
+		io.writeInput(link);
+		assertEquals("Description: ", io.readOutput());
+		io.writeInput(description);
+		assertEquals("Comment: ", io.readOutput());
+		io.writeInput(comment);
+		assertEquals("Tags: ", io.readOutput());
+		io.writeInput(tags);
+	}
+
+	@Then("^book entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
+	public void bookEntryIDHasTitleAuthorIsbnDescriptionCommentAndTags(int id, String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
+		Entry entry = checkCommonMeta("book", id, title, author, description, comment, tags);
+		assertEquals(isbn, entry.getMetadata().get("ISBN"));
+	}
+
+	@And("^video entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", link \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
+	public void videoEntryIDHasTitleAuthorLinkDescriptionCommentAndTags(int id, String title, String author, String link, String description, String comment, String tags) throws Throwable {
+		Entry entry = checkCommonMeta("video", id, title, author, description, comment, tags);
+		assertEquals(link, entry.getMetadata().get("Link"));
+	}
+
+	private Entry checkCommonMeta(String type, int id, String title, String author, String description, String comment, String tags) throws Throwable {
 		Entry entry = main.entryDao.findOne(id);
 		Map<String, String> metadata = entry.getMetadata();
 
+		assertEquals(type, metadata.get("type"));
 		assertEquals(title, metadata.get("Title"));
 		assertEquals(author, metadata.get("Author"));
-		assertEquals(isbn, metadata.get("ISBN"));
 		assertEquals(description, metadata.get("Description"));
 		assertEquals(comment, metadata.get("Comment"));
 
 		Set<String> tagNamesOfEntry = entry.getTags().stream().map(Tag::getName).collect(Collectors.toSet());
 		String[] tagList = tags.split(",");
 		for (String tag : tagList) {
-			assertTrue(tagNamesOfEntry.contains(tag.trim()));
+			if (!tag.isEmpty()) {
+				assertTrue(tagNamesOfEntry.contains(tag.trim()));
+			}
 		}
+		return entry;
 	}
 
 	@When("^search query \"([^\"]*)\" is given$")
