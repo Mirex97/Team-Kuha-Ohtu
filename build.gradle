@@ -41,7 +41,8 @@ jacocoTestReport {
                             '**/package/internalrpc/**',
                             '**/package/other/**',
                             '**/SomeGrpc*.class',
-                            '**/SomeOuterClass*.class'
+                            '**/SomeOuterClass*.class',
+                            '**/ConsoleIO.class'
                     ]
             )
         })
