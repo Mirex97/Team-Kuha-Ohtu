@@ -9,3 +9,12 @@ Feature: User can delete existing tags
 		When tag section command "list" is selected
 		Then system will respond with "No tags"
 		When tag section command "return" is selected
+
+	Scenario: Tag is added and user cancels deletion
+		Given the book "Le book" by "the le book author" with ISBN "12321", description "none" and tags "taggies" has been added
+		When command "tags" is selected
+		Then system will respond with the tag help page
+		When tag section command "delete" is selected
+		And tag ID 1 and confirmation "n" to delete is given
+		Then system will respond with "Deletion cancelled"
+		When tag section command "return" is selected
