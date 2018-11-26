@@ -2,10 +2,8 @@ package bookmarks;
 
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
-import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -97,13 +95,13 @@ public class Stepdefs {
 		io.writeInput(command);
 	}
 
-	@And("^book ID (\\d+) to view is given$")
+	@When("^book ID (\\d+) to view is given$")
 	public void bookIDToViewIsGiven(int id) {
 		assertEquals("ID of entry to view: ", io.readOutput());
 		io.writeInput(Integer.toString(id));
 	}
 
-	@And("^book ID \"([^\"]*)\" to view is given$")
+	@When("^book ID \"([^\"]*)\" to view is given$")
 	public void bookIDToViewIsGiven(String id) throws Throwable {
 		assertEquals("ID of entry to view: ", io.readOutput());
 		io.writeInput(id);
