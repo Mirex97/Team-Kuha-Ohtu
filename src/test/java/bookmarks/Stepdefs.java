@@ -18,6 +18,7 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class Stepdefs {
+
 	StubIO io;
 	Main main;
 	ExecutorService exec;
@@ -65,43 +66,33 @@ public class Stepdefs {
 		main.entryDao.save(new Entry(tagSet, metadata));
 	}
 
-	@When("^command add is selected$")
-	public void command_add_selected() throws Throwable {
-		selectCommand("add");
+	@When("^command \"([^\"]*)\" is selected$")
+	public void command_selected(String command) throws Throwable {
+		selectCommand(command);
 	}
 
-	@When("^command list is selected$")
-	public void command_list_selected() throws Throwable {
-		selectCommand("list");
+	@When("^tag section command \"([^\"]*)\" is selected$")
+	public void when_tag_section_command_is_selected(String command) throws Throwable {
+		selectTagCommand(command);
 	}
 
-	@When("^command help is selected$")
-	public void command_help_selected() throws Throwable {
-		selectCommand("help");
-	}
+	@Then("^tag ID (\\d+) and confirmation \"([^\"]*)\" to delete is given$")
+	public void tag_ID_and_confirmation_to_delete_is_given(int id, String conf) throws Throwable {
+		assertEquals("ID of tag to delete: ", io.readOutput());
+		io.writeInput(Integer.toString(id));
 
-	@When("^command view is selected$")
-	public void commandViewIsSelected() {
-		selectCommand("view");
-	}
-
-	@When("^command edit is selected$")
-	public void command_edit_selected() throws Throwable {
-		selectCommand("edit");
-	}
-
-	@When("^command search is selected$")
-	public void commandSearchIsSelected() {
-		selectCommand("search");
-	}
-
-	@When("^command delete is selected$")
-	public void command_delete_selected() throws Throwable {
-		selectCommand("delete");
+		assertTrue(io.readOutput().startsWith("tag #" + id));
+		assertEquals("Are you sure you want to delete the tag [y/N]? ", io.readOutput());
+		io.writeInput(conf);
 	}
 
 	private void selectCommand(String command) {
 		assertEquals("> ", io.readOutput());
+		io.writeInput(command);
+	}
+
+	private void selectTagCommand(String command) {
+		assertEquals("tags> ", io.readOutput());
 		io.writeInput(command);
 	}
 
@@ -132,6 +123,7 @@ public class Stepdefs {
 		assertEquals("Are you sure you want to delete the entry [y/N]? ", io.readOutput());
 		io.writeInput(confirmation);
 	}
+
 
 	@When("^edit title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void edit_inputs_are_given(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
@@ -215,6 +207,13 @@ public class Stepdefs {
 		assertEquals("list   - list all entries", io.readOutput());
 		assertEquals("tags   - takes you to tag section", io.readOutput());
 		assertEquals("quit   - exits the program", io.readOutput());
+		assertEquals("help   - print this screen", io.readOutput());
+	}
+	@Then("^system will respond with the tag help page$")
+	public void systemWillRespondWithTheTagHelpPage() throws Throwable {
+		assertEquals("delete - delete an existing tag", io.readOutput());
+		assertEquals("list   - list all tags", io.readOutput());
+		assertEquals("return - return back to home", io.readOutput());
 		assertEquals("help   - print this screen", io.readOutput());
 	}
 
