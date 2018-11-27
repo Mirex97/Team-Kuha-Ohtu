@@ -27,10 +27,6 @@ public class Entry implements IDObject {
 		return typeFields.keySet();
 	}
 
-	public Entry() {
-		this(0, new HashSet<>(), new HashMap<>());
-	}
-
 	public Entry(int id) {
 		this(id, new HashSet<>(), new HashMap<>());
 	}
@@ -79,26 +75,6 @@ public class Entry implements IDObject {
 
 	public void setMetadata(Map<String, String> metadata) {
 		this.metadata = metadata;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Entry entry = (Entry) o;
-		return id == entry.id &&
-			tags.equals(entry.tags) &&
-			metadata.equals(entry.metadata);
-	}
-
-	@Override
-	public int hashCode() {
-		return id;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("Entry{id=%d, tags=%s, metadata=%s}", id, tags.toString(), metadata.toString());
 	}
 
 	public String toShortString() {
