@@ -86,4 +86,5 @@ public class TagDao extends AbstractDao<Tag, Integer> {
 			return insert(object);
 		}
 	}
+
 }
