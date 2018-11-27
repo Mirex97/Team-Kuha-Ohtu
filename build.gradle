@@ -38,11 +38,7 @@ jacocoTestReport {
             fileTree(
                     dir: it,
                     exclude: [
-                            '**/package/internalrpc/**',
-                            '**/package/other/**',
-                            '**/SomeGrpc*.class',
-                            '**/SomeOuterClass*.class',
-                            '**/ConsoleIO.class'
+                            '**/io/**'
                     ]
             )
         })
