@@ -9,6 +9,7 @@ public class Entry implements IDObject {
 	private Map<String, String> metadata;
 
 	private static HashMap<String, String[]> typeFields = new HashMap<>();
+	private static HashMap<String, String> typeShortcuts = new HashMap<>();
 
 	static {
 		typeFields.put("book", new String[]{"Title", "Author", "ISBN", "Description", "Comment"});
@@ -17,15 +18,31 @@ public class Entry implements IDObject {
 		typeFields.put("video", new String[]{"Title", "Author", "Link", "Description", "Comment"});
 		typeFields.put("podcast", new String[]{"Title", "Author", "Podcast name", "Description", "Comment"});
 		typeFields.put("meme", new String[]{"Title", "Author", "Image", "Up text", "Bottom text", "Comment"});
-	}
 
+		typeShortcuts.put("b", "book");
+		typeShortcuts.put("a", "article");
+		typeShortcuts.put("l", "blog");
+		typeShortcuts.put("v", "video");
+		typeShortcuts.put("p", "podcast");
+		typeShortcuts.put("m", "meme");
+		
+		typeShortcuts.put("book", "book");
+		typeShortcuts.put("article", "article");
+		typeShortcuts.put("blog", "blog");
+		typeShortcuts.put("video", "video");
+		typeShortcuts.put("podcast", "podcast");
+		typeShortcuts.put("meme", "meme");
+	}
 	public static String[] getFieldsOfType(String type) {
 		return typeFields.get(type);
 	}
-
+	public static String unshortenType(String type) {
+		return typeShortcuts.get(type);
+	}
 	public static Set<String> getTypes() {
 		return typeFields.keySet();
 	}
+
 
 	public Entry(int id) {
 		this(id, new HashSet<>(), new HashMap<>());

@@ -45,7 +45,12 @@ public class Main {
 				io.print("Adding cancelled");
 				return;
 			}
-			fields = Entry.getFieldsOfType(type.toLowerCase());
+
+			type = Entry.unshortenType(type.toLowerCase());
+			if (type != null) {
+				fields = Entry.getFieldsOfType(type.toLowerCase());
+			}
+
 			if (fields == null) {
 				io.printf("Unrecognized type. Choose one of: %s", String.join(" ", Entry.getTypes()));
 			}
@@ -210,23 +215,23 @@ public class Main {
 	}
 
 	public void helpHomeCommand() {
-		io.print("add    - add a new entry");
-		io.print("edit   - edit an existing entry");
-		io.print("search - search for an entry");
-		io.print("delete - delete an existing entry");
-		io.print("view   - view an existing entry");
-		io.print("list   - list all entries");
-		io.print("tags   - takes you to tag section");
-		io.print("quit   - exits the program");
-		io.print("help   - print this screen");
+		io.print("(a) add    - add a new entry");
+		io.print("(d) delete - delete an existing entry");
+		io.print("(e) edit   - edit an existing entry");
+		io.print("(h) help   - print this screen");
+		io.print("(l) list   - list all entries");
+		io.print("(q) quit   - exits the program");
+		io.print("(s) search - search for an entry");
+		io.print("(t) tags   - takes you to tag section");
+		io.print("(v) view   - view an existing entry");
 	}
 
 	public void helpTagCommand() {
-		io.print("find - find entries with tag");
-		io.print("delete - delete an existing tag");
-		io.print("list   - list all tags");
-		io.print("return - return back to home");
-		io.print("help   - print this screen");
+		io.print("(b) back   - return back to home");
+		io.print("(d) delete - delete an existing tag");
+		io.print("(h) help   - print this screen");
+		io.print("(l) list   - list all tags");
+		io.print("(s) search - search for entries with tag");
 	}
 
 	public void run() {
@@ -363,6 +368,7 @@ public class Main {
 			switch (comm.toLowerCase()) {
 				case "":
 					continue;
+				case "search":
 				case "find":
 				case "s":
 					findTags();
@@ -376,9 +382,10 @@ public class Main {
 				case "d":
 					deleteTag();
 					break;
+				case "back":
 				case "return":
 				case "exit":
-				case "r":
+				case "b":
 					return;
 				case "help":
 				case "h":

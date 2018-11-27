@@ -259,23 +259,23 @@ public class Stepdefs {
 
 	@Then("^system will respond with the main help page$")
 	public void systemWillRespondWithTheHelpPage() throws Throwable {
-		assertEquals("add    - add a new entry", io.readOutput());
-		assertEquals("edit   - edit an existing entry", io.readOutput());
-		assertEquals("search - search for an entry", io.readOutput());
-		assertEquals("delete - delete an existing entry", io.readOutput());
-		assertEquals("view   - view an existing entry", io.readOutput());
-		assertEquals("list   - list all entries", io.readOutput());
-		assertEquals("tags   - takes you to tag section", io.readOutput());
-		assertEquals("quit   - exits the program", io.readOutput());
-		assertEquals("help   - print this screen", io.readOutput());
+		assertEquals("(a) add    - add a new entry", io.readOutput());
+		assertEquals("(d) delete - delete an existing entry", io.readOutput());
+		assertEquals("(e) edit   - edit an existing entry", io.readOutput());
+		assertEquals("(h) help   - print this screen", io.readOutput());
+		assertEquals("(l) list   - list all entries", io.readOutput());
+		assertEquals("(q) quit   - exits the program", io.readOutput());
+		assertEquals("(s) search - search for an entry", io.readOutput());
+		assertEquals("(t) tags   - takes you to tag section", io.readOutput());
+		assertEquals("(v) view   - view an existing entry", io.readOutput());
 	}
 	@Then("^system will respond with the tag help page$")
 	public void systemWillRespondWithTheTagHelpPage() throws Throwable {
-		assertEquals("find - find entries with tag", io.readOutput());
-		assertEquals("delete - delete an existing tag", io.readOutput());
-		assertEquals("list   - list all tags", io.readOutput());
-		assertEquals("return - return back to home", io.readOutput());
-		assertEquals("help   - print this screen", io.readOutput());
+		assertEquals("(b) back   - return back to home", io.readOutput());
+		assertEquals("(d) delete - delete an existing tag", io.readOutput());
+		assertEquals("(h) help   - print this screen", io.readOutput());
+		assertEquals("(l) list   - list all tags", io.readOutput());
+		assertEquals("(s) search - search for entries with tag", io.readOutput());
 	}
 
 	@When("CTRL\\+D is pressed")
