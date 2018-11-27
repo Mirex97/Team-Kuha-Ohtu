@@ -161,6 +161,28 @@ public class Stepdefs {
 		giveInputs(new String[]{"Title", "Author", "Podcast name", "Description", "Comment", "Tags"},
 			new String[]{title, author, podcastName, description, comment, tags});
 	}
+//        And title "No beep", author "myself", image "Good guy greg", up text "Microwaving at midnight", bottom text "Opens it with one sec left" and comment "" are given
+        
+        @When("^title \"([^\"]*)\", author \"([^\"]*)\", image \"([^\"]*)\", up text \"([^\"]*)\", bottom text \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+	public void titleAuthorMemeNameDescriptionCommentAndTagsAreGiven(String title, String author, String image, String up_text, String bottom_text, String comment, String tags) throws Throwable {
+		giveInputs(new String[]{"Title", "Author", "Image", "Up text", "Bottom text", "Comment", "Tags"},
+			new String[]{title, author, image, up_text, bottom_text, comment, tags});
+	}
+        
+//        And title "Article", author "auto-thor", paper "The good one", description "Mildly wild", comments "Keep an eye on this" and tags "" are given
+                @When("^title \"([^\"]*)\", author \"([^\"]*)\", paper \"([^\"]*)\", description \"([^\"]*)\", comments \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+	public void titleAuthorArticleNameDescriptionCommentAndTagsAreGiven(String title, String author, String paper, String description, String comment, String tags) throws Throwable {
+		giveInputs(new String[]{"Title", "Author", "Paper", "Description", "Comment", "Tags"},
+			new String[]{title, author, paper, description, comment, tags});
+	}
+        
+        @When("^title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comments \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+	public void titleAuthorBookDescriptionCommentAndTagsAreGiven(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
+		giveInputs(new String[]{"Title", "Author", "ISBN", "Description", "Comment", "Tags"},
+			new String[]{title, author, isbn, description, comment, tags});
+	}
+        
+        
 
 	private void giveInputs(String[] keys, String[] values) {
 		assertEquals(keys.length, values.length);
@@ -186,6 +208,12 @@ public class Stepdefs {
 	public void blogEntryIDHasTitleAuthorLinkDescriptionCommentAndTags(int id, String title, String author, String link, String description, String comment, String tags) throws Throwable {
 		Entry entry = checkCommonMeta("blog", id, title, author, description, comment, tags);
 		assertEquals(link, entry.getMetadata().get("Link"));
+	}
+        
+        @Then("^meme entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", image \"([^\"]*)\", up text \"([^\"]*)\", bottom text \"([^\"]*)\" and comment \"([^\"]*)\"$")
+	public void memeEntryIDHasTitleAuthorLinkDescriptionCommentAndTags(int id, String title, String author, String image, String up_text, String bottom_text, String comment) throws Throwable {
+		Entry entry = checkCommonMeta("meme", id, title, author, up_text, bottom_text, comment);
+		assertEquals(image, entry.getMetadata().get("Image"));
 	}
 
 	private Entry checkCommonMeta(String type, int id, String title, String author, String description, String comment, String tags) throws Throwable {
