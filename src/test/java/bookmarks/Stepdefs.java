@@ -241,6 +241,11 @@ public class Stepdefs {
 		assertEquals("Term to search: ", io.readOutput());
 		io.writeInput(query);
 	}
+	@When("^tag find query \"([^\"]*)\" is given$")
+	public void tagFindQueryIsGiven(String query) throws Throwable {
+		assertEquals("Entries with tag (use %query% for substring of tag): ", io.readOutput());
+		io.writeInput(query);
+	}
 
 	@Then("^system will respond with \"(.+)\"$")
 	public void systemWillRespondWithDQ(String expectedOutput) throws Throwable {
@@ -266,6 +271,7 @@ public class Stepdefs {
 	}
 	@Then("^system will respond with the tag help page$")
 	public void systemWillRespondWithTheTagHelpPage() throws Throwable {
+		assertEquals("find - find entries with tag", io.readOutput());
 		assertEquals("delete - delete an existing tag", io.readOutput());
 		assertEquals("list   - list all tags", io.readOutput());
 		assertEquals("return - return back to home", io.readOutput());

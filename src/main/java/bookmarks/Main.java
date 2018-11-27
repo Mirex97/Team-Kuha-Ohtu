@@ -222,6 +222,7 @@ public class Main {
 	}
 
 	public void helpTagCommand() {
+		io.print("find - find entries with tag");
 		io.print("delete - delete an existing tag");
 		io.print("list   - list all tags");
 		io.print("return - return back to home");
@@ -286,6 +287,24 @@ public class Main {
 			io.print("");
 		}
 	}
+	
+	public void findTags() {
+		String query = io.readLine("Entries with tag (use %query% for substring of tag): ");
+		try {
+			List<Entry> entries = entryDao.findWithTag(query);
+			if (entries.isEmpty()) {
+				io.print("No matches with tag :(");
+			} else {
+				io.printf("%d match%s", entries.size(), entries.size() > 1 ? "es" : "");
+				for (Entry entry : entries) {
+					io.print(entry.toShortString());
+				}
+			}
+		} catch (Exception e) {
+			io.print("Failed to find :(");
+			e.printStackTrace();
+		}
+	}
 
 	public void listTags() {
 		try {
@@ -344,6 +363,10 @@ public class Main {
 			switch (comm.toLowerCase()) {
 				case "":
 					continue;
+				case "find":
+				case "s":
+					findTags();
+					break;
 				case "list":
 				case "ls":
 				case "l":

@@ -31,6 +31,7 @@ public abstract class AbstractDao<T extends IDObject, K> implements Dao<T, K> {
 	abstract protected PreparedStatement getExistenceCheckQuery(T object) throws SQLException;
 
 	abstract protected PreparedStatement getDeleteQuery(K id) throws SQLException;
+	
 
 	protected List<T> read(ResultSet rs) throws SQLException {
 		List<T> items = new ArrayList<>();
@@ -71,6 +72,7 @@ public abstract class AbstractDao<T extends IDObject, K> implements Dao<T, K> {
 		stmt.close();
 		return items;
 	}
+	
 
 	protected T insert(T object) throws SQLException {
 		PreparedStatement insert = getInsertQuery(object);
