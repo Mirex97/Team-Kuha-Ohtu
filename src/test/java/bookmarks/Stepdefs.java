@@ -2,6 +2,7 @@ package bookmarks;
 
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
+import bookmarks.ui.App;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
@@ -19,16 +20,16 @@ import java.util.stream.Collectors;
 public class Stepdefs {
 
 	StubIO io;
-	Main main;
+	App app;
 	ExecutorService exec;
 	Future future;
 
 	@Before
 	public void setup() throws Throwable {
 		io = new StubIO();
-		main = new Main(io, ":memory:");
+		app = new App(io, ":memory:");
 		exec = Executors.newSingleThreadExecutor();
-		future = exec.submit(main::run);
+		future = exec.submit(app::run);
 		assertEquals("bookmarks v0.1.0", io.readOutput());
 		systemWillRespondWithTheHelpPage();
 	}
@@ -48,7 +49,7 @@ public class Stepdefs {
 		metadata.put("type", "book");
 		metadata.put("Title", title);
 		metadata.put("Author", author);
-		main.entryDao.save(new Entry(new HashSet<>(), metadata));
+		app.entryDao.save(new Entry(new HashSet<>(), metadata));
 	}
 
 	@Given("^the book \"([^\"]*)\" by \"([^\"]*)\" with ISBN \"([^\"]*)\", description \"([^\"]*)\" and tags \"([^\"]*)\" has been added$")
@@ -62,7 +63,7 @@ public class Stepdefs {
 		Set<Tag> tagSet = Arrays.stream(tags.split(","))
 			.map(t -> new Tag("tag", t.trim()))
 			.collect(Collectors.toSet());
-		main.entryDao.save(new Entry(tagSet, metadata));
+		app.entryDao.save(new Entry(tagSet, metadata));
 	}
 
 	@When("^command \"([^\"]*)\" is selected$")
@@ -217,7 +218,7 @@ public class Stepdefs {
 	}
 
 	private Entry checkCommonMeta(String type, int id, String title, String author, String description, String comment, String tags) throws Throwable {
-		Entry entry = main.entryDao.findOne(id);
+		Entry entry = app.entryDao.findOne(id);
 		Map<String, String> metadata = entry.getMetadata();
 
 		assertEquals(type, metadata.get("type"));

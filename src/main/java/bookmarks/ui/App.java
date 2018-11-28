@@ -1,21 +1,20 @@
-package bookmarks;
+package bookmarks.ui;
+
+import bookmarks.dao.*;
+import bookmarks.domain.Entry;
+import bookmarks.domain.Tag;
+import bookmarks.io.IO;
 
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import bookmarks.dao.*;
-import bookmarks.domain.Entry;
-import bookmarks.domain.Tag;
-import bookmarks.io.ConsoleIO;
-import bookmarks.io.IO;
-
-public class Main {
+public class App {
 	public EntryDao entryDao;
 	public TagDao tagDao;
 	private IO io;
 
-	public Main(IO io, String db) {
+	public App(IO io, String db) {
 		this.io = io;
 		Database database;
 		try {
@@ -179,7 +178,7 @@ public class Main {
 		}
 		io.print(entry.toLongString());
 	}
-	
+
 	public void searchCommand() {
 		String query = io.readLine("Term to search: ");
 		try {
@@ -291,7 +290,7 @@ public class Main {
 			io.print("");
 		}
 	}
-	
+
 	public void findTags() {
 		String query = io.readLine("Entries with tag (use %query% for substring of tag): ");
 		try {
@@ -395,10 +394,5 @@ public class Main {
 			}
 			io.print("");
 		}
-	}
-
-	public static void main(String[] args) {
-		IO io = new ConsoleIO();
-		new Main(io, "bookmarks.db").run();
 	}
 }
