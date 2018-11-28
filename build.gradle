@@ -6,7 +6,7 @@ apply plugin: 'application'
 apply plugin: 'jacoco'
 apply plugin: 'checkstyle'
 
-mainClassName = 'bookmarks.Main'
+mainClassName = 'main.Main'
 
 run {
 	standardInput = System.in
@@ -58,7 +58,7 @@ dependencies {
 
 jar {
 	manifest {
-		attributes 'Main-Class': 'bookmarks.Main'
+		attributes 'Main-Class': 'main.Main'
 	}
 }
 
