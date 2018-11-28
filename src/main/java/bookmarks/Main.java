@@ -25,7 +25,6 @@ public class Main {
 			System.exit(1);
 			return;
 		}
-		database.createNewTables();
 
 		tagDao = new TagDao(database);
 		EntryTagDao entryTagDao = new EntryTagDao(database, tagDao);

@@ -7,28 +7,30 @@ public class Database {
 
 	public Database(String databaseAddress) throws SQLException {
 		conn = DriverManager.getConnection(databaseAddress);
+		createNewTables();
 	}
 
+
 	public void createNewTables() {
-		String entry = "CREATE TABLE entry ("
-			+ "id INTEGER PRIMARY KEY"
+		String entry = "CREATE TABLE IF NOT EXISTS entry ("
+			+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT"
 			+ ");";
 
-		String entryMetadata = "CREATE TABLE entry_metadata ("
-			+ "entry_id INTEGER,"
-			+ "key VARCHAR(255),"
+		String entryMetadata = "CREATE TABLE IF NOT EXISTS entry_metadata ("
+			+ "entry_id INTEGER NOT NULL,"
+			+ "key VARCHAR(255) NOT NULL,"
 			+ "value TEXT,"
 			+ "PRIMARY KEY (entry_id, key),"
 			+ "FOREIGN KEY (entry_id) REFERENCES entry(id) ON DELETE CASCADE"
 			+ ");";
 
-		String tag = "CREATE TABLE tag ("
-			+ "id INTEGER PRIMARY KEY,"
+		String tag = "CREATE TABLE IF NOT EXISTS tag ("
+			+ "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
 			+ "`type` VARCHAR(255),"
 			+ "name VARCHAR(255)"
 			+ ");";
 
-		String entryTag = "CREATE TABLE entry_tag ("
+		String entryTag = "CREATE TABLE IF NOT EXISTS entry_tag ("
 			+ "entry_id INTEGER,"
 			+ "tag_id INTEGER,"
 			+ "FOREIGN KEY (entry_id) REFERENCES entry(id) ON DELETE CASCADE,"
