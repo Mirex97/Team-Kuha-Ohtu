@@ -1,71 +1,45 @@
 package bookmarks.io;
 
+import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.Queue;
-import java.util.LinkedList;
 
-public class ConsoleIO implements IO {
+public class ConsoleIO extends AbstractIO {
 	private Scanner scanner = new Scanner(System.in);
-	private Queue<String> wordQue = new LinkedList<String>();
 
+	@Override
 	public void print(String toPrint) {
 		System.out.println(toPrint);
 	}
 
-	public void printf(String text, Object... args) {
-		print(String.format(text, args));
+	@Override
+	public void printPrompt(String prompt) {
+		System.out.print(prompt);
 	}
 
-	public String readString(String prompt) {
-		if (wordQue.isEmpty()) {
-			System.out.print(prompt);
-
-			String line = null;
-			try {
-				line = scanner.nextLine().trim();
-			} catch (Exception e) {}
-
-			if (line == null) return null;
-			for (String part : line.split(" ")) {
-				wordQue.add(part);
-			}
-
-			return wordQue.remove();
-		} else {
-			String res = wordQue.remove();
-			System.out.println(prompt + res);
-			return res;
-		}
-	}
-
-	public String readLine(String prompt) {
-		if (wordQue.isEmpty()) {
-			System.out.print(prompt);
-			String line = null;
-			try {
-				line = scanner.nextLine().trim();
-			} catch (Exception e) {}
-
-			return line;
-		} else {
-			String res = "";
-			while(true) {
-				res += wordQue.remove();
-				if (wordQue.isEmpty()) break;
-				else res += " ";
-			}
-			System.out.println(prompt + res);
-			return res;
-		}
-	}
-
-	public int readInt(String prompt) {
-		String str = readString(prompt);
+	@Override
+	public String readString() {
+		String line;
 		try {
-			 return Integer.parseInt(str);
-		} catch (NumberFormatException e) {
-			return 0;
+			line = scanner.nextLine().trim();
+		} catch (NoSuchElementException e) {
+			print("");
+			scanner = new Scanner(System.in);
+			return null;
+		}
+
+		Collections.addAll(wordQueue, line.split(" "));
+		return wordQueue.remove();
+	}
+
+	@Override
+	public String readLine() {
+		try {
+			return scanner.nextLine().trim();
+		} catch (NoSuchElementException e) {
+			print("");
+			scanner = new Scanner(System.in);
+			return null;
 		}
 	}
 }

@@ -1,17 +1,13 @@
 package bookmarks.io;
 
-import java.util.*;
+import java.util.Collections;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import java.util.Queue;
-import java.util.LinkedList;
-
-public class StubIO implements IO {
+public class StubIO extends AbstractIO {
 	private final LinkedBlockingQueue<String> input = new LinkedBlockingQueue<>();
 	private final LinkedBlockingQueue<String> output = new LinkedBlockingQueue<>();
 	private final String nullStr = new String(new char[]{0});
-	private final Queue<String> wordQue = new LinkedList<String>();
 
 
 	public void writeInput(String input) {
@@ -39,12 +35,9 @@ public class StubIO implements IO {
 		}
 	}
 
+	@Override
 	public void print(String toPrint) {
-		output.addAll(Arrays.asList(toPrint.split("\n")));
-	}
-
-	public void printf(String text, Object... args) {
-		print(String.format(text, args));
+		Collections.addAll(output, toPrint.split("\n"));
 	}
 
 	private String readInput() throws InterruptedException {
@@ -57,58 +50,26 @@ public class StubIO implements IO {
 		return val;
 	}
 
-	public String readString(String prompt) {
-		if (wordQue.isEmpty()) {
-                        print(prompt);
-			String line = "";
-			try {
-				line = readInput();
-			} catch (InterruptedException e) {
-				return "Polling for input timed out";
-			}
+	@Override
+	public String readString() {
+		String line;
+		try {
+			line = readInput();
+		} catch (InterruptedException e) {
+			throw new RuntimeException("Polling for input timed out");
+		}
 
-			if (line == null) return null;
-                        for (String part : line.split(" ")) {
-                                wordQue.add(part);
-                        }
-                        return wordQue.remove();
-                } else {
-                        String res = wordQue.remove();
-                        print(prompt + res);
-                        return res;
-                }
+		if (line == null) return null;
+		Collections.addAll(wordQueue, line.split(" "));
+		return wordQueue.remove();
 	}
 
-        public String readLine(String prompt) {
-                if (wordQue.isEmpty()) {
-                        print(prompt);
-                        String line = "";
-			try {
-				line = readInput();
-			} catch (InterruptedException e) {
-				return "Polling for input timed out";
-			}
-                        return line;
-                } else {
-                        String res = "";
-                        while(true) {
-                                res += wordQue.remove();
-                                if (wordQue.isEmpty()) break;
-                                else res += " ";
-                        }
-                        print(prompt + res);
-                        return res;
-                }
-        }
-
-	public int readInt(String prompt) {
-		String str = readString(prompt);
+	@Override
+	public String readLine() {
 		try {
-			return Integer.parseInt(str);
-		} catch (NullPointerException e) {
-			return 0;
-		} catch (NumberFormatException e) {
-			return 0;
+			return readInput();
+		} catch (InterruptedException e) {
+			throw new RuntimeException("Polling for input timed out");
 		}
 	}
 }
