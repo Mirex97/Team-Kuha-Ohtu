@@ -4,10 +4,15 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import java.util.Queue;
+import java.util.LinkedList;
+
 public class StubIO implements IO {
 	private final LinkedBlockingQueue<String> input = new LinkedBlockingQueue<>();
 	private final LinkedBlockingQueue<String> output = new LinkedBlockingQueue<>();
 	private final String nullStr = new String(new char[]{0});
+	private final Queue<String> wordQue = new LinkedList<String>();
+
 
 	public void writeInput(String input) {
 		if (input == null) {
@@ -52,23 +57,57 @@ public class StubIO implements IO {
 		return val;
 	}
 
-	public int readInt(String prompt) {
-		print(prompt);
-		try {
-			return Integer.parseInt(Objects.requireNonNull(readInput()));
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Reading app input timed out");
-		} catch (NullPointerException | NumberFormatException e) {
-			return 0;
-		}
+	public String readString(String prompt) {
+		if (wordQue.isEmpty()) {
+                        print(prompt);
+			String line = "";
+			try {
+				line = readInput();
+			} catch (InterruptedException e) {
+				return "Polling for input timed out";
+			}
+
+                        for (String part : line.split(" ")) {
+                                wordQue.add(part);
+                        }
+                        return wordQue.remove();
+                } else {
+                        String res = wordQue.remove();
+                        print(prompt + res);
+                        return res;
+                }
 	}
 
-	public String readLine(String prompt) {
-		print(prompt);
+        public String readLine(String prompt) {
+                if (wordQue.isEmpty()) {
+                        print(prompt);
+                        String line = "";
+			try {
+				line = readInput();
+			} catch (InterruptedException e) {
+				return "Polling for input timed out";
+			}
+                        return line;
+                } else {
+                        String res = "";
+                        while(true) {
+                                res += wordQue.remove();
+                                if (wordQue.isEmpty()) break;
+                                else res += " ";
+                        }
+                        print(prompt + res);
+                        return res;
+                }
+        }
+
+	public int readInt(String prompt) {
+		String str = readString(prompt);
 		try {
-			return readInput();
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Reading app input timed out");
+			return Integer.parseInt(str);
+		} catch (NullPointerException e) {
+			return 0;
+		} catch (NumberFormatException e) {
+			return 0;
 		}
 	}
 }

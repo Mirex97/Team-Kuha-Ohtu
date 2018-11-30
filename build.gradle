@@ -64,4 +64,5 @@ jar {
 
 test {
 	testLogging.showStandardStreams = true
+	failFast = true
 }
