@@ -238,7 +238,7 @@ public class Main {
 		io.print("bookmarks v0.1.0");
 		helpHomeCommand();
 		while (true) {
-			String comm = io.readLine("> ");
+			String comm = io.readString("> ");
 			if (comm == null) {
 				io.print("Bye!");
 				return;
@@ -361,7 +361,7 @@ public class Main {
 		io.print("");
 		helpTagCommand();
 		while (true) {
-			String comm = io.readLine("tags> ");
+			String comm = io.readString("tags> ");
 			if (comm == null) {
 				return;
 			}
