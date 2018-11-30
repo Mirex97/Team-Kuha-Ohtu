@@ -260,6 +260,7 @@ public class Stepdefs {
 
 	@Then("^system will respond with the main help page$")
 	public void systemWillRespondWithTheHelpPage() throws Throwable {
+		assertEquals("(shortcut) command - description", io.readOutput());
 		assertEquals("(a) add    - add a new entry", io.readOutput());
 		assertEquals("(d) delete - delete an existing entry", io.readOutput());
 		assertEquals("(e) edit   - edit an existing entry", io.readOutput());
@@ -269,9 +270,13 @@ public class Stepdefs {
 		assertEquals("(s) search - search for an entry", io.readOutput());
 		assertEquals("(t) tags   - takes you to tag section", io.readOutput());
 		assertEquals("(v) view   - view an existing entry", io.readOutput());
+		assertEquals("Type command to view more detailed help, or press enter to cancel.", io.readOutput());
+		assertEquals("help> ", io.readOutput());
+		io.writeInput(null);
 	}
 	@Then("^system will respond with the tag help page$")
 	public void systemWillRespondWithTheTagHelpPage() throws Throwable {
+		assertEquals("(shortcut) command - description", io.readOutput());
 		assertEquals("(b) back   - return back to home", io.readOutput());
 		assertEquals("(d) delete - delete an existing tag", io.readOutput());
 		assertEquals("(h) help   - print this screen", io.readOutput());
