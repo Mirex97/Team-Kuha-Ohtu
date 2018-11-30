@@ -27,10 +27,11 @@ public class Stepdefs {
 	public void setup() throws Throwable {
 		io = new StubIO();
 		main = new Main(io, ":memory:");
+		main.isNewUser = false;
 		exec = Executors.newSingleThreadExecutor();
 		future = exec.submit(main::run);
 		assertEquals("bookmarks v0.1.0", io.readOutput());
-		systemWillRespondWithTheHelpPage();
+		assertEquals("Type \"help\" to view command list.", io.readOutput());
 	}
 
 	@After

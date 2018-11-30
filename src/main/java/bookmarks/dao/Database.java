@@ -9,7 +9,7 @@ public class Database {
 		conn = DriverManager.getConnection(databaseAddress);
 	}
 
-	public void createNewTables() {
+	public boolean createNewTables() {
 		String entry = "CREATE TABLE entry ("
 			+ "id INTEGER PRIMARY KEY"
 			+ ");";
@@ -42,6 +42,9 @@ public class Database {
 			prof.execute(entryMetadata);
 			prof.execute(tag);
 			prof.execute(entryTag);
-		} catch (SQLException e) {}
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 }

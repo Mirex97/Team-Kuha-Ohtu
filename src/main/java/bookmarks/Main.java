@@ -13,6 +13,7 @@ import bookmarks.io.IO;
 public class Main {
 	public EntryDao entryDao;
 	public TagDao tagDao;
+	public boolean isNewUser;
 	private IO io;
 
 	public Main(IO io, String db) {
@@ -25,7 +26,7 @@ public class Main {
 			System.exit(1);
 			return;
 		}
-		database.createNewTables();
+		this.isNewUser = database.createNewTables();
 
 		tagDao = new TagDao(database);
 		EntryTagDao entryTagDao = new EntryTagDao(database, tagDao);
@@ -180,7 +181,7 @@ public class Main {
 		}
 		io.print(entry.toLongString());
 	}
-	
+
 	public void searchCommand() {
 		String query = io.readLine("Term to search: ");
 		try {
@@ -214,7 +215,8 @@ public class Main {
 		}
 	}
 
-	public void helpHomeCommand() {
+	public void printHomeHelp() {
+		io.print("(shortcut) command - description");
 		io.print("(a) add    - add a new entry");
 		io.print("(d) delete - delete an existing entry");
 		io.print("(e) edit   - edit an existing entry");
@@ -226,7 +228,27 @@ public class Main {
 		io.print("(v) view   - view an existing entry");
 	}
 
+	public void helpHomeCommand() {
+		printHomeHelp();
+
+		io.print("Type command to view more detailed help, or press enter to cancel.");
+		String comm = io.readString("help> ");
+		if (comm == null) {
+			return;
+		}
+		switch (comm.toLowerCase()) {
+			case "":
+			case "back":
+			case "return":
+			case "exit":
+			case "b":
+				return;
+		}
+		io.print("");
+	}
+
 	public void helpTagCommand() {
+		io.print("(shortcut) command - description");
 		io.print("(b) back   - return back to home");
 		io.print("(d) delete - delete an existing tag");
 		io.print("(h) help   - print this screen");
@@ -235,8 +257,11 @@ public class Main {
 	}
 
 	public void run() {
+		if (isNewUser) {
+			new Introduction(this, io).run();
+		}
 		io.print("bookmarks v0.1.0");
-		helpHomeCommand();
+		io.print("Type \"help\" to view command list.");
 		while (true) {
 			String comm = io.readString("> ");
 			if (comm == null) {
@@ -286,13 +311,18 @@ public class Main {
 				case "h":
 					helpHomeCommand();
 					break;
+				case "demo":
+				case "intro":
+				case "introduction":
+				case "i":
+					new Introduction(this, io).run();
 				default:
-					io.print("Unrecognized command");
+					io.print("Unknown command. Type \"help\" for help.");
 			}
 			io.print("");
 		}
 	}
-	
+
 	public void findTags() {
 		String query = io.readLine("Entries with tag (use %query% for substring of tag): ");
 		try {
