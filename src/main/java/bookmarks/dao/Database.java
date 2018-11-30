@@ -4,9 +4,13 @@ import java.sql.*;
 
 public class Database {
 	protected Connection conn;
+        private String databaseAddress;
+        private boolean test = false;
 
 	public Database(String databaseAddress) throws SQLException {
-		conn = DriverManager.getConnection(databaseAddress);
+                this.databaseAddress = databaseAddress;
+                conn = getConnection();
+		//conn = DriverManager.getConnection(databaseAddress);
 	}
 
 	public void createNewTables() {
@@ -44,4 +48,21 @@ public class Database {
 			prof.execute(entryTag);
 		} catch (SQLException e) {}
 	}
+        
+        public Connection getConnection() throws SQLException {
+            if (test) {
+                return DriverManager.getConnection(databaseAddress);
+            } else {
+                String dbUrl = System.getenv("JDBC_DATABASE_URL");
+                if (dbUrl != null && dbUrl.length() > 0) {
+                return DriverManager.getConnection(dbUrl);
+            }
+        }
+
+            return DriverManager.getConnection(databaseAddress);
+        }
+
+        public void setTest(boolean test) {
+           this.test = test;
+        }
 }
