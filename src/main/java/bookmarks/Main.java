@@ -40,7 +40,7 @@ public class Main {
 		String[] fields = null;
 
 		while (fields == null) {
-			type = io.readLine("Type: ");
+			type = io.readString("Type: ");
 			if (type == null) {
 				io.print("Adding cancelled");
 				return;

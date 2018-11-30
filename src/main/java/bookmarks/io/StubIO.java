@@ -67,6 +67,7 @@ public class StubIO implements IO {
 				return "Polling for input timed out";
 			}
 
+			if (line == null) return null;
                         for (String part : line.split(" ")) {
                                 wordQue.add(part);
                         }

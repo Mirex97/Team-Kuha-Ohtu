@@ -20,10 +20,17 @@ public class ConsoleIO implements IO {
 	public String readString(String prompt) {
 		if (wordQue.isEmpty()) {
 			System.out.print(prompt);
-			String line = scanner.nextLine().trim();
+
+			String line = null;
+			try {
+				line = scanner.nextLine().trim();
+			} catch (Exception e) {}
+
+			if (line == null) return null;
 			for (String part : line.split(" ")) {
 				wordQue.add(part);
 			}
+
 			return wordQue.remove();
 		} else {
 			String res = wordQue.remove();
@@ -35,7 +42,11 @@ public class ConsoleIO implements IO {
 	public String readLine(String prompt) {
 		if (wordQue.isEmpty()) {
 			System.out.print(prompt);
-			String line = scanner.nextLine().trim();
+			String line = null;
+			try {
+				line = scanner.nextLine().trim();
+			} catch (Exception e) {}
+
 			return line;
 		} else {
 			String res = "";
