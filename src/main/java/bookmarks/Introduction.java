@@ -2,6 +2,7 @@ package bookmarks;
 
 import bookmarks.io.IO;
 
+import java.util.Collections;
 import java.util.Random;
 
 public class Introduction {
@@ -41,7 +42,7 @@ public class Introduction {
 			throw new IllegalArgumentException("Text must have even number of characters");
 		}
 		int dashCount = (80 - text.length()) / 2;
-		String dashes = "-".repeat(dashCount);
+		String dashes = String.join("", Collections.nCopies(dashCount, "-"));
 		io.print(dashes + text + dashes);
 	}
 
