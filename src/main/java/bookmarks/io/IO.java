@@ -9,5 +9,5 @@ public interface IO {
 
 	String readLine(String prompt);
 
-	String readString(String prompt);
+	String readWord(String prompt);
 }

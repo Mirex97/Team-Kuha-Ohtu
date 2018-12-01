@@ -4,6 +4,7 @@ import bookmarks.dao.EntryDao;
 import bookmarks.dao.TagDao;
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
+import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
 import java.sql.SQLException;
@@ -24,8 +25,8 @@ public class Tags {
 		io.print("");
 		io.print("Type \"help\" for help.");
 		while (true) {
-			String comm = io.readString("tags> ");
-			if (comm == null) {
+			String comm = io.readWord("tags> ");
+			if (comm.equals(AbstractIO.EndOfTransmission)) {
 				return;
 			}
 			switch (comm.toLowerCase()) {

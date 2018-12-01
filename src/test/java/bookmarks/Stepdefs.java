@@ -2,6 +2,7 @@ package bookmarks;
 
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
+import bookmarks.io.AbstractIO;
 import bookmarks.ui.App;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -176,28 +177,18 @@ public class Stepdefs {
 		giveInputs(new String[]{"Title", "Author", "Podcast name", "Description", "Comment", "Tags"},
 			new String[]{title, author, podcastName, description, comment, tags});
 	}
-//        And title "No beep", author "myself", image "Good guy greg", up text "Microwaving at midnight", bottom text "Opens it with one sec left" and comment "" are given
-        
-        @When("^title \"([^\"]*)\", author \"([^\"]*)\", image \"([^\"]*)\", up text \"([^\"]*)\", bottom text \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+
+	@When("^title \"([^\"]*)\", author \"([^\"]*)\", image \"([^\"]*)\", up text \"([^\"]*)\", bottom text \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void titleAuthorMemeNameDescriptionCommentAndTagsAreGiven(String title, String author, String image, String up_text, String bottom_text, String comment, String tags) throws Throwable {
 		giveInputs(new String[]{"Title", "Author", "Image", "Up text", "Bottom text", "Comment", "Tags"},
 			new String[]{title, author, image, up_text, bottom_text, comment, tags});
 	}
-        
-//        And title "Article", author "auto-thor", paper "The good one", description "Mildly wild", comments "Keep an eye on this" and tags "" are given
-                @When("^title \"([^\"]*)\", author \"([^\"]*)\", paper \"([^\"]*)\", description \"([^\"]*)\", comments \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+
+	@When("^title \"([^\"]*)\", author \"([^\"]*)\", paper \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void titleAuthorArticleNameDescriptionCommentAndTagsAreGiven(String title, String author, String paper, String description, String comment, String tags) throws Throwable {
 		giveInputs(new String[]{"Title", "Author", "Paper", "Description", "Comment", "Tags"},
 			new String[]{title, author, paper, description, comment, tags});
 	}
-        
-        @When("^title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comments \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
-	public void titleAuthorBookDescriptionCommentAndTagsAreGiven(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
-		giveInputs(new String[]{"Title", "Author", "ISBN", "Description", "Comment", "Tags"},
-			new String[]{title, author, isbn, description, comment, tags});
-	}
-        
-        
 
 	private void giveInputs(String[] keys, String[] values) {
 		assertEquals(keys.length, values.length);
@@ -224,8 +215,8 @@ public class Stepdefs {
 		Entry entry = checkCommonMeta("blog", id, title, author, description, comment, tags);
 		assertEquals(link, entry.getMetadata().get("Link"));
 	}
-        
-        @Then("^meme entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", image \"([^\"]*)\", up text \"([^\"]*)\", bottom text \"([^\"]*)\" and comment \"([^\"]*)\"$")
+
+	@Then("^meme entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", image \"([^\"]*)\", up text \"([^\"]*)\", bottom text \"([^\"]*)\" and comment \"([^\"]*)\"$")
 	public void memeEntryIDHasTitleAuthorLinkDescriptionCommentAndTags(int id, String title, String author, String image, String up_text, String bottom_text, String comment) throws Throwable {
 		Entry entry = checkCommonMeta("meme", id, title, author, up_text, bottom_text, comment);
 		assertEquals(image, entry.getMetadata().get("Image"));
@@ -256,6 +247,7 @@ public class Stepdefs {
 		assertEquals("Term to search: ", io.readOutput());
 		io.writeInput(query);
 	}
+
 	@When("^tag find query \"([^\"]*)\" is given$")
 	public void tagFindQueryIsGiven(String query) throws Throwable {
 		assertEquals("Tag to search: ", io.readOutput());
@@ -286,8 +278,9 @@ public class Stepdefs {
 		assertEquals("(v) view   - view an existing entry", io.readOutput());
 		assertEquals("Type command to view more detailed help, or press enter to cancel.", io.readOutput());
 		assertEquals("help> ", io.readOutput());
-		io.writeInput(null);
+		io.writeInput(AbstractIO.EndOfTransmission);
 	}
+
 	@Then("^system will respond with the tag help page$")
 	public void systemWillRespondWithTheTagHelpPage() throws Throwable {
 		assertEquals("(shortcut) command - description", io.readOutput());
@@ -300,7 +293,6 @@ public class Stepdefs {
 
 	@When("CTRL\\+D is pressed")
 	public void ctrlDIsPressed() {
-		// Actual CTRL+D is obviously only applicable in ConsoleIO, so we emulate it by sending null to the app.
-		io.writeInput(null);
+		io.writeInput(AbstractIO.EndOfTransmission);
 	}
 }

@@ -23,7 +23,7 @@ public class ConsoleIO extends AbstractIO {
 		} catch (NoSuchElementException e) {
 			print("");
 			scanner = new Scanner(System.in);
-			return null;
+			return EndOfTransmission;
 		}
 	}
 }

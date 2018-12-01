@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import bookmarks.dao.*;
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
+import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
 public class App {
@@ -43,8 +44,8 @@ public class App {
 		String[] fields = null;
 
 		while (fields == null) {
-			type = io.readString("Type: ");
-			if (type == null) {
+			type = io.readWord("Type: ");
+			if (type.equals(AbstractIO.EndOfTransmission)) {
 				io.print("Adding cancelled");
 				return;
 			}
@@ -60,7 +61,7 @@ public class App {
 		}
 		metadata.put("type", type);
 
-		if (!readFields(metadata, fields)) {
+		if (readFields(metadata, fields)) {
 			io.print("Adding cancelled");
 			return;
 		}
@@ -79,7 +80,7 @@ public class App {
 			return;
 		}
 
-		if (!readFields(entry.getMetadata(), entry.getFields())) {
+		if (readFields(entry.getMetadata(), entry.getFields())) {
 			io.print("Editing cancelled");
 			return;
 		}
@@ -107,14 +108,14 @@ public class App {
 			String label = field.substring(0, 1).toUpperCase() + field.substring(1);
 			String currentVal = metadata.get(field);
 			String val = io.readLine(String.format(currentVal == null ? "%s: " : "%s [%s]: ", label, currentVal));
-			if (val == null) {
-				return false;
+			if (val.equals(AbstractIO.EndOfTransmission)) {
+				return true;
 			}
 			if (currentVal == null || !val.isEmpty()) {
 				metadata.put(field, val);
 			}
 		}
-		return true;
+		return false;
 	}
 
 	private Set<Tag> readTags(Set<Tag> existingTags) {
@@ -122,7 +123,7 @@ public class App {
 			.map(Tag::getName)
 			.collect(Collectors.joining(", ")) : null;
 		String newTags = io.readLine(String.format(existingTags != null ? "Tags [%s]: " : "Tags: ", existingTagsStr));
-		if (newTags == null) {
+		if (newTags.equals(AbstractIO.EndOfTransmission)) {
 			return null;
 		}
 		if (existingTags == null || !newTags.isEmpty()) {
@@ -234,8 +235,8 @@ public class App {
 		printHelp();
 
 		io.print("Type command to view more detailed help, or press enter to cancel.");
-		String comm = io.readString("help> ");
-		if (comm == null) {
+		String comm = io.readWord("help> ");
+		if (comm.equals(AbstractIO.EndOfTransmission)) {
 			return;
 		}
 		switch (comm.toLowerCase()) {
@@ -256,8 +257,8 @@ public class App {
 		io.print("bookmarks v0.1.0");
 		io.print("Type \"help\" for help.");
 		while (true) {
-			String comm = io.readString("> ");
-			if (comm == null) {
+			String comm = io.readWord("> ");
+			if (comm.equals(AbstractIO.EndOfTransmission)) {
 				io.print("Bye!");
 				return;
 			}

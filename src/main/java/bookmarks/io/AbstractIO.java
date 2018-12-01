@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public abstract class AbstractIO implements IO {
+	// CTRL+D aka End of Transmission, char code 4. Used as a shortcut for exit.
+	public static final String EndOfTransmission = new String(new char[]{4});
 	Queue<String> wordQueue = new LinkedList<>();
 
 	@Override
@@ -14,10 +16,10 @@ public abstract class AbstractIO implements IO {
 
 	@Override
 	public int readInt(String prompt) {
-		String str = readString(prompt);
+		String str = readWord(prompt);
 		try {
 			return Integer.parseInt(str);
-		} catch (NumberFormatException | NullPointerException e) {
+		} catch (NumberFormatException e) {
 			return 0;
 		}
 	}
@@ -35,14 +37,10 @@ public abstract class AbstractIO implements IO {
 	}
 
 	@Override
-	public String readString(String prompt) {
+	public String readWord(String prompt) {
 		if (wordQueue.isEmpty()) {
 			printPrompt(prompt);
-			String line = readLine();
-			if (line == null) {
-				return null;
-			}
-			Collections.addAll(wordQueue, line.split(" "));
+			Collections.addAll(wordQueue, readLine().split(" "));
 			return wordQueue.remove();
 		}
 		String res = wordQueue.remove();

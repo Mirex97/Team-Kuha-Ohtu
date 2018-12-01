@@ -1,5 +1,6 @@
 package bookmarks.ui;
 
+import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
 import java.util.Collections;
@@ -34,7 +35,7 @@ public class Introduction {
 	}
 
 	private boolean readPause() {
-		return io.readLine("**") == null;
+		return io.readLine("**").equals(AbstractIO.EndOfTransmission);
 	}
 
 	private void lineText(String text) {

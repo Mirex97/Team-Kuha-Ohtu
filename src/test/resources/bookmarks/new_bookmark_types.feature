@@ -25,16 +25,9 @@ Feature: User can add a new bookmark of a different type
 		And type "meme" is given
 		And title "No beep", author "myself", image "Good guy greg", up text "Microwaving at midnight", bottom text "Opens it with one sec left", comment "" and tags "" are given
 		Then system will respond with "Entry created"
-#		And meme entry ID 1 has title "No beep", author "myself", image "Good guy greg", up text "Microwaving at midnight", bottom text "Opens it with one sec left" and comment ""
 
         Scenario: User can add an article bookmark
 		When command "add" is selected
 		And type "article" is given
-		And title "Article", author "auto-thor", paper "The good one", description "Mildly wild", comments "Keep an eye on this" and tags "" are given
-		Then system will respond with "Entry created"
-
-        Scenario: User can add an article bookmark
-		When command "add" is selected
-		And type "book" is given
-		And title "Book", author "book-t", isbn "15617", description "Wild", comments "Cant keep an eye open on this" and tags "" are given
+		And title "Article", author "auto-thor", paper "The good one", description "Mildly wild", comment "Keep an eye on this" and tags "" are given
 		Then system will respond with "Entry created"

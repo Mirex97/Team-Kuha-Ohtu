@@ -7,13 +7,8 @@ import java.util.concurrent.TimeUnit;
 public class StubIO extends AbstractIO {
 	private final LinkedBlockingQueue<String> input = new LinkedBlockingQueue<>();
 	private final LinkedBlockingQueue<String> output = new LinkedBlockingQueue<>();
-	private final String nullStr = new String(new char[]{0});
-
 
 	public void writeInput(String input) {
-		if (input == null) {
-			input = nullStr;
-		}
 		this.input.add(input);
 	}
 
@@ -26,8 +21,6 @@ public class StubIO extends AbstractIO {
 			}
 			if (s == null) {
 				throw new RuntimeException("Polling for input timed out");
-			} else if (s.equals(nullStr)) {
-				return null;
 			}
 			return s;
 		} catch (InterruptedException e) {
@@ -42,17 +35,14 @@ public class StubIO extends AbstractIO {
 
 	@Override
 	public String readLine() {
-		String val;
 		try {
-			val = input.poll(500, TimeUnit.MILLISECONDS);
+			String val = input.poll(500, TimeUnit.MILLISECONDS);
+			if (val == null) {
+				throw new RuntimeException("Polling for input timed out");
+			}
+			return val;
 		} catch (InterruptedException e) {
 			throw new RuntimeException("Polling for input interrupted");
 		}
-		if (val == null) {
-			throw new RuntimeException("Polling for input timed out");
-		} else if (val.equals(nullStr)) {
-			return null;
-		}
-		return val;
 	}
 }
