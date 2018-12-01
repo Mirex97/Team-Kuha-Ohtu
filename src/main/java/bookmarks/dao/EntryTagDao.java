@@ -7,7 +7,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class EntryTagDao {
 	protected Database db;
@@ -39,12 +41,18 @@ public class EntryTagDao {
 
 	protected void insert(Entry e) throws SQLException {
 		PreparedStatement stmt = db.conn.prepareStatement("INSERT INTO entry_tag (entry_id, tag_id) VALUES (?, ?)");
-		for (Tag t : e.getTags()) {
-			Tag returnT = tagDao.save(t);
+		// Saving new tags updates the ID, so we recreate the tag set to make
+		// sure the tags are in the correct position inside the set.
+		Set<Tag> oldTags = e.getTags();
+		Set<Tag> newTags = new HashSet<>();
+		for (Tag t : oldTags) {
+			t = tagDao.save(t);
 			stmt.setInt(1, e.getID());
-			stmt.setInt(2, returnT.getID());
+			stmt.setInt(2, t.getID());
 			stmt.addBatch();
+			newTags.add(t);
 		}
+		e.setTags(newTags);
 		stmt.executeBatch();
 		stmt.close();
 	}

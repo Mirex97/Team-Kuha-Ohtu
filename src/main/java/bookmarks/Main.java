@@ -324,7 +324,7 @@ public class Main {
 	}
 
 	public void findTags() {
-		String query = io.readLine("Entries with tag (use %query% for substring of tag): ");
+		String query = io.readLine("Tag to search: ");
 		try {
 			List<Entry> entries = entryDao.findWithTag(query);
 			if (entries.isEmpty()) {

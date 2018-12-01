@@ -25,7 +25,7 @@ public class Entry implements IDObject {
 		typeShortcuts.put("v", "video");
 		typeShortcuts.put("p", "podcast");
 		typeShortcuts.put("m", "meme");
-		
+
 		typeShortcuts.put("book", "book");
 		typeShortcuts.put("article", "article");
 		typeShortcuts.put("blog", "blog");
@@ -33,16 +33,18 @@ public class Entry implements IDObject {
 		typeShortcuts.put("podcast", "podcast");
 		typeShortcuts.put("meme", "meme");
 	}
+
 	public static String[] getFieldsOfType(String type) {
 		return typeFields.get(type);
 	}
+
 	public static String unshortenType(String type) {
 		return typeShortcuts.get(type);
 	}
+
 	public static Set<String> getTypes() {
 		return typeFields.keySet();
 	}
-
 
 	public Entry(int id) {
 		this(id, new HashSet<>(), new HashMap<>());
@@ -115,5 +117,25 @@ public class Entry implements IDObject {
 			str.append(String.format("\nTags: %s", tags));
 		}
 		return str.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Entry entry = (Entry) o;
+		return id == entry.id &&
+			tags.equals(entry.tags) &&
+			metadata.equals(entry.metadata);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("Entry{id=%d, tags=%s, metadata=%s}", id, tags, metadata);
+	}
+
+	@Override
+	public int hashCode() {
+		return id;
 	}
 }

@@ -93,6 +93,8 @@ public class Introduction {
 	}
 
 	public void run() {
+		// Maximum length of prints (80 characters):
+		//.print("                                                                                ");
 		io.print("Welcome to bookmarks v0.1.0!");
 		io.print("Bookmarks can keep a list of things you want to read, listen, watch or simply");
 		io.print("remember later.");

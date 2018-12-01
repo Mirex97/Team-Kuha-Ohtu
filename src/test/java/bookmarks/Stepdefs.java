@@ -244,7 +244,7 @@ public class Stepdefs {
 	}
 	@When("^tag find query \"([^\"]*)\" is given$")
 	public void tagFindQueryIsGiven(String query) throws Throwable {
-		assertEquals("Entries with tag (use %query% for substring of tag): ", io.readOutput());
+		assertEquals("Tag to search: ", io.readOutput());
 		io.writeInput(query);
 	}
 

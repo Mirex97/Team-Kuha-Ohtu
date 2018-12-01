@@ -95,8 +95,12 @@ public class EntryDao extends AbstractDao<Entry, Integer> {
 	}
 
 	protected PreparedStatement getFindWithTagQuery(String query) throws SQLException {
-		PreparedStatement stmt = db.conn.prepareStatement("SELECT DISTINCT entry_metadata.entry_id AS id FROM entry_metadata LEFT JOIN entry_tag ON entry_tag.entry_id IS entry_metadata.entry_id LEFT JOIN tag ON tag.id IS entry_tag.tag_id WHERE tag.name LIKE ?");
-		stmt.setString(1, query);
+		PreparedStatement stmt = db.conn.prepareStatement(
+			"SELECT DISTINCT entry.id FROM entry " +
+			"LEFT JOIN entry_tag ON entry_tag.entry_id = entry.id " +
+			"LEFT JOIN tag ON tag.id = entry_tag.tag_id " +
+			"WHERE tag.name LIKE ?");
+		stmt.setString(1, "%" + query + "%");
 		return stmt;
 	}
 

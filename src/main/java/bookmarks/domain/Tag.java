@@ -39,4 +39,14 @@ public class Tag implements IDObject {
 	public String toString() {
 		return String.format("%s #%d: %s", type, id, name);
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Tag tag = (Tag) o;
+		return id == tag.id &&
+			type.equals(tag.type) &&
+			name.equals(tag.name);
+	}
 }
