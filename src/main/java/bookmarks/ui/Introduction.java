@@ -1,4 +1,4 @@
-package bookmarks;
+package bookmarks.ui;
 
 import bookmarks.io.IO;
 
@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.Random;
 
 public class Introduction {
-	Main main;
+	App app;
 	IO io;
 
-	public Introduction(Main main, IO io) {
-		this.main = main;
+	public Introduction(App app, IO io) {
+		this.app = app;
 		this.io = io;
 	}
 
@@ -140,7 +140,7 @@ public class Introduction {
 		if (readPause()) return;
 		io.print("");
 		io.print("Here's the list of commands:");
-		main.printHomeHelp();
+		app.printHelp();
 		io.print("");
 		io.print("You can type \"help\" to bring up the list again at any time. The help command");
 		io.print("will also let you view more detailed descriptions of commands.");

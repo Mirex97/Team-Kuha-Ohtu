@@ -2,8 +2,10 @@ package bookmarks;
 
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
+import bookmarks.ui.App;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -19,24 +21,29 @@ import java.util.stream.Collectors;
 public class Stepdefs {
 
 	StubIO io;
-	Main main;
+	App app;
 	ExecutorService exec;
 	Future future;
 
 	@Before
 	public void setup() throws Throwable {
 		io = new StubIO();
-		main = new Main(io, ":memory:");
-		main.isNewUser = false;
+		app = new App(io, ":memory:");
+		app.isNewUser = false;
 		exec = Executors.newSingleThreadExecutor();
-		future = exec.submit(main::run);
+		future = exec.submit(app::run);
 		assertEquals("bookmarks v0.1.0", io.readOutput());
-		assertEquals("Type \"help\" to view command list.", io.readOutput());
+		assertEquals("Type \"help\" for help.", io.readOutput());
 	}
 
 	@After
 	public void cleanup() throws Throwable {
-		assertEquals("Failed to shut down task cleanly", "> ", io.readOutput());
+		String output = io.readOutput();
+		if (output.equals("tags> ")) {
+			io.writeInput("return");
+			output = io.readOutput();
+		}
+		assertEquals("Failed to shut down task cleanly", "> ", output);
 		io.writeInput("quit");
 		assertEquals("Failed to shut down task cleanly", "Bye!", io.readOutput());
 		future.get(3, TimeUnit.SECONDS);
@@ -49,7 +56,7 @@ public class Stepdefs {
 		metadata.put("type", "book");
 		metadata.put("Title", title);
 		metadata.put("Author", author);
-		main.entryDao.save(new Entry(new HashSet<>(), metadata));
+		app.entryDao.save(new Entry(new HashSet<>(), metadata));
 	}
 
 	@Given("^the book \"([^\"]*)\" by \"([^\"]*)\" with ISBN \"([^\"]*)\", description \"([^\"]*)\" and tags \"([^\"]*)\" has been added$")
@@ -63,7 +70,14 @@ public class Stepdefs {
 		Set<Tag> tagSet = Arrays.stream(tags.split(","))
 			.map(t -> new Tag("tag", t.trim()))
 			.collect(Collectors.toSet());
-		main.entryDao.save(new Entry(tagSet, metadata));
+		app.entryDao.save(new Entry(tagSet, metadata));
+	}
+
+	@Given("^user has entered tag section$")
+	public void userHasEnteredTagSection() {
+		assertEquals("> ", io.readOutput());
+		io.writeInput("tags");
+		assertEquals("Type \"help\" for help.", io.readOutput());
 	}
 
 	@When("^command \"([^\"]*)\" is selected$")
@@ -71,7 +85,7 @@ public class Stepdefs {
 		selectCommand(command);
 	}
 
-	@When("^tag section command \"([^\"]*)\" is selected$")
+	@When("^tag command \"([^\"]*)\" is selected$")
 	public void when_tag_section_command_is_selected(String command) throws Throwable {
 		selectTagCommand(command);
 	}
@@ -218,7 +232,7 @@ public class Stepdefs {
 	}
 
 	private Entry checkCommonMeta(String type, int id, String title, String author, String description, String comment, String tags) throws Throwable {
-		Entry entry = main.entryDao.findOne(id);
+		Entry entry = app.entryDao.findOne(id);
 		Map<String, String> metadata = entry.getMetadata();
 
 		assertEquals(type, metadata.get("type"));

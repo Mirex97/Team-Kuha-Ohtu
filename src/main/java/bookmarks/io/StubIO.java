@@ -20,18 +20,18 @@ public class StubIO extends AbstractIO {
 	public String readOutput() {
 		try {
 			String s = "";
+			// We don't want to handle empty lines in the tests, so skip them here.
 			while (s != null && s.isEmpty()) {
 				s = output.poll(500, TimeUnit.MILLISECONDS);
 			}
 			if (s == null) {
-				throw new InterruptedException();
-			}
-			if (s.equals(nullStr)) {
+				throw new RuntimeException("Polling for input timed out");
+			} else if (s.equals(nullStr)) {
 				return null;
 			}
 			return s;
 		} catch (InterruptedException e) {
-			throw new RuntimeException("Reading app output timed out");
+			throw new RuntimeException("Reading app output interrupted");
 		}
 	}
 
@@ -40,36 +40,19 @@ public class StubIO extends AbstractIO {
 		Collections.addAll(output, toPrint.split("\n"));
 	}
 
-	private String readInput() throws InterruptedException {
-		String val = input.poll(500, TimeUnit.MILLISECONDS);
+	@Override
+	public String readLine() {
+		String val;
+		try {
+			val = input.poll(500, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			throw new RuntimeException("Polling for input interrupted");
+		}
 		if (val == null) {
-			throw new InterruptedException();
+			throw new RuntimeException("Polling for input timed out");
 		} else if (val.equals(nullStr)) {
 			return null;
 		}
 		return val;
-	}
-
-	@Override
-	public String readString() {
-		String line;
-		try {
-			line = readInput();
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Polling for input timed out");
-		}
-
-		if (line == null) return null;
-		Collections.addAll(wordQueue, line.split(" "));
-		return wordQueue.remove();
-	}
-
-	@Override
-	public String readLine() {
-		try {
-			return readInput();
-		} catch (InterruptedException e) {
-			throw new RuntimeException("Polling for input timed out");
-		}
 	}
 }

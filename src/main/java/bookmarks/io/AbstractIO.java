@@ -1,5 +1,6 @@
 package bookmarks.io;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -37,7 +38,12 @@ public abstract class AbstractIO implements IO {
 	public String readString(String prompt) {
 		if (wordQueue.isEmpty()) {
 			printPrompt(prompt);
-			return readString();
+			String line = readLine();
+			if (line == null) {
+				return null;
+			}
+			Collections.addAll(wordQueue, line.split(" "));
+			return wordQueue.remove();
 		}
 		String res = wordQueue.remove();
 		print(prompt + res);
@@ -47,6 +53,6 @@ public abstract class AbstractIO implements IO {
 	void printPrompt(String prompt) {
 		print(prompt);
 	}
+
 	abstract String readLine();
-	abstract String readString();
 }
