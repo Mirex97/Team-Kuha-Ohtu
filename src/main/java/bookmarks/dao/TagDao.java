@@ -31,7 +31,7 @@ public class TagDao extends AbstractDao<Tag, Integer> {
 
 	@Override
 	protected PreparedStatement getSearchQuery(String query) throws SQLException {
-		PreparedStatement stmt = db.conn.prepareStatement("SELECT DISTINCT id FROM tag WHERE `name` LIKE ?");
+		PreparedStatement stmt = db.conn.prepareStatement("SELECT DISTINCT * FROM tag WHERE `name` LIKE ?");
 		stmt.setString(1, "%" + query + "%");
 		return stmt;
 	}

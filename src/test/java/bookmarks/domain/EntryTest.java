@@ -42,7 +42,6 @@ public class EntryTest {
 	
 	@Test
 	public void toStringTest() {
-		System.out.println(entry);
 		assertEquals("Wasn't the same!", "Entry{id=1, read=0, tags=[], metadata={}}", entry.toString());
 	}
 	
