@@ -13,3 +13,8 @@ Feature: User can delete existing bookmarks
 		When command "delete" is selected
 		And book ID 1 and confirmation "n" to delete is given
 		Then system will respond with "Deletion cancelled"
+
+        Scenario: User gives negative integer on entry to delete
+                When command "delete" is selected
+                And book ID "-1" to delete is given
+                Then system will respond with "Invalid entry ID"

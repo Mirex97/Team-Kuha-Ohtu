@@ -128,6 +128,18 @@ public class Stepdefs {
 		assertEquals("ID of entry to edit: ", io.readOutput());
 		io.writeInput(Integer.toString(id));
 	}
+        
+        @When("^book ID \"([^\"]*)\" to edit is given$")
+	public void negativeBookIDToEditIsGiven(int id) {
+		assertEquals("ID of entry to edit: ", io.readOutput());
+		io.writeInput(Integer.toString(id));
+	}
+        
+        @When("^book ID \"([^\"]*)\" to delete is given$")
+	public void negativeBookIDToDeleteIsGiven(int id) {
+		assertEquals("ID of entry to delete: ", io.readOutput());
+		io.writeInput(Integer.toString(id));
+	}
 
 	@When("^book ID (\\d+) and confirmation \"([^\"]*)\" to delete is given$")
 	public void bookIDToDeleteIsGiven(int id, String confirmation) {
