@@ -36,7 +36,9 @@ public class EntryMetadataDao {
 	}
 
 	protected void insert(Entry e) throws SQLException {
-		PreparedStatement stmt = db.conn.prepareStatement("INSERT INTO entry_metadata (entry_id, key, value) VALUES (?, ?, ?)");
+		PreparedStatement stmt = db.conn.prepareStatement(
+			"INSERT INTO entry_metadata (entry_id, key, value) " +
+				"VALUES (?, ?, ?)");
 		for (Map.Entry<String, String> meta : e.getMetadata().entrySet()) {
 			stmt.setInt(1, e.getID());
 			stmt.setString(2, meta.getKey());

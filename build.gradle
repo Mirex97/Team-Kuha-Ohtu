@@ -4,7 +4,6 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'jacoco'
-apply plugin: 'checkstyle'
 
 mainClassName = 'bookmarks.Main'
 
@@ -28,33 +27,29 @@ jacoco {
 }
 
 jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled true
-    }
+	reports {
+		xml.enabled true
+		html.enabled true
+	}
 
-    afterEvaluate {
-        classDirectories = files(classDirectories.files.collect {
-            fileTree(
-                    dir: it,
-                    exclude: [
-                            '**/io/**',
-														'**/ui/Introduction.*'
-                    ]
-            )
-        })
-    }
+	afterEvaluate {
+		classDirectories = files(classDirectories.files.collect {
+			fileTree(
+				dir: it,
+				exclude: [
+					'**/io/**',
+					'**/ui/Introduction.*'
+				]
+			)
+		})
+	}
 }
 
 dependencies {
-//	compile 'org.slf4j:slf4j-api:1.7.21'
 	compile group: 'org.xerial', name: 'sqlite-jdbc', version: sqliteVersion
 	testCompile 'info.cukes:cucumber-java:' + cucumberVersion
 	testCompile 'info.cukes:cucumber-junit:' + cucumberVersion
 	testCompile 'junit:junit:' + junitVersion
-//	testCompile "org.testfx:testfx-core:4.0.+"
-//	testCompile "org.testfx:testfx-junit:4.0.+"
-//	testCompile "org.testfx:openjfx-monocle:8u76-b04"
 }
 
 jar {
