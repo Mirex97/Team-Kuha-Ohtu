@@ -38,7 +38,8 @@ jacocoTestReport {
             fileTree(
                     dir: it,
                     exclude: [
-                            '**/io/**'
+                            '**/io/**',
+														'**/ui/Introduction.java'
                     ]
             )
         })
