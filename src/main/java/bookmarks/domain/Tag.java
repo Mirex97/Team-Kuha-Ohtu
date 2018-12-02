@@ -22,6 +22,16 @@ public class Tag implements IDObject {
 		this.id = id;
 	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
+
 	public String getType() {
 		return type;
 	}
