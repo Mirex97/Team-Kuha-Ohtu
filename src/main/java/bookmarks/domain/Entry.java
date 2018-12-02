@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 public class Entry implements IDObject {
 	private int id;
+	private int read;
 	private Set<Tag> tags;
 	private Map<String, String> metadata;
 
@@ -56,6 +57,7 @@ public class Entry implements IDObject {
 
 	public Entry(int id, Set<Tag> tags, Map<String, String> metadata) {
 		this.id = id;
+		this.read = 0;
 		this.tags = tags;
 		this.metadata = metadata;
 	}
@@ -66,6 +68,23 @@ public class Entry implements IDObject {
 
 	public void setID(int id) {
 		this.id = id;
+	}
+
+	public int getRead() {
+		return read;
+	}
+	
+	public String isRead() {
+		if (read == 1) {
+			return "True";
+		} else {
+			return "False";
+		}
+	}
+	
+
+	public void setRead(int read) {
+		this.read = read;
 	}
 
 	public Set<Tag> getTags() {
@@ -97,7 +116,7 @@ public class Entry implements IDObject {
 	}
 
 	public String toShortString() {
-		return String.format("%d. \"%s\" by %s", id, metadata.get("Title"), metadata.get("Author"));
+		return String.format("%d. %s: \"%s\" by %s", id, this.getType(), metadata.get("Title"), metadata.get("Author"));
 	}
 
 	public String toLongString() {
@@ -111,11 +130,12 @@ public class Entry implements IDObject {
 			if (val != null && !val.isEmpty()) {
 				str.append(String.format("\n%s: %s", field, val));
 			}
-		}
+		}		
 		String tags = getTags().stream().filter(t -> t.getType().equals("tag")).map(Tag::getName).collect(Collectors.joining(", "));
 		if (!tags.isEmpty()) {
 			str.append(String.format("\nTags: %s", tags));
 		}
+		str.append(String.format("\n\n%s: %s", "Is read? ", isRead()));
 		return str.toString();
 	}
 
@@ -131,7 +151,7 @@ public class Entry implements IDObject {
 
 	@Override
 	public String toString() {
-		return String.format("Entry{id=%d, tags=%s, metadata=%s}", id, tags, metadata);
+		return String.format("Entry{id=%d, read=%d, tags=%s, metadata=%s}", id, read, tags, metadata);
 	}
 
 	@Override

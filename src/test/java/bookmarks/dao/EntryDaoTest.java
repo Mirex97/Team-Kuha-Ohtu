@@ -74,7 +74,7 @@ public class EntryDaoTest {
 
 	@Test
 	public void findAllEmpty() throws SQLException {
-		assertTrue(entryDao.findAll().isEmpty());
+		assertTrue(entryDao.findAll("").isEmpty());
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class EntryDaoTest {
 		Entry e2 = create();
 		Entry e3 = create();
 
-		List<Entry> all = entryDao.findAll();
+		List<Entry> all = entryDao.findAll("");
 
 		assertEquals(3, all.size());
 		assertTrue(all.contains(e1));

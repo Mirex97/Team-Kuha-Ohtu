@@ -7,11 +7,16 @@ import java.util.concurrent.TimeUnit;
 public class StubIO extends AbstractIO {
 	private final LinkedBlockingQueue<String> input = new LinkedBlockingQueue<>();
 	private final LinkedBlockingQueue<String> output = new LinkedBlockingQueue<>();
-
+	
+	
 	public void writeInput(String input) {
 		this.input.add(input);
 	}
 
+	public boolean hasOutput() {
+		return output.isEmpty();
+	}
+	
 	public String readOutput() {
 		try {
 			String s = "";

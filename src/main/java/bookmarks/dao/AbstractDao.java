@@ -57,7 +57,7 @@ public abstract class AbstractDao<T extends IDObject, K> implements Dao<T, K> {
 	}
 
 	@Override
-	public List<T> findAll() throws SQLException {
+	public List<T> findAll(String mode) throws SQLException {
 		PreparedStatement stmt = getFindAllQuery();
 		ResultSet rs = stmt.executeQuery();
 		List<T> items = read(rs);

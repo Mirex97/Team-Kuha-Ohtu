@@ -11,6 +11,7 @@ import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
 public class App {
+
 	public EntryDao entryDao;
 	public TagDao tagDao;
 	public boolean isNewUser;
@@ -183,6 +184,32 @@ public class App {
 			return;
 		}
 		io.print(entry.toLongString());
+		io.print("");
+		String conf = "";
+		boolean mark = false;
+		if (entry.getRead() == 1) {
+			
+			conf = io.readLine("Want to mark it as unread [y/N]? ");
+		} else {
+			mark = true;
+			conf = io.readLine("Want to mark it as read [y/N]? ");
+		}
+		
+		if (!conf.startsWith("y")) {
+			return;
+		}
+		try {
+			entryDao.markAsRead(entry.getID());
+			if (mark) {
+				io.print("Marked!");
+			} else {
+				io.print("Unmarked!");
+			}
+		} catch(Exception e) {
+			io.print("Could not mark!");
+			e.printStackTrace();
+			return;
+		}
 	}
 
 	public void search() {
@@ -203,11 +230,23 @@ public class App {
 		}
 	}
 
-	public void list() {
+	public void list(String args) {
 		try {
-			List<Entry> entries = entryDao.findAll();
+			List<Entry> entries = null;
+			if (args.equals("unread")) {
+				entries = entryDao.findAll("unread");
+			} else {
+				entries = entryDao.findAll("");	
+			}
+			
 			if (entries.isEmpty()) {
 				io.print("No entries :(");
+			} else {
+				if (args.equals("unread")) {
+					io.print("\nListing unread entries...");
+				} else {
+					io.print("\nListing entries...");
+				}
 			}
 			for (Entry entry : entries) {
 				io.print(entry.toShortString());
@@ -287,10 +326,18 @@ public class App {
 				case "v":
 					view();
 					break;
+				case "list-unread":
+				case "list-u":
+				case "ls-unread":
+				case "ls-u":
+				case "l-unread":
+				case "l-u":
+					list("unread");
+					break;
 				case "list":
 				case "ls":
 				case "l":
-					list();
+					list("");
 					break;
 				case "help":
 				case "h":

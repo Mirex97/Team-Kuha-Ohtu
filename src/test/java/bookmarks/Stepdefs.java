@@ -135,6 +135,7 @@ public class Stepdefs {
 		io.writeInput(Integer.toString(id));
 
 		assertTrue(io.readOutput().startsWith("Entry " + id));
+		assertEquals("Is read? : False", io.readOutput());
 		assertEquals("Are you sure you want to delete the entry [y/N]? ", io.readOutput());
 		io.writeInput(confirmation);
 	}
@@ -240,6 +241,11 @@ public class Stepdefs {
 			}
 		}
 		return entry;
+	}
+	
+	@When("^user types \"([^\"]*)\"$")
+	public void confirmationIsGiven(String conf) throws Throwable {
+		io.writeInput(conf);
 	}
 
 	@When("^search query \"([^\"]*)\" is given$")

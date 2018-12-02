@@ -5,4 +5,4 @@ Feature: User can search tags
 		When tag command "find" is selected
 		And tag find query "taggies" is given
 		Then system will respond with "1 match"
-		And system will respond with '1. "Le book" by the le book author'
+		And system will respond with '1. book: "Le book" by the le book author'

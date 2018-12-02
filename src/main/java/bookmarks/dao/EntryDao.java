@@ -23,9 +23,30 @@ public class EntryDao extends AbstractDao<Entry, Integer> {
 
 	protected Entry readOne(ResultSet rs) throws SQLException {
 		Entry e = new Entry(rs.getInt("id"));
+		e.setRead(rs.getInt("read"));
 		e.setTags(entryTagDao.find(e));
 		e.setMetadata(entryMetadataDao.find(e));
 		return e;
+	}
+
+	@Override
+	public List<Entry> findAll(String mode) throws SQLException {
+		PreparedStatement stmt = null;
+		if (mode.equals("unread")) {
+			stmt = getFindAllUnreadQuery();
+		} else {
+			stmt = getFindAllQuery();	
+		}
+		
+		ResultSet rs = stmt.executeQuery();
+		List<Entry> items = read(rs);
+		stmt.close();
+		return items;
+	}
+
+	protected PreparedStatement getFindAllUnreadQuery() throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("SELECT entry_id AS id, read FROM entry_metadata, entry WHERE key IS \"type\" AND read IS 0 AND entry_metadata.entry_id IS entry.id ORDER BY value");
+		return stmt;
 	}
 
 	@Override
@@ -42,7 +63,7 @@ public class EntryDao extends AbstractDao<Entry, Integer> {
 
 	@Override
 	protected PreparedStatement getSearchQuery(String query) throws SQLException {
-		PreparedStatement stmt = db.conn.prepareStatement("SELECT DISTINCT entry_id AS id FROM entry_metadata WHERE value LIKE ?");
+		PreparedStatement stmt = db.conn.prepareStatement("SELECT DISTINCT entry_id AS id, read FROM entry, entry_metadata WHERE value LIKE ? AND entry_id IS entry.id");
 		stmt.setString(1, "%" + query + "%");
 		return stmt;
 	}
@@ -60,9 +81,11 @@ public class EntryDao extends AbstractDao<Entry, Integer> {
 	}
 
 	@Override
-	protected PreparedStatement getUpdateQuery(Entry object) {
-		// update() is overridden so this is not used.
-		return null;
+	protected PreparedStatement getUpdateQuery(Entry object) throws SQLException {
+		PreparedStatement stmt = db.conn.prepareStatement("UPDATE entry SET read=? WHERE id IS ?");
+		stmt.setInt(1, object.getRead());
+		stmt.setInt(2, object.getID());
+		return stmt;
 	}
 
 	@Override
@@ -96,12 +119,26 @@ public class EntryDao extends AbstractDao<Entry, Integer> {
 
 	protected PreparedStatement getFindWithTagQuery(String query) throws SQLException {
 		PreparedStatement stmt = db.conn.prepareStatement(
-			"SELECT DISTINCT entry.id FROM entry " +
-			"LEFT JOIN entry_tag ON entry_tag.entry_id = entry.id " +
-			"LEFT JOIN tag ON tag.id = entry_tag.tag_id " +
-			"WHERE tag.name LIKE ?");
+			"SELECT DISTINCT entry.id, read FROM entry "
+			+ "LEFT JOIN entry_tag ON entry_tag.entry_id = entry.id "
+			+ "LEFT JOIN tag ON tag.id = entry_tag.tag_id "
+			+ "WHERE tag.name LIKE ?");
 		stmt.setString(1, "%" + query + "%");
 		return stmt;
+	}
+
+	public Entry markAsRead(int id) throws SQLException {
+		Entry entry = null;
+		entry = this.findOne(id);
+		if (entry.getRead() != 1) {
+			entry.setRead(1);
+		} else {
+			entry.setRead(0);
+		}
+		PreparedStatement stmt = this.getUpdateQuery(entry);
+		stmt.execute();
+		stmt.close();
+		return entry;
 	}
 
 }

@@ -91,7 +91,7 @@ public class Tags {
 
 	public void list() {
 		try {
-			List<Tag> tags = tagDao.findAll();
+			List<Tag> tags = tagDao.findAll("");
 			if (tags.isEmpty()) {
 				io.print("No tags");
 			}

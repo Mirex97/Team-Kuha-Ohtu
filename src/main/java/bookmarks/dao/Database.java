@@ -11,7 +11,8 @@ public class Database {
 
 	public boolean createNewTables() {
 		String entry = "CREATE TABLE entry ("
-			+ "id INTEGER PRIMARY KEY"
+			+ "id INTEGER PRIMARY KEY,"
+			+ "read INTEGER DEFAULT 0"
 			+ ");";
 
 		String entryMetadata = "CREATE TABLE entry_metadata ("

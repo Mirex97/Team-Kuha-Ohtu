@@ -7,4 +7,4 @@ Feature: User can search for existing bookmarks
 		When command "search" is selected
 		And search query "Corey" is given
 		Then system will respond with "1 match"
-		And system will respond with '3. "Leviathan Wakes" by James S. A. Corey'
+		And system will respond with '3. book: "Leviathan Wakes" by James S. A. Corey'
