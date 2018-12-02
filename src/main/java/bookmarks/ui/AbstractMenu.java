@@ -8,7 +8,7 @@ import java.util.List;
 
 public abstract class AbstractMenu {
 	protected IO io;
-	protected EntryDao entryDao;
+	public  EntryDao entryDao;
 	
 	
 	public void search() {
