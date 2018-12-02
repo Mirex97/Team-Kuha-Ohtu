@@ -10,10 +10,8 @@ import bookmarks.io.IO;
 import java.sql.SQLException;
 import java.util.List;
 
-public class Tags {
-	IO io;
+public class Tags extends AbstractMenu {
 	TagDao tagDao;
-	EntryDao entryDao;
 
 	public Tags(IO io, TagDao tagDao, EntryDao entryDao) {
 		this.io = io;
@@ -71,6 +69,7 @@ public class Tags {
 		io.print("(s) search - search for entries with tag");
 	}
 
+	@Override
 	public void search() {
 		String query = io.readLine("Tag to search: ");
 		try {

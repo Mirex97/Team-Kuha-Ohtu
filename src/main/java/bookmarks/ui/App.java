@@ -10,12 +10,10 @@ import bookmarks.domain.Tag;
 import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
-public class App {
+public class App extends AbstractMenu {
 
-	public EntryDao entryDao;
 	public TagDao tagDao;
 	public boolean isNewUser;
-	private IO io;
 	private Tags tags;
 
 	public App(IO io, String db) {
@@ -209,24 +207,6 @@ public class App {
 			io.print("Could not mark!");
 			e.printStackTrace();
 			return;
-		}
-	}
-
-	public void search() {
-		String query = io.readLine("Term to search: ");
-		try {
-			List<Entry> entries = entryDao.search(query);
-			if (entries.isEmpty()) {
-				io.print("No matches :(");
-			} else {
-				io.printf("%d match%s", entries.size(), entries.size() > 1 ? "es" : "");
-				for (Entry entry : entries) {
-					io.print(entry.toShortString());
-				}
-			}
-		} catch (Exception e) {
-			io.print("Failed to search :(");
-			e.printStackTrace();
 		}
 	}
 
