@@ -39,7 +39,7 @@ jacocoTestReport {
                     dir: it,
                     exclude: [
                             '**/io/**',
-														'**/ui/Introduction.java'
+														'**/ui/Introduction.*'
                     ]
             )
         })
