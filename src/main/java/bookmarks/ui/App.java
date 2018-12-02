@@ -208,7 +208,6 @@ public class App {
 			return;
 		}
 		io.print(entry.toLongString());
-		io.print("");
 	}
 
 	public void search() {
@@ -239,9 +238,7 @@ public class App {
 				io.print("No entries :(");
 			} else {
 				if (unreadOnly) {
-					io.print("\nListing unread entries...");
-				} else {
-					io.print("\nListing entries...");
+					io.print("\nUnread entries:");
 				}
 			}
 			for (Entry entry : entries) {
