@@ -3,7 +3,6 @@ package bookmarks.dao;
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

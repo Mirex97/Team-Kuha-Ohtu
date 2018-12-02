@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class Entry implements IDObject {
 	private int id;
-	private int read;
+	private boolean read;
 	private Set<Tag> tags;
 	private Map<String, String> metadata;
 
@@ -57,7 +57,7 @@ public class Entry implements IDObject {
 
 	public Entry(int id, Set<Tag> tags, Map<String, String> metadata) {
 		this.id = id;
-		this.read = 0;
+		this.read = false;
 		this.tags = tags;
 		this.metadata = metadata;
 	}
@@ -70,20 +70,11 @@ public class Entry implements IDObject {
 		this.id = id;
 	}
 
-	public int getRead() {
+	public boolean isRead() {
 		return read;
 	}
-	
-	public String isRead() {
-		if (read == 1) {
-			return "True";
-		} else {
-			return "False";
-		}
-	}
-	
 
-	public void setRead(int read) {
+	public void setRead(boolean read) {
 		this.read = read;
 	}
 
@@ -130,12 +121,12 @@ public class Entry implements IDObject {
 			if (val != null && !val.isEmpty()) {
 				str.append(String.format("\n%s: %s", field, val));
 			}
-		}		
+		}
 		String tags = getTags().stream().filter(t -> t.getType().equals("tag")).map(Tag::getName).collect(Collectors.joining(", "));
 		if (!tags.isEmpty()) {
 			str.append(String.format("\nTags: %s", tags));
 		}
-		str.append(String.format("\n\n%s: %s", "Is read? ", isRead()));
+		str.append(String.format("\nIs read: %s", isRead() ? "Yes" : "No"));
 		return str.toString();
 	}
 
@@ -151,7 +142,7 @@ public class Entry implements IDObject {
 
 	@Override
 	public String toString() {
-		return String.format("Entry{id=%d, read=%d, tags=%s, metadata=%s}", id, read, tags, metadata);
+		return String.format("Entry{id=%d, read=%b, tags=%s, metadata=%s}", id, read, tags, metadata);
 	}
 
 	@Override

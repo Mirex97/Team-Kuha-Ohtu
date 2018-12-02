@@ -14,10 +14,7 @@ Feature: User can view bookmarks
 		And system will respond with "ISBN: 978-1905586509"
 		And system will respond with "Description: First post-series Atlantis novel"
 		And system will respond with "Tags: scifi, stargate"
-		And system will respond with "Is read? : False"
-		And system will respond with "Want to mark it as read [y/N]? " 
-		Then user types "y"
-		Then system will respond with "Marked!"
+		And system will respond with "Is read: No"
 
 	Scenario: Trying to view a non-existent bookmark ID produces error
 		When command "view" is selected
@@ -34,40 +31,20 @@ Feature: User can view bookmarks
 		And book ID "-123" to view is given
 		Then system will respond with "Invalid entry ID"
 
-        Scenario: User can mark bookmark as unread
-                Given the book "Stargate Atlantis: Homecoming" by "Jo Graham and Melissa Scott" with ISBN "978-1905586509", description "First post-series Atlantis novel" and tags "scifi, stargate" has been added
-                And command "view" is selected
-                And book ID 1 to view is given
-                And system will respond with 'Entry 1: "Stargate Atlantis: Homecoming" by Jo Graham and Melissa Scott'
-		And system will respond with "ISBN: 978-1905586509"
-		And system will respond with "Description: First post-series Atlantis novel"
-		And system will respond with "Tags: scifi, stargate"
-		And system will respond with "Is read? : False"
-		And system will respond with "Want to mark it as read [y/N]? " 
-                And user types "y"
-                And system will respond with "Marked!"
-                When command "view" is selected
-                And book ID 1 to view is given
-                And system will respond with 'Entry 1: "Stargate Atlantis: Homecoming" by Jo Graham and Melissa Scott'
-		And system will respond with "ISBN: 978-1905586509"
-		And system will respond with "Description: First post-series Atlantis novel"
-		And system will respond with "Tags: scifi, stargate"
-		And system will respond with "Is read? : True"
-		And system will respond with "Want to mark it as unread [y/N]? " 
-                Then user types "y"
-                Then system will respond with "Unmarked!"
+	Scenario: User can mark bookmark as read
+		Given the book "Stargate Atlantis: The Furies" by "Jo Graham" with ISBN "978-1905586578", description "Fourth novel in the Legacy series" and tags "scifi, stargate" has been added
+		When command "read" is selected
+		And book ID 1 to mark as read is given
+		Then system will respond with "Entry marked as read"
+		When command "read" is selected
+		And book ID 1 to mark as read is given
+		Then system will respond with "Entry was already marked as read"
 
-        Scenario: User can choose not to change read status of bookmark
-                Given the book "Stargate Atlantis: Homecoming" by "Jo Graham and Melissa Scott" with ISBN "978-1905586509", description "First post-series Atlantis novel" and tags "scifi, stargate" has been added
-                And command "view" is selected
-                And book ID 1 to view is given
-                And system will respond with 'Entry 1: "Stargate Atlantis: Homecoming" by Jo Graham and Melissa Scott'
-		And system will respond with "ISBN: 978-1905586509"
-		And system will respond with "Description: First post-series Atlantis novel"
-		And system will respond with "Tags: scifi, stargate"
-		And system will respond with "Is read? : False"
-		And system will respond with "Want to mark it as read [y/N]? " 
-                When user types "n"
-                And command "list-u" is selected
-                Then system will respond with "Listing unread entries..."
-                Then system will respond with "1. book: "Stargate Atlantis: Homecoming" by Jo Graham and Melissa Scott"
+	Scenario: User can mark bookmark as read
+		Given the book "Stargate Atlantis: Secrets" by "Jo Graham and Melissa Scott" with ISBN "978-1905586592", description "Fifth novel in the Legacy series" and tags "scifi, stargate" has been added
+		When command "read" is selected
+		And book ID 1 to mark as read is given
+		Then system will respond with "Entry marked as read"
+		When command "unread" is selected
+		And book ID 1 to mark as unread is given
+		Then system will respond with "Entry marked as unread"

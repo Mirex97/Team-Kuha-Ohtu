@@ -2,7 +2,6 @@ package bookmarks.dao;
 
 import bookmarks.domain.IDObject;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -57,7 +56,7 @@ public abstract class AbstractDao<T extends IDObject, K> implements Dao<T, K> {
 	}
 
 	@Override
-	public List<T> findAll(String mode) throws SQLException {
+	public List<T> findAll() throws SQLException {
 		PreparedStatement stmt = getFindAllQuery();
 		ResultSet rs = stmt.executeQuery();
 		List<T> items = read(rs);

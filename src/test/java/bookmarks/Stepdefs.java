@@ -128,17 +128,17 @@ public class Stepdefs {
 		assertEquals("ID of entry to edit: ", io.readOutput());
 		io.writeInput(Integer.toString(id));
 	}
-        
-        @When("^book ID \"([^\"]*)\" to edit is given$")
-	public void negativeBookIDToEditIsGiven(int id) {
+
+	@When("^book ID \"([^\"]*)\" to edit is given$")
+	public void invalidBookIDToEditIsGiven(String id) {
 		assertEquals("ID of entry to edit: ", io.readOutput());
-		io.writeInput(Integer.toString(id));
+		io.writeInput(id);
 	}
-        
-        @When("^book ID \"([^\"]*)\" to delete is given$")
-	public void negativeBookIDToDeleteIsGiven(int id) {
+
+	@When("^book ID \"([^\"]*)\" to delete is given$")
+	public void invalidBookIDToDeleteIsGiven(String id) {
 		assertEquals("ID of entry to delete: ", io.readOutput());
-		io.writeInput(Integer.toString(id));
+		io.writeInput(id);
 	}
 
 	@When("^book ID (\\d+) and confirmation \"([^\"]*)\" to delete is given$")
@@ -147,11 +147,22 @@ public class Stepdefs {
 		io.writeInput(Integer.toString(id));
 
 		assertTrue(io.readOutput().startsWith("Entry " + id));
-		assertEquals("Is read? : False", io.readOutput());
+		assertEquals("Is read: No", io.readOutput());
 		assertEquals("Are you sure you want to delete the entry [y/N]? ", io.readOutput());
 		io.writeInput(confirmation);
 	}
 
+	@When("^book ID (\\d+) to mark as read is given$")
+	public void bookIDToMarkAsReadIsGiven(int id) {
+		assertEquals("ID of entry to mark as read: ", io.readOutput());
+		io.writeInput(Integer.toString(id));
+	}
+
+	@When("^book ID (\\d+) to mark as unread is given$")
+	public void bookIDToMarkAsUnreadIsGiven(int id) {
+		assertEquals("ID of entry to mark as unread: ", io.readOutput());
+		io.writeInput(Integer.toString(id));
+	}
 
 	@When("^edit title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void editTitleAuthorISBNDescriptionCommentAndTagsAreGiven(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
@@ -254,7 +265,7 @@ public class Stepdefs {
 		}
 		return entry;
 	}
-	
+
 	@When("^user types \"([^\"]*)\"$")
 	public void confirmationIsGiven(String conf) throws Throwable {
 		io.writeInput(conf);
@@ -286,14 +297,16 @@ public class Stepdefs {
 	public void systemWillRespondWithTheHelpPage() throws Throwable {
 		assertEquals("(shortcut) command - description", io.readOutput());
 		assertEquals("(a) add    - add a new entry", io.readOutput());
-		assertEquals("(d) delete - delete an existing entry", io.readOutput());
 		assertEquals("(e) edit   - edit an existing entry", io.readOutput());
-		assertEquals("(h) help   - print this screen", io.readOutput());
+		assertEquals("(d) delete - delete an existing entry", io.readOutput());
+		assertEquals("(r) read   - mark an entry as read", io.readOutput());
+		assertEquals("(u) unread - mark an entry as unread", io.readOutput());
+		assertEquals("(v) view   - view the full details of an existing entry", io.readOutput());
 		assertEquals("(l) list   - list all entries", io.readOutput());
-		assertEquals("(q) quit   - exits the program", io.readOutput());
 		assertEquals("(s) search - search for an entry", io.readOutput());
 		assertEquals("(t) tags   - takes you to tag section", io.readOutput());
-		assertEquals("(v) view   - view an existing entry", io.readOutput());
+		assertEquals("(h) help   - print this screen", io.readOutput());
+		assertEquals("(q) quit   - exits the program", io.readOutput());
 		assertEquals("Type command to view more detailed help, or press enter to cancel.", io.readOutput());
 		assertEquals("help> ", io.readOutput());
 		io.writeInput(AbstractIO.EndOfTransmission);

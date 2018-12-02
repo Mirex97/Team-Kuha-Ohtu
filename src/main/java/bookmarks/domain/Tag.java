@@ -29,8 +29,6 @@ public class Tag implements IDObject {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
 
 	public String getType() {
 		return type;

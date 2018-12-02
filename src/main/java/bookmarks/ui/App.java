@@ -24,7 +24,7 @@ public class App {
 		try {
 			database = new Database("jdbc:sqlite:" + db);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Failed to connect to database");
 			System.exit(1);
 			return;
 		}
@@ -178,6 +178,30 @@ public class App {
 		}
 	}
 
+	public void setRead(boolean read) {
+		String readStatus = (read ? "read" : "unread");
+		Entry entry = getEntryTo("mark as " + readStatus);
+		if (entry == null) {
+			return;
+		}
+		if (entry.isRead() == read) {
+			io.printf("Entry was already marked as %s", readStatus);
+			return;
+		}
+		entry.setRead(read);
+		try {
+			entryDao.save(entry);
+			if (read) {
+				io.printf("Entry marked as %s", readStatus);
+			} else {
+				io.printf("Entry marked as %s", readStatus);
+			}
+		} catch (Exception e) {
+			io.printf("Failed to mark as %s :(", readStatus);
+			e.printStackTrace();
+		}
+	}
+
 	public void view() {
 		Entry entry = getEntryTo("view");
 		if (entry == null) {
@@ -185,31 +209,6 @@ public class App {
 		}
 		io.print(entry.toLongString());
 		io.print("");
-		String conf = "";
-		boolean mark = false;
-		if (entry.getRead() == 1) {
-			
-			conf = io.readLine("Want to mark it as unread [y/N]? ");
-		} else {
-			mark = true;
-			conf = io.readLine("Want to mark it as read [y/N]? ");
-		}
-		
-		if (!conf.startsWith("y")) {
-			return;
-		}
-		try {
-			entryDao.markAsRead(entry.getID());
-			if (mark) {
-				io.print("Marked!");
-			} else {
-				io.print("Unmarked!");
-			}
-		} catch(Exception e) {
-			io.print("Could not mark!");
-			e.printStackTrace();
-			return;
-		}
 	}
 
 	public void search() {
@@ -230,19 +229,16 @@ public class App {
 		}
 	}
 
-	public void list(String args) {
+	public void list(boolean unreadOnly) {
 		try {
-			List<Entry> entries = null;
-			if (args.equals("unread")) {
-				entries = entryDao.findAll("unread");
-			} else {
-				entries = entryDao.findAll("");	
-			}
-			
+			List<Entry> entries = unreadOnly
+				? entryDao.findAllUnread()
+				: entryDao.findAll();
+
 			if (entries.isEmpty()) {
 				io.print("No entries :(");
 			} else {
-				if (args.equals("unread")) {
+				if (unreadOnly) {
 					io.print("\nListing unread entries...");
 				} else {
 					io.print("\nListing entries...");
@@ -260,14 +256,16 @@ public class App {
 	public void printHelp() {
 		io.print("(shortcut) command - description");
 		io.print("(a) add    - add a new entry");
-		io.print("(d) delete - delete an existing entry");
 		io.print("(e) edit   - edit an existing entry");
-		io.print("(h) help   - print this screen");
+		io.print("(d) delete - delete an existing entry");
+		io.print("(r) read   - mark an entry as read");
+		io.print("(u) unread - mark an entry as unread");
+		io.print("(v) view   - view the full details of an existing entry");
 		io.print("(l) list   - list all entries");
-		io.print("(q) quit   - exits the program");
 		io.print("(s) search - search for an entry");
 		io.print("(t) tags   - takes you to tag section");
-		io.print("(v) view   - view an existing entry");
+		io.print("(h) help   - print this screen");
+		io.print("(q) quit   - exits the program");
 	}
 
 	public void help() {
@@ -321,6 +319,14 @@ public class App {
 				case "d":
 					delete();
 					break;
+				case "read":
+				case "r":
+					setRead(true);
+					break;
+				case "unread":
+				case "u":
+					setRead(false);
+					break;
 				case "view":
 				case "show":
 				case "v":
@@ -332,12 +338,12 @@ public class App {
 				case "ls-u":
 				case "l-unread":
 				case "l-u":
-					list("unread");
+					list(true);
 					break;
 				case "list":
 				case "ls":
 				case "l":
-					list("");
+					list(false);
 					break;
 				case "help":
 				case "h":

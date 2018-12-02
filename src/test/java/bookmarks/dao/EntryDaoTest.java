@@ -74,7 +74,7 @@ public class EntryDaoTest {
 
 	@Test
 	public void findAllEmpty() throws SQLException {
-		assertTrue(entryDao.findAll("").isEmpty());
+		assertTrue(entryDao.findAll().isEmpty());
 	}
 
 	@Test
@@ -83,45 +83,46 @@ public class EntryDaoTest {
 		Entry e2 = create();
 		Entry e3 = create();
 
-		List<Entry> all = entryDao.findAll("");
+		List<Entry> all = entryDao.findAll();
 
 		assertEquals(3, all.size());
 		assertTrue(all.contains(e1));
 		assertTrue(all.contains(e2));
 		assertTrue(all.contains(e3));
 	}
-        
-        @Test
+
+	@Test
 	public void findAllUnread() throws SQLException {
 		Entry e1 = create();
 		Entry e2 = create();
 		Entry e3 = create();
-                
-                entryDao.markAsRead(3);
+		e3.setRead(true);
+		entryDao.update(e3);
 
-		List<Entry> all = entryDao.findAll("unread");
+		List<Entry> all = entryDao.findAllUnread();
 
 		assertEquals(2, all.size());
 		assertTrue(all.contains(e1));
 		assertTrue(all.contains(e2));
 	}
-        
-        @Test
+
+	@Test
 	public void setReadToUnread() throws SQLException {
-            	Entry e1 = create();
+		Entry e1 = create();
 		Entry e2 = create();
 		Entry e3 = create();
-                
-                entryDao.markAsRead(3);
-                entryDao.markAsRead(3);
-                
-                List<Entry> all = entryDao.findAll("unread");
-                
-                assertEquals(3, all.size());
+		e3.setRead(true);
+		entryDao.update(e3);
+		e3.setRead(false);
+		entryDao.update(e3);
+
+		List<Entry> all = entryDao.findAllUnread();
+
+		assertEquals(3, all.size());
 		assertTrue(all.contains(e1));
 		assertTrue(all.contains(e2));
 		assertTrue(all.contains(e3));
-        }
+	}
 
 	@Test
 	public void search() throws SQLException {

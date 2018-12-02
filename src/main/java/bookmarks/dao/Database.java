@@ -12,7 +12,7 @@ public class Database {
 	public boolean createNewTables() {
 		String entry = "CREATE TABLE entry ("
 			+ "id INTEGER PRIMARY KEY,"
-			+ "read INTEGER DEFAULT 0"
+			+ "read BOOLEAN DEFAULT FALSE"
 			+ ");";
 
 		String entryMetadata = "CREATE TABLE entry_metadata ("
