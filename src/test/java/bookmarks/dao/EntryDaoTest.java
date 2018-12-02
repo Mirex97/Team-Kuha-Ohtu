@@ -90,6 +90,38 @@ public class EntryDaoTest {
 		assertTrue(all.contains(e2));
 		assertTrue(all.contains(e3));
 	}
+        
+        @Test
+	public void findAllUnread() throws SQLException {
+		Entry e1 = create();
+		Entry e2 = create();
+		Entry e3 = create();
+                
+                entryDao.markAsRead(3);
+
+		List<Entry> all = entryDao.findAll("unread");
+
+		assertEquals(2, all.size());
+		assertTrue(all.contains(e1));
+		assertTrue(all.contains(e2));
+	}
+        
+        @Test
+	public void setReadToUnread() throws SQLException {
+            	Entry e1 = create();
+		Entry e2 = create();
+		Entry e3 = create();
+                
+                entryDao.markAsRead(3);
+                entryDao.markAsRead(3);
+                
+                List<Entry> all = entryDao.findAll("unread");
+                
+                assertEquals(3, all.size());
+		assertTrue(all.contains(e1));
+		assertTrue(all.contains(e2));
+		assertTrue(all.contains(e3));
+        }
 
 	@Test
 	public void search() throws SQLException {
