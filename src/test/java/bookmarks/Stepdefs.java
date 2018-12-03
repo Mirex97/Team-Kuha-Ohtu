@@ -298,6 +298,7 @@ public class Stepdefs {
 		assertEquals("(shortcut) command - description", io.readOutput());
 		assertEquals("(a) add    - add a new entry", io.readOutput());
 		assertEquals("(e) edit   - edit an existing entry", io.readOutput());
+		assertEquals("(x) export - export the previously printed list", io.readOutput());
 		assertEquals("(d) delete - delete an existing entry", io.readOutput());
 		assertEquals("(r) read   - mark an entry as read", io.readOutput());
 		assertEquals("(u) unread - mark an entry as unread", io.readOutput());
