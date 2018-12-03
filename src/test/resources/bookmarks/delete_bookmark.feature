@@ -6,6 +6,8 @@ Feature: User can delete existing bookmarks
 		And book ID 1 and confirmation "y" to delete is given
 		Then system will respond with "Entry deleted successfully."
 		When command "list" is selected
+		Then system will respond with "List only unread entries [y/N]? "
+		When user types "n"
 		Then system will respond with "No entries :("
 
 	Scenario: Bookmark is added and user cancels the deletion

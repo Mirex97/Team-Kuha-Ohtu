@@ -6,7 +6,7 @@ Feature: User can search for existing bookmarks
 		And the book "Leviathan Wakes" by "James S. A. Corey" has been added
 		When command "search" is selected
 		And search query "Corey" is given
-		Then system will respond with "1 match"
+		Then system will respond with "Match:"
 		And system will respond with '3. book: "Leviathan Wakes" by James S. A. Corey'
 
 	Scenario: No matches notification given when there are no matches
@@ -15,6 +15,6 @@ Feature: User can search for existing bookmarks
 		And the book "Leviathan Wakes" by "James S. A. Corey" has been added
 		When command "search" is selected
 		And search query "Seiska" is given
-		Then system will respond with "No matches :("
+		Then system will respond with "No results :("
 
 
