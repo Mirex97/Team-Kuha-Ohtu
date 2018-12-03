@@ -132,21 +132,12 @@ public class App {
 	private boolean validInput(String field, String input) {
 		switch (field) {
 			case "ISBN":
-				return isValidISBN(input);
+				return InputValidator.validateIsbn13(input);
 			case "Link":
-				return isValidLink(input);
+				return InputValidator.validateLink(input);
 			default:
 				return true;
 		}
-	}
-	
-	private boolean isValidISBN(String input) {
-		return true;
-	}
-	
-	private boolean isValidLink(String input) {
-		String urlPattern = "^(http(s?)://)?[a-zA-Z0-9_/\\-\\.]+\\.([A-Za-z/]{2,5})[a-zA-Z0-9_/\\&\\?\\=\\-\\.\\~\\%]*";
-		return input.matches(urlPattern);
 	}
 
 	private Set<Tag> readTags(Set<Tag> existingTags) {
