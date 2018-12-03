@@ -280,7 +280,10 @@ public class App {
 		}
 	}
 
-	public void list(boolean unreadOnly) {
+	public void list() {
+		String listUnread = io.readLine("\nList only unread entries [y/N]? ").toLowerCase();
+		boolean unreadOnly = (listUnread == null) || (listUnread.startsWith("y")) || (listUnread.startsWith("u"));
+
 		try {
 			List<Entry> entries = unreadOnly
 				? entryDao.findAllUnread()
@@ -298,6 +301,7 @@ public class App {
 		io.print("(shortcut) command - description");
 		io.print("(a) add    - add a new entry");
 		io.print("(e) edit   - edit an existing entry");
+		io.print("(x) export - export the previously printed list");
 		io.print("(d) delete - delete an existing entry");
 		io.print("(r) read   - mark an entry as read");
 		io.print("(u) unread - mark an entry as unread");
@@ -377,18 +381,10 @@ public class App {
 				case "v":
 					view();
 					break;
-				case "list-unread":
-				case "list-u":
-				case "ls-unread":
-				case "ls-u":
-				case "l-unread":
-				case "l-u":
-					list(true);
-					break;
 				case "list":
 				case "ls":
 				case "l":
-					list(false);
+					list();
 					break;
 				case "help":
 				case "h":
