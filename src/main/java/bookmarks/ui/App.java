@@ -153,7 +153,7 @@ public class App {
 				}
 
 				if (currentVal == null || !val.isEmpty()) {
-					if (validInput(field, val)) {
+					if (val.isEmpty() || validInput(field, val)) {
 						metadata.put(field, val);
 					} else {
 						io.print("\"" + val + "\" is not a valid " + field);
