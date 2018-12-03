@@ -132,7 +132,7 @@ public class App {
 	private boolean validInput(String field, String input) {
 		switch (field) {
 			case "ISBN":
-				return InputValidator.validateIsbn13(input);
+				return InputValidator.validateIsbn(input);
 			case "Link":
 				return InputValidator.validateLink(input);
 			default:

@@ -2,7 +2,7 @@ package bookmarks.ui;
 
 public class InputValidator {
 	
-	public static boolean validateIsbn13(String isbn) {
+	public static boolean validateIsbn(String isbn) {
         if (isbn == null) {
             return false;
         }
@@ -14,7 +14,7 @@ public class InputValidator {
             return false;
         }
 		
-		if (!isbn.substring(0, 3).equals("978")) {
+		if (!isbn.substring(0, 3).equals("978") && !isbn.substring(0, 3).equals("979")) {
 			return false;
 		}
 
@@ -41,7 +41,7 @@ public class InputValidator {
     }
 	
 	public static boolean validateLink(String input) {
-		String urlPattern = "^(http(s?)://)?[a-zA-Z0-9_/\\-\\.]+\\.([A-Za-z/]{2,5})[a-zA-Z0-9_/\\&\\?\\=\\-\\.\\~\\%]*";
+		String urlPattern = "^(http(s?)://)?[a-zA-Z0-9_\\-]+\\.([A-Za-z/]{2,5})[a-zA-Z0-9_/\\&\\?\\=\\-\\.\\~\\%]*";
 		return input.matches(urlPattern);
 	}
 }
