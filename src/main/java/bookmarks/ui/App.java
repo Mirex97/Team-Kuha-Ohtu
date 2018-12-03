@@ -1,5 +1,7 @@
 package bookmarks.ui;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,18 +61,15 @@ public class App {
 		String fileName = io.readLine("File to export to: ");
 		if (fileName != null) {
 			try {
-				PrintWriter writer = new PrintWriter(fileName, "UTF-8");
-				for (Entry entry : prevList) {
-					writer.println(entry.toLongString());
-				}
-				writer.close();
-
+				io.writeFile(fileName, prevList.stream()
+					.map(Entry::toLongString)
+					.collect(Collectors.joining("\n")));
 				io.print("Export successful");
-			} catch (Exception e) {
-				io.print("Exporting cancelled (failed to open / write to file)");
+			} catch (IOException e) {
+				io.print("Failed to write file");
 			}
 		} else {
-			io.print("Exporting cancelled (null file)");
+			io.print("Exporting cancelled");
 		}
 	}
 
