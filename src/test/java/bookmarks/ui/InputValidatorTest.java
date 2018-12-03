@@ -7,39 +7,39 @@ public class InputValidatorTest {
 	
 	@Test
 	public void validateIsbnCorrectChecksum() {
-		assertTrue(InputValidator.validateIsbn("978-0-590-54178-7"));
+		assertTrue(InputValidator.validateISBN("978-0-590-54178-7"));
 		
-		assertTrue(InputValidator.validateIsbn("978 0 590 54178 7"));
+		assertTrue(InputValidator.validateISBN("978 0 590 54178 7"));
 		
-		assertTrue(InputValidator.validateIsbn("9780590541787"));
+		assertTrue(InputValidator.validateISBN("9780590541787"));
 		
-		assertFalse(InputValidator.validateIsbn("978-0-590-54178-8"));
+		assertFalse(InputValidator.validateISBN("978-0-590-54178-8"));
 	}
 	
 	@Test
 	public void validateIsbnCorrectLength() {
-		assertTrue(InputValidator.validateIsbn("978-0-590-54178-7"));
+		assertTrue(InputValidator.validateISBN("978-0-590-54178-7"));
 		
-		assertFalse(InputValidator.validateIsbn("978-0-590-5418-7"));
-		assertFalse(InputValidator.validateIsbn("978"));
-		assertFalse(InputValidator.validateIsbn(""));
+		assertFalse(InputValidator.validateISBN("978-0-590-5418-7"));
+		assertFalse(InputValidator.validateISBN("978"));
+		assertFalse(InputValidator.validateISBN(""));
 	}
 	
 	@Test
 	public void validateIsbnStartsWithCorrectPrefix() {
-		assertTrue(InputValidator.validateIsbn("978-0-590-54178-7"));
+		assertTrue(InputValidator.validateISBN("978-0-590-54178-7"));
 		
-		assertTrue(InputValidator.validateIsbn("979-0-590-54178-6"));
+		assertTrue(InputValidator.validateISBN("979-0-590-54178-6"));
 		
-		assertFalse(InputValidator.validateIsbn("988-0-590-54178-4"));
+		assertFalse(InputValidator.validateISBN("988-0-590-54178-4"));
 	}
 	
 	@Test
 	public void validateIsbnValidCharacters() {
-		assertTrue(InputValidator.validateIsbn("978-0-590-54178-7"));
+		assertTrue(InputValidator.validateISBN("978-0-590-54178-7"));
 		
-		assertFalse(InputValidator.validateIsbn("978-0-59j-54178-7"));
-		assertFalse(InputValidator.validateIsbn("testtesttest1"));
+		assertFalse(InputValidator.validateISBN("978-0-59j-54178-7"));
+		assertFalse(InputValidator.validateISBN("testtesttest1"));
 	}
 	
 	@Test

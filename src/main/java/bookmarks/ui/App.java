@@ -3,7 +3,6 @@ package bookmarks.ui;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.net.URL;
 
 import bookmarks.dao.*;
 import bookmarks.domain.Entry;
@@ -12,7 +11,6 @@ import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
 public class App {
-
 	public EntryDao entryDao;
 	public TagDao tagDao;
 	public boolean isNewUser;
@@ -114,7 +112,7 @@ public class App {
 				if (val.equals(AbstractIO.EndOfTransmission)) {
 					return true;
 				}
-				
+
 				if (currentVal == null || !val.isEmpty()) {
 					if (validInput(field, val)) {
 						metadata.put(field, val);
@@ -128,11 +126,11 @@ public class App {
 		}
 		return false;
 	}
-	
+
 	private boolean validInput(String field, String input) {
 		switch (field) {
 			case "ISBN":
-				return InputValidator.validateIsbn(input);
+				return InputValidator.validateISBN(input);
 			case "Link":
 				return InputValidator.validateLink(input);
 			default:
