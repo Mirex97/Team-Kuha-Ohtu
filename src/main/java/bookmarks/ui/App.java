@@ -3,6 +3,7 @@ package bookmarks.ui;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.net.URL;
 
 import bookmarks.dao.*;
 import bookmarks.domain.Entry;
@@ -106,17 +107,46 @@ public class App {
 
 	private boolean readFields(Map<String, String> metadata, String[] fields) {
 		for (String field : fields) {
-			String label = field.substring(0, 1).toUpperCase() + field.substring(1);
-			String currentVal = metadata.get(field);
-			String val = io.readLine(String.format(currentVal == null ? "%s: " : "%s [%s]: ", label, currentVal));
-			if (val.equals(AbstractIO.EndOfTransmission)) {
-				return true;
-			}
-			if (currentVal == null || !val.isEmpty()) {
-				metadata.put(field, val);
+			while (true) {
+				String label = field.substring(0, 1).toUpperCase() + field.substring(1);
+				String currentVal = metadata.get(field);
+				String val = io.readLine(String.format(currentVal == null ? "%s: " : "%s [%s]: ", label, currentVal));
+				if (val.equals(AbstractIO.EndOfTransmission)) {
+					return true;
+				}
+				
+				if (currentVal == null || !val.isEmpty()) {
+					if (validInput(field, val)) {
+						metadata.put(field, val);
+					} else {
+						io.print("\"" + val + "\" is not a valid " + field);
+						continue;
+					}
+				}
+				break;
 			}
 		}
 		return false;
+	}
+	
+	private boolean validInput(String field, String input) {
+		switch (field) {
+			case "ISBN":
+				return isValidISBN(input);
+			case "Link":
+				return isValidLink(input);
+			default:
+				return true;
+		}
+	}
+	
+	private boolean isValidISBN(String input) {
+		return true;
+	}
+	
+	private boolean isValidLink(String input) {
+		String urlPattern = "^(http(s?)://)?[a-zA-Z0-9_/\\-\\.]+\\.([A-Za-z/]{2,5})[a-zA-Z0-9_/\\&\\?\\=\\-\\.\\~\\%]*";
+		return input.matches(urlPattern);
 	}
 
 	private Set<Tag> readTags(Set<Tag> existingTags) {
