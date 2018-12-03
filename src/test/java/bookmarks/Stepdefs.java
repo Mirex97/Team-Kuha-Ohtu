@@ -183,6 +183,12 @@ public class Stepdefs {
 		assertEquals("Type: ", io.readOutput());
 		io.writeInput(type);
 	}
+	
+	@When("^user types \"([^\"]*)\" into field \"([^\"]*)\"$")
+	public void userTypesIntoField(String input, String field) throws Throwable {
+		assertEquals(field, io.readOutput());
+		io.writeInput(input);
+	}
 
 	@When("^title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void titleAuthorISBNDescriptionCommentAndTagsAreGiven(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
