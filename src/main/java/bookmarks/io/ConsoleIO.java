@@ -1,7 +1,5 @@
 package bookmarks.io;
 
-import bookmarks.domain.Entry;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +21,7 @@ public class ConsoleIO extends AbstractIO {
 
 	@Override
 	public void writeFile(String file, String data) throws IOException {
-		PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8);
+		PrintWriter writer = new PrintWriter(file, StandardCharsets.UTF_8.name());
 		writer.println(data);
 		writer.close();
 	}
