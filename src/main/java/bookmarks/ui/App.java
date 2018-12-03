@@ -58,6 +58,10 @@ public class App {
 	}
 
 	public void export() {
+		if (prevList.isEmpty()) {
+			io.print("Nothing to export. Try using `list`, `search` or `view` first");
+			return;
+		}
 		String fileName = io.readLine("File to export to: ");
 		if (fileName != null) {
 			try {
