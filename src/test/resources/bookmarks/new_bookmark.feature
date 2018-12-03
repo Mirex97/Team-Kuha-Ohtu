@@ -8,8 +8,8 @@ Feature: User can add a new bookmark
 		And book entry ID 1 has title "Northern Lights", author "Philip Pullman", isbn "978-0-590-54178-7", description "Good fantasy book", comment "" and tags "fantasy, steampunk"
 
 	Scenario: Creating a bookmark creates tags if they don't exist
-		Given the book "Le book" by "the le book author" with ISBN "12321", description "none" and tags "taggies" has been added
-		And the book "Le another book" by "the le another book author" with ISBN "32123", description "non" and tags "taggies, more tags" has been added
+		Given the book "Le book" by "the le book author" with ISBN "978-0-590-54178-7", description "none" and tags "taggies" has been added
+		And the book "Le another book" by "the le another book author" with ISBN "978-0-590-54178-7", description "non" and tags "taggies, more tags" has been added
 		And user has entered tag section
 		When tag command "list" is selected
 		Then system will respond with "tag #1: taggies"

@@ -23,6 +23,7 @@ public class InputValidatorTest {
 		assertFalse(InputValidator.validateISBN("978-0-590-5418-7"));
 		assertFalse(InputValidator.validateISBN("978"));
 		assertFalse(InputValidator.validateISBN(""));
+		assertFalse(InputValidator.validateISBN(null));
 	}
 	
 	@Test
