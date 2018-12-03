@@ -10,6 +10,8 @@ import bookmarks.domain.Tag;
 import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
+import java.io.PrintWriter;
+
 public class App {
 	public EntryDao entryDao;
 	public TagDao tagDao;
@@ -54,8 +56,22 @@ public class App {
 	}
 
 	public void export() {
-		
-		showList(prevList, false, "no matches", "one match", "many matches");
+		String fileName = io.readLine("File to export to: ");
+		if (fileName != null) {
+			try {
+				PrintWriter writer = new PrintWriter(fileName, "UTF-8");
+				for (Entry entry : prevList) {
+					writer.println(entry.toLongString());
+				}
+				writer.close();
+
+				io.print("Export successful");
+			} catch (Exception e) {
+				io.print("Exporting cancelled (failed to open / write to file)");
+			}
+		} else {
+			io.print("Exporting cancelled (null file)");
+		}
 	}
 
 	public void add() {
