@@ -16,6 +16,7 @@ public class App {
 	public boolean isNewUser;
 	private IO io;
 	private Tags tags;
+	private List<Entry> prevList;
 
 	public App(IO io, String db) {
 		this.io = io;
@@ -35,6 +36,26 @@ public class App {
 		entryDao = new EntryDao(database, entryTagDao, entryMetadataDao);
 
 		this.tags = new Tags(io, tagDao, entryDao);
+	}
+
+	public void showList(List<Entry> list, boolean shortStr, String noMatches, String oneMatch, String manyMatches) {
+		prevList = list;
+		if (list.isEmpty()) {
+			io.print(noMatches);
+		} else {
+			if (list.size() == 1) io.print(oneMatch);
+			else io.print(manyMatches);
+			
+			for (Entry entry : list) {
+				if (shortStr) io.print(entry.toShortString());
+				else io.print(entry.toLongString());
+			}
+		}
+	}
+
+	public void export() {
+		
+		showList(prevList, false, "no matches", "one match", "many matches");
 	}
 
 	public void add() {
@@ -226,21 +247,17 @@ public class App {
 		if (entry == null) {
 			return;
 		}
-		io.print(entry.toLongString());
+
+		List<Entry> list = new ArrayList<Entry>();
+		list.add(entry);
+		showList(list, false, "", "", "");
 	}
 
 	public void search() {
 		String query = io.readLine("Term to search: ");
 		try {
 			List<Entry> entries = entryDao.search(query);
-			if (entries.isEmpty()) {
-				io.print("No matches :(");
-			} else {
-				io.printf("%d match%s", entries.size(), entries.size() > 1 ? "es" : "");
-				for (Entry entry : entries) {
-					io.print(entry.toShortString());
-				}
-			}
+			showList(entries, true, "No results :(", "Match:", "Matches:");
 		} catch (Exception e) {
 			io.print("Failed to search :(");
 			e.printStackTrace();
@@ -253,16 +270,8 @@ public class App {
 				? entryDao.findAllUnread()
 				: entryDao.findAll();
 
-			if (entries.isEmpty()) {
-				io.print("No entries :(");
-			} else {
-				if (unreadOnly) {
-					io.print("\nUnread entries:");
-				}
-			}
-			for (Entry entry : entries) {
-				io.print(entry.toShortString());
-			}
+			String showStr = (unreadOnly ? "\nUnread Entries:" : "\nEntries:");
+			showList(entries, true, "No entries :(", showStr, showStr);
 		} catch (Exception e) {
 			io.print("Failed to get list :(");
 			e.printStackTrace();
@@ -321,6 +330,10 @@ public class App {
 				case "add":
 				case "a":
 					add();
+					break;
+				case "export":
+				case "x":
+					export();
 					break;
 				case "edit":
 				case "e":
