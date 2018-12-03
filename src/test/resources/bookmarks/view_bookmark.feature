@@ -39,7 +39,7 @@ Feature: User can view bookmarks
 		And book ID 1 to mark as read is given
 		Then system will respond with "Entry was already marked as read"
 
-	Scenario: User can mark bookmark as read
+	Scenario: User can mark bookmark as unread
 		Given the book "Stargate Atlantis: Secrets" by "Jo Graham and Melissa Scott" with ISBN "978-1905586592", description "Fifth novel in the Legacy series" and tags "scifi, stargate" has been added
 		When command "read" is selected
 		And book ID 1 to mark as read is given
