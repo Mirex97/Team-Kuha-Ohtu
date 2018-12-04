@@ -9,7 +9,7 @@ Feature: User can add a new bookmark
 
 	Scenario: Creating a bookmark creates tags if they don't exist
 		Given the book "The Empire Strikes Back" by "Donald F. Glut" with ISBN "978-0-345-28392-4", description "none" and tags "scifi" has been added
-		And the book "Le another book" by "the le another book author" with ISBN "978-0-345-28392-4", description "non" and tags "scifi, fantasy" has been added
+		And the book "Northern Lights" by "Philip Pullman" with ISBN "978-0-590-54178-7", description "non" and tags "scifi, fantasy" has been added
 		And user has entered tag section
 		When tag command "list" is selected
 		Then system will respond with "tag #1: scifi"
@@ -17,7 +17,7 @@ Feature: User can add a new bookmark
 
 	Scenario: Creating a bookmark doesn't create tags if they do exist
 		Given the book "The Empire Strikes Back" by "Donald F. Glut" with ISBN "978-0-345-28392-4", description "none" and tags "scifi" has been added
-		And the book "Le another book" by "the le another book author" with ISBN "978-0-345-28392-4", description "non" and tags "scifi" has been added
+		And the book "Northern Lights" by "Philip Pullman" with ISBN "978-0-590-54178-7", description "non" and tags "scifi" has been added
 		And user has entered tag section
 		When tag command "list" is selected
 		Then system will respond with "tag #1: scifi"
