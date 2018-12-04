@@ -11,8 +11,6 @@ import bookmarks.domain.Tag;
 import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
-import java.io.PrintWriter;
-
 public class App {
 	public EntryDao entryDao;
 	public TagDao tagDao;
@@ -48,7 +46,7 @@ public class App {
 		} else {
 			if (list.size() == 1) io.print(oneMatch);
 			else io.print(manyMatches);
-			
+
 			for (Entry entry : list) {
 				if (shortStr) io.print(entry.toShortString());
 				else io.print(entry.toLongString());
@@ -284,7 +282,7 @@ public class App {
 
 	public void list() {
 		String listUnread = io.readLine("\nList only unread entries [y/N]? ").toLowerCase();
-		boolean unreadOnly = (listUnread == null) || (listUnread.startsWith("y")) || (listUnread.startsWith("u"));
+		boolean unreadOnly = listUnread.startsWith("y") || listUnread.startsWith("u");
 
 		try {
 			List<Entry> entries = unreadOnly
