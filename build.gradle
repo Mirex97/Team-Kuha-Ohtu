@@ -38,7 +38,8 @@ jacocoTestReport {
 				dir: it,
 				exclude: [
 					'**/io/**',
-					'**/ui/Introduction.*'
+					'**/ui/Introduction.*',
+					'**/Main.*'
 				]
 			)
 		})
