@@ -1,9 +1,12 @@
 Feature: User can search tags
 
 	Scenario: Tag is added and user can search it
-		Given the book "Le book" by "the le book author" with ISBN "12321", description "none" and tags "taggies" has been added
-		And user has entered tag section
+		When command "add" is selected
+		And type "book" is given
+		And title "The Empire Strikes Back", author "Donald F. Glut", isbn "978-0-345-28392-4", description "Based on the actual script.", comment "Yoda is blue!" and tags "scifi, fantasy" are given
+		Then system will respond with "Entry created"
+		Then user has entered tag section
 		When tag command "find" is selected
-		And tag find query "taggies" is given
+		And tag find query "fantasy" is given
 		Then system will respond with "1 match"
-		And system will respond with '1. book: "Le book" by the le book author'
+		And system will respond with '1. book: "The Empire Strikes Back" by Donald F. Glut'
