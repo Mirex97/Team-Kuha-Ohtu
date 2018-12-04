@@ -407,6 +407,7 @@ public class App {
 				case "introduction":
 				case "i":
 					new Introduction(this, io).run();
+					break;
 				default:
 					io.print("Unknown command. Type \"help\" for help.");
 			}

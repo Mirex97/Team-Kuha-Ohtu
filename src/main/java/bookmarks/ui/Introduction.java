@@ -35,7 +35,20 @@ public class Introduction {
 	}
 
 	private boolean readPause() {
-		return io.readLine("**").equals(AbstractIO.EndOfTransmission);
+		String comm = io.readLine("**");
+		
+		if (comm.equals(AbstractIO.EndOfTransmission)) {
+			return true;
+		}
+		switch (comm.toLowerCase()) {
+			case "back":
+			case "return":
+			case "exit":
+			case "cancel":
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	private void lineText(String text) {
@@ -102,7 +115,7 @@ public class Introduction {
 		io.print("");
 		io.print("This is an introduction/demo. The introduction will pause between some");
 		io.print("paragraphs. Press enter whenever `**` is printed to unpause. You can");
-		io.print("also press CTRL+D at any pause to stop the introduction.");
+		io.print("also press CTRL+D or type cancel at any pause to stop the introduction.");
 		if (readPause()) return;
 		io.print("");
 
