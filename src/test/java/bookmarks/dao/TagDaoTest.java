@@ -32,40 +32,41 @@ public class TagDaoTest {
 	@Test
 	public void insertTest() throws SQLException {
 		Tag tag = tagDao.insert(new Tag(0, "tag", "guides"));
-		assertTrue("Didn't find added tag!", tagDao.findOne(tag.getID()) != null);
+		assertNotNull(tagDao.findOne(tag.getID()));
 	}
 
 	@Test
 	public void updateTest() throws SQLException {
 		Tag tag = tagDao.update(new Tag(1, "tag", "futuristic"));
-		assertTrue("Wasn't modified", tagDao.findOne(1).getName().equals("futuristic"));
+		assertEquals("futuristic", tagDao.findOne(1).getName());
 	}
 
 	@Test
 	public void deleteTest() throws SQLException {
 		tagDao.delete(1);
-		assertTrue("Found one although deleted?", tagDao.findOne(1) == null);
+		assertNull(tagDao.findOne(1));
 	}
 
 	@Test
 	public void searchTests() throws SQLException {
 		List<Tag> tags = tagDao.search("a-");
-		assertTrue("Didn't find tag although should exist!", tags.get(0).getName().equals("a-1") && tags.size() == 3);
+		assertEquals(3, tags.size());
+		assertEquals("a-1", tags.get(0).getName());
 		tags = tagDao.search("NOSUCHTAG");
-		assertTrue("Found tags although shouldn't!", tags.isEmpty());
+		assertTrue(tags.isEmpty());
 	}
 
 	@Test
 	public void findOneTest() throws SQLException {
 		Tag tag = tagDao.findOne(1);
-		assertTrue("Id was not the same!", tag.equals(new Tag(1, "tag", "scifi")));
+		assertEquals(tag, new Tag(1, "tag", "scifi"));
 
 	}
 
 	@Test
 	public void findDoesntFindOneTest() throws SQLException {
 		Tag tag = tagDao.findOne(23);
-		assertTrue("Tag existed although impossible!", tag == null);
+		assertNull(tag);
 	}
 
 	@Test
@@ -73,9 +74,8 @@ public class TagDaoTest {
 		List<Tag> tags = tagDao.findAll();
 		int i = 1;
 		for (Tag tag : tags) {
-			assertTrue("Wasn't the same id!", tag.equals(new Tag(i, tag.getType(), tag.getName())));
+			assertEquals(tag, new Tag(i, tag.getType(), tag.getName()));
 			i++;
 		}
 	}
-
 }

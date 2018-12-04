@@ -36,7 +36,7 @@ public class Introduction {
 
 	private boolean readPause() {
 		String comm = io.readLine("**");
-		
+
 		if (comm.equals(AbstractIO.EndOfTransmission)) {
 			return true;
 		}
