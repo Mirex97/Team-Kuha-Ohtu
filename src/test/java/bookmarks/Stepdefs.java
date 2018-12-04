@@ -312,6 +312,7 @@ public class Stepdefs {
 		assertEquals("(l) list   - list all entries", io.readOutput());
 		assertEquals("(s) search - search for an entry", io.readOutput());
 		assertEquals("(t) tags   - takes you to tag section", io.readOutput());
+		assertEquals("(i) intro  - takes you to the introduction", io.readOutput());
 		assertEquals("(h) help   - print this screen", io.readOutput());
 		assertEquals("(q) quit   - exits the program", io.readOutput());
 		assertEquals("Type command to view more detailed help, or press enter to cancel.", io.readOutput());

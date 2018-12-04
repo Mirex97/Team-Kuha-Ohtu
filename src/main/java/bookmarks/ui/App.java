@@ -311,6 +311,7 @@ public class App {
 		io.print("(l) list   - list all entries");
 		io.print("(s) search - search for an entry");
 		io.print("(t) tags   - takes you to tag section");
+		io.print("(i) intro  - takes you to the introduction");
 		io.print("(h) help   - print this screen");
 		io.print("(q) quit   - exits the program");
 	}
