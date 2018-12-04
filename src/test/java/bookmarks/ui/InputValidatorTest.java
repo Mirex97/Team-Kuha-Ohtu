@@ -9,18 +9,21 @@ public class InputValidatorTest {
 	@Test
 	public void validateIsbnCorrectChecksum() {
 		assertTrue(InputValidator.validateISBN("978-0-590-54178-7"));
-
 		assertTrue(InputValidator.validateISBN("978 0 590 54178 7"));
-
 		assertTrue(InputValidator.validateISBN("9780590541787"));
-
 		assertFalse(InputValidator.validateISBN("978-0-590-54178-8"));
+		
+		assertTrue(InputValidator.validateISBN("0-590-54178-1"));
+		assertTrue(InputValidator.validateISBN("0 590 54178 1"));
+		assertTrue(InputValidator.validateISBN("0590541781"));
+		assertFalse(InputValidator.validateISBN("0-590-54178-5"));
 	}
 
 	@Test
 	public void validateIsbnCorrectLength() {
 		InputValidator test = new InputValidator(); //to improve code coverage
 		assertTrue(InputValidator.validateISBN("978-0-590-54178-7"));
+		assertTrue(InputValidator.validateISBN("0-590-54178-1"));
 		assertFalse(InputValidator.validateISBN("978-0-590-5418-7"));
 		assertFalse(InputValidator.validateISBN("978"));
 		assertFalse(InputValidator.validateISBN(""));
@@ -39,8 +42,10 @@ public class InputValidatorTest {
 	@Test
 	public void validateIsbnValidCharacters() {
 		assertTrue(InputValidator.validateISBN("978-0-590-54178-7"));
+		assertTrue(InputValidator.validateISBN("0-590-54179-x"));
 
-		assertFalse(InputValidator.validateISBN("978-0-59j-54178-7"));
+		assertFalse(InputValidator.validateISBN("978-0-59j-54178-x"));
+		assertFalse(InputValidator.validateISBN("0-590-5se79-x"));
 		assertFalse(InputValidator.validateISBN("testtesttest1"));
 	}
 

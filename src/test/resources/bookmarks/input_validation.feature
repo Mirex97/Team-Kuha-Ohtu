@@ -13,6 +13,19 @@ Feature: When user inputs invalid values error message is displayed
 		And user types "" into field "Tags: "
 		Then system will respond with "Entry created"
 
+	Scenario: User inputs invalid ISBN in old format
+		When command "add" is selected
+		And type "book" is given
+		And user types "Northern Lights" into field "Title: "
+		And user types "Philip Pullman" into field "Author: "
+		And user types "0-306-40j15-2" into field "ISBN: "
+		Then system will respond with '"0-306-40j15-2" is not a valid ISBN'
+		When user types "0-306-40615-2" into field "ISBN: "
+		And user types "" into field "Description: "
+		And user types "" into field "Comment: "
+		And user types "" into field "Tags: "
+		Then system will respond with "Entry created"
+
 	Scenario: User inputs wrong link
 		When command "add" is selected
 		And type "video" is given
