@@ -323,12 +323,66 @@ public class App {
 			return;
 		}
 		switch (comm.toLowerCase()) {
-			case "":
-			case "back":
-			case "return":
+			case "add":
+			case "a":
+				io.print("Adds a new entry");
+				break;
+			case "export":
+			case "x":
+				io.print("Exports the last shown list to the given file. You can use search, show or list with this");
+				break;
+			case "edit":
+			case "e":
+				io.print("Edits an entry");
+				break;
+			case "search":
+			case "find":
+			case "s":
+				io.print("Allows searching for entries with some value matching to the given string");
+				break;
+			case "delete":
+			case "d":
+				io.print("Deletes an entry");
+				break;
+			case "read":
+			case "r":
+				io.print("Marks an entry as read");
+				break;
+			case "unread":
+			case "u":
+				io.print("Marks an entry as unread");
+				break;
+			case "view":
+			case "show":
+			case "v":
+				io.print("Shows detailed information on a single entry");
+				break;
+			case "list":
+			case "ls":
+			case "l":
+				io.print("Views list of all entries. Asks you if you only want to view unread entries");
+				break;
+			case "help":
+			case "h":
+				io.print("Displays the help page, and allows querying for more detailed help for a single command");
+				break;
+			case "tags":
+			case "t":
+				io.print("Takes you to the tag subsection");
+				break;
+			case "quit":
 			case "exit":
-			case "b":
-				return;
+			case "q":
+				io.print("Exits the program");
+				break;
+			case "demo":
+			case "intro":
+			case "introduction":
+			case "i":
+				io.print("Redisplays the introduction");
+				break;
+			default:
+				io.print("Unknown command");
 		}
 		io.print("");
 	}
