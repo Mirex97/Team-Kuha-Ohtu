@@ -20,6 +20,8 @@ project.ext {
 	cucumberVersion = '1.2.5'
 	junitVersion = '4.12'
 	sqliteVersion = '3.25.2'
+	okhttpVersion = '3.12.0'
+	gsonVersion = '2.8.5'
 }
 
 jacoco {
@@ -48,6 +50,9 @@ jacocoTestReport {
 
 dependencies {
 	compile group: 'org.xerial', name: 'sqlite-jdbc', version: sqliteVersion
+	compile 'com.squareup.okhttp3:okhttp:' + okhttpVersion
+	compile 'com.google.code.gson:gson:' + gsonVersion
+	testCompile 'com.squareup.okhttp3:mockwebserver:' + okhttpVersion
 	testCompile 'info.cukes:cucumber-java:' + cucumberVersion
 	testCompile 'info.cukes:cucumber-junit:' + cucumberVersion
 	testCompile 'junit:junit:' + junitVersion

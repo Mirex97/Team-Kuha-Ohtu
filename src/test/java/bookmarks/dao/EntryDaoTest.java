@@ -52,8 +52,8 @@ public class EntryDaoTest {
 
 	private Entry createWithMeta(String title, String author) throws SQLException {
 		Entry e = create();
-		e.getMetadata().put("Title", title);
-		e.getMetadata().put("Author", author);
+		e.putMetadata("Title", title);
+		e.putMetadata("Author", author);
 		entryDao.save(e);
 		return e;
 	}
@@ -162,7 +162,7 @@ public class EntryDaoTest {
 		assertEquals(e1, e1Copy);
 		assertEquals(e2, entryDao.findOne(e2.getID()));
 
-		e1Copy.getMetadata().put("foo", "bar");
+		e1Copy.putMetadata("foo", "bar");
 		entryDao.save(e1Copy);
 
 		Entry e1CopyCopy = entryDao.findOne(e1.getID());

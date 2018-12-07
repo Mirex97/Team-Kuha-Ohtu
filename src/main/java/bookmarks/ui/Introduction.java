@@ -119,7 +119,7 @@ public class Introduction {
 		if (readPause()) return;
 		io.print("");
 
-		io.print("Bookmarks is a command-line application, which means all input is text.");
+		io.print("Bookmarks is a command-line application, which means ALL input is text.");
 		io.print("Input is split into two main types: commands and questions.");
 		if (readPause()) return;
 		io.print("Command prompts want a command, such as `add` or `list`. Commands are always a");
@@ -146,7 +146,7 @@ public class Introduction {
 
 		io.print("Since commands are always a single word, you can also type the answer to the");
 		io.print("first question after the command.  For example, when using `view`, you can");
-		io.print("either type `view` and then `5` when prompted, or simply `view 5` all at once.");
+		io.print("either type `view` and then `5` when prompted, or simply `view 5` ALL at once.");
 		io.print("To save a few keystrokes, you can type the first letter of a command instead of");
 		io.print("the whole command");
 		if (readPause()) return;

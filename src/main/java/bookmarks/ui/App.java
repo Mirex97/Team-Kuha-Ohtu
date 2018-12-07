@@ -1,5 +1,6 @@
 package bookmarks.ui;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
@@ -17,6 +18,7 @@ public class App {
 	public boolean isNewUser;
 	private IO io;
 	private Tags tags;
+	private EntryTypes entryTypes;
 	private List<Entry> prevList;
 
 	public App(IO io, String db) {
@@ -31,6 +33,7 @@ public class App {
 		}
 		this.isNewUser = database.createNewTables();
 
+		entryTypes = new EntryTypes(io);
 		tagDao = new TagDao(database);
 		EntryTagDao entryTagDao = new EntryTagDao(database, tagDao);
 		EntryMetadataDao entryMetadataDao = new EntryMetadataDao(database);
@@ -75,40 +78,40 @@ public class App {
 	}
 
 	public void add() {
-		Map<String, String> metadata = new HashMap<>();
+		String typeName = null;
+		Entry.Type type = null;
 
-		String type = null;
-		String[] fields = null;
-
-		while (fields == null) {
-			type = io.readWord("Type: ");
-			if (type.equals(AbstractIO.EndOfTransmission)) {
+		while (type == null) {
+			typeName = io.readWord("Type: ");
+			if (typeName.equals(AbstractIO.EndOfTransmission)) {
 				io.print("Adding cancelled");
 				return;
 			}
 
-			type = Entry.unshortenType(type.toLowerCase());
-			if (type != null) {
-				fields = Entry.getFieldsOfType(type.toLowerCase());
-			}
+			type = entryTypes.getType(typeName);
 
-			if (fields == null) {
-				io.printf("Unrecognized type. Choose one of: %s", String.join(" ", Entry.getTypes()));
+			if (type == null) {
+				io.printf("Unrecognized type. Choose one of: %s", String.join(" ", entryTypes.getTypes()));
 			}
 		}
-		metadata.put("type", type);
+		Map<String, String> metadata = new HashMap<>();
+		metadata.put("type", typeName);
 
-		if (readFields(metadata, fields)) {
+		Entry entry = new Entry(new HashSet<>(), metadata);
+		try {
+			type.read(entry);
+		} catch (EOFException e) {
 			io.print("Adding cancelled");
 			return;
 		}
-		Set<Tag> tags = readTags(null);
+		Set<Tag> tags = readTags(entry.getTags());
 		if (tags == null) {
 			io.print("Adding cancelled");
 			return;
 		}
+		entry.setTags(tags);
 
-		saveEntry(new Entry(tags, metadata), "created");
+		saveEntry(entry, "created");
 	}
 
 	public void edit() {
@@ -117,7 +120,9 @@ public class App {
 			return;
 		}
 
-		if (readFields(entry.getMetadata(), entry.getFields())) {
+		try {
+			entry.getType().read(entry);
+		} catch (EOFException e) {
 			io.print("Editing cancelled");
 			return;
 		}
@@ -137,41 +142,6 @@ public class App {
 		} catch (Exception err) {
 			io.print("Failed to save :(");
 			err.printStackTrace();
-		}
-	}
-
-	private boolean readFields(Map<String, String> metadata, String[] fields) {
-		for (String field : fields) {
-			while (true) {
-				String label = field.substring(0, 1).toUpperCase() + field.substring(1);
-				String currentVal = metadata.get(field);
-				String val = io.readLine(String.format(currentVal == null ? "%s: " : "%s [%s]: ", label, currentVal));
-				if (val.equals(AbstractIO.EndOfTransmission)) {
-					return true;
-				}
-
-				if (currentVal == null || !val.isEmpty()) {
-					if (val.isEmpty() || validInput(field, val)) {
-						metadata.put(field, val);
-					} else {
-						io.print("\"" + val + "\" is not a valid " + field);
-						continue;
-					}
-				}
-				break;
-			}
-		}
-		return false;
-	}
-
-	private boolean validInput(String field, String input) {
-		switch (field) {
-			case "ISBN":
-				return InputValidator.validateISBN(input);
-			case "Link":
-				return InputValidator.validateLink(input);
-			default:
-				return true;
 		}
 	}
 
@@ -306,7 +276,7 @@ public class App {
 		io.print("(r) read   - mark an entry as read");
 		io.print("(u) unread - mark an entry as unread");
 		io.print("(v) view   - view the full details of an existing entry");
-		io.print("(l) list   - list all entries");
+		io.print("(l) list   - list ALL entries");
 		io.print("(s) search - search for an entry");
 		io.print("(t) tags   - takes you to tag section");
 		io.print("(i) intro  - takes you to the introduction");

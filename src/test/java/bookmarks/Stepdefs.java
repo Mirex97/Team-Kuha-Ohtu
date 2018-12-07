@@ -230,25 +230,25 @@ public class Stepdefs {
 	@Then("^book entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
 	public void bookEntryIDHasTitleAuthorIsbnDescriptionCommentAndTags(int id, String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
 		Entry entry = checkCommonMeta("book", id, title, author, description, comment, tags);
-		assertEquals(isbn, entry.getMetadata().get("ISBN"));
+		assertEquals(isbn, entry.getMetadata("ISBN"));
 	}
 
 	@Then("^video entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", link \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
 	public void videoEntryIDHasTitleAuthorLinkDescriptionCommentAndTags(int id, String title, String author, String link, String description, String comment, String tags) throws Throwable {
 		Entry entry = checkCommonMeta("video", id, title, author, description, comment, tags);
-		assertEquals(link, entry.getMetadata().get("Link"));
+		assertEquals(link, entry.getMetadata("Link"));
 	}
 
 	@Then("^blog entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", link \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\"$")
 	public void blogEntryIDHasTitleAuthorLinkDescriptionCommentAndTags(int id, String title, String author, String link, String description, String comment, String tags) throws Throwable {
 		Entry entry = checkCommonMeta("blog", id, title, author, description, comment, tags);
-		assertEquals(link, entry.getMetadata().get("Link"));
+		assertEquals(link, entry.getMetadata("Link"));
 	}
 
 	@Then("^meme entry ID (\\d+) has title \"([^\"]*)\", author \"([^\"]*)\", image \"([^\"]*)\", up text \"([^\"]*)\", bottom text \"([^\"]*)\" and comment \"([^\"]*)\"$")
 	public void memeEntryIDHasTitleAuthorLinkDescriptionCommentAndTags(int id, String title, String author, String image, String up_text, String bottom_text, String comment) throws Throwable {
 		Entry entry = checkCommonMeta("meme", id, title, author, up_text, bottom_text, comment);
-		assertEquals(image, entry.getMetadata().get("Image"));
+		assertEquals(image, entry.getMetadata("Image"));
 	}
 
 	private Entry checkCommonMeta(String type, int id, String title, String author, String description, String comment, String tags) throws Throwable {
@@ -308,7 +308,7 @@ public class Stepdefs {
 		assertEquals("(r) read   - mark an entry as read", io.readOutput());
 		assertEquals("(u) unread - mark an entry as unread", io.readOutput());
 		assertEquals("(v) view   - view the full details of an existing entry", io.readOutput());
-		assertEquals("(l) list   - list all entries", io.readOutput());
+		assertEquals("(l) list   - list ALL entries", io.readOutput());
 		assertEquals("(s) search - search for an entry", io.readOutput());
 		assertEquals("(t) tags   - takes you to tag section", io.readOutput());
 		assertEquals("(i) intro  - takes you to the introduction", io.readOutput());
@@ -325,7 +325,7 @@ public class Stepdefs {
 		assertEquals("(b) back   - return back to home", io.readOutput());
 		assertEquals("(d) delete - delete an existing tag", io.readOutput());
 		assertEquals("(h) help   - print this screen", io.readOutput());
-		assertEquals("(l) list   - list all tags", io.readOutput());
+		assertEquals("(l) list   - list ALL tags", io.readOutput());
 		assertEquals("(s) search - search for entries with tag", io.readOutput());
 	}
 

@@ -24,12 +24,12 @@ public class EntryTest {
 
 	@Test
 	public void longStringTest() {
-		entry.getMetadata().put("type", "book");
-		entry.getMetadata().put("Title", "");
-		entry.getMetadata().put("Author", null);
-		entry.getMetadata().put("ISBN", null);
-		entry.getMetadata().put("Description", "");
-		entry.getMetadata().put("Comment", "ei ole");
+		entry.putMetadata("type", "book");
+		entry.putMetadata("Title", "");
+		entry.putMetadata("Author", null);
+		entry.putMetadata("ISBN", null);
+		entry.putMetadata("Description", "");
+		entry.putMetadata("Comment", "ei ole");
 		assertTrue(!entry.toLongString().contains("ISBN"));
 		assertTrue(!entry.toLongString().contains("Description"));
 	}
