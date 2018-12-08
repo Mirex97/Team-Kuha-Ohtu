@@ -3,4 +3,3 @@
 * [Backlog ja Sprintlogit](https://docs.google.com/spreadsheets/d/10le1rAXnpnXbXQAB3VVUD4vGYFyIbnLuF8VZ20hsJDA/edit?usp=sharing)
 * [Definition of Done](doc/DEFINITION_OF_DONE.md)
 * [Asennus ja käyttöohje](doc/ASENNUS_JA_KAYTTOOHJE.md)
-
