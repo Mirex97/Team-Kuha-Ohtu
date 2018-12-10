@@ -13,6 +13,7 @@ import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
 public class App {
+
 	public EntryDao entryDao;
 	public TagDao tagDao;
 	public boolean isNewUser;
@@ -21,17 +22,18 @@ public class App {
 
 	static final int ENTRIES_PER_PAGE = 10;
 	private Entry[] prevList;
+	public Database database;
 	private int shownPages;
 
 	public App(IO io, String db) {
 		this.io = io;
-		Database database;
 		try {
 			database = new Database("jdbc:sqlite:" + db);
 		} catch (SQLException e) {
 			System.out.println("Failed to connect to database");
 			System.exit(1);
 			return;
+
 		}
 		this.isNewUser = database.createNewTables();
 
@@ -43,6 +45,19 @@ public class App {
 		this.tags = new Tags(io, tagDao, entryDao);
 	}
 
+
+	public void clearPrevList() {
+		prevList = null;
+	}
+
+	public void sort(List<String> order) {
+		if (prevList == null || prevList.length == 0) {
+			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
+			return;
+		}
+		
+	}
+		
 	public void showNextPage() {
 		int currPage = shownPages;
 		int totalPages = (prevList.length + ENTRIES_PER_PAGE - 1) / ENTRIES_PER_PAGE; // Round up
@@ -55,6 +70,7 @@ public class App {
 			for (int i = first; (i < prevList.length) && (i < first + ENTRIES_PER_PAGE); ++i) {
 				io.print(prevList[i].toShortString());
 			}
+
 		}
 
 		++shownPages;
@@ -67,6 +83,7 @@ public class App {
 		if (list.length > 10) {
 			showNextPage();
 		} else {
+
 			if (list.length == 0) {
 				io.print(noMatches);
 			} else {
@@ -148,20 +165,17 @@ public class App {
 			return;
 		}
 		String fileName = io.readLine("File to export to: ");
-		if (fileName != null) {
-			try {
-				String str = "";
-				for (Entry entry : prevList) {
-					str += entry.toLongString() + "\n";
-				}
-				io.writeFile(fileName, str);
-				io.print("Export successful");
-			} catch (IOException e) {
-				io.print("Failed to write file");
+		try {
+			String str = "";
+			for (Entry entry : prevList) {
+				str += entry.toLongString() + "\n";
 			}
-		} else {
-			io.print("Exporting cancelled");
+			io.writeFile(fileName, str);
+			io.print("Export successful");
+		} catch (IOException e) {
+			io.print("Failed to write file");
 		}
+
 	}
 
 	public void add() {

@@ -8,12 +8,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class StubIO extends AbstractIO {
+
 	private final LinkedBlockingQueue<String> input = new LinkedBlockingQueue<>();
 	private final LinkedBlockingQueue<String> output = new LinkedBlockingQueue<>();
 	private final Map<String, String> fileOutput = new HashMap<>();
 
 	public void writeInput(String input) {
-		this.input.add(input);
+		try {
+			this.input.add(input);
+		} catch (Exception e) {
+
+		}
 	}
 
 	public String readOutput() {
@@ -30,6 +35,10 @@ public class StubIO extends AbstractIO {
 		} catch (InterruptedException e) {
 			throw new RuntimeException("Reading app output interrupted");
 		}
+	}
+
+	public void clearOutput() {
+		this.output.clear();
 	}
 
 	@Override

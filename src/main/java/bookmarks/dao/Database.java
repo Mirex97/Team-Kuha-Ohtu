@@ -8,6 +8,10 @@ public class Database {
 	public Database(String databaseAddress) throws SQLException {
 		conn = DriverManager.getConnection(databaseAddress);
 	}
+	
+	public void closeConnection() throws SQLException {
+		conn.close();
+	}
 
 	public boolean createNewTables() {
 		String entry = "CREATE TABLE entry ("
