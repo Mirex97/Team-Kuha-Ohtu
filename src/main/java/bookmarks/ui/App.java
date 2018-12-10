@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import bookmarks.Sorter;
 import bookmarks.dao.*;
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
@@ -18,8 +19,11 @@ public class App {
 	public boolean isNewUser;
 	private IO io;
 	private Tags tags;
+
+	static final int ENTRIES_PER_PAGE = 10;
 	private Entry[] prevList;
 	public Database database;
+	private int shownPages;
 
 	public App(IO io, String db) {
 		this.io = io;
@@ -41,6 +45,7 @@ public class App {
 		this.tags = new Tags(io, tagDao, entryDao);
 	}
 
+
 	public void clearPrevList() {
 		prevList = null;
 	}
@@ -49,28 +54,106 @@ public class App {
 		if (prevList == null || prevList.length == 0) {
 			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
 			return;
+
+	public void showNextPage() {
+		int currPage = shownPages;
+		int totalPages = (prevList.length + ENTRIES_PER_PAGE - 1) / ENTRIES_PER_PAGE; // Round up
+		int first = currPage * ENTRIES_PER_PAGE;
+
+		if (first >= prevList.length) {
+			io.print("Nothing to show");
+		} else {
+			io.print("Page " + (currPage+1) + " out of " + (totalPages) + ":");
+			for (int i = first; (i < prevList.length) && (i < first + ENTRIES_PER_PAGE); ++i) {
+				io.print(prevList[i].toShortString());
+			}
+
 		}
+
+		++shownPages;
 	}
 
 	public void showList(Entry[] list, boolean shortStr, String noMatches, String oneMatch, String manyMatches) {
 		prevList = list;
-		if (list.length == 0) {
-			io.print(noMatches);
-		} else {
-			if (list.length == 1) {
-				io.print(oneMatch);
-			} else {
-				io.print(manyMatches);
-			}
+		shownPages = 0;
 
-			for (Entry entry : list) {
-				if (shortStr) {
-					io.print(entry.toShortString());
-				} else {
-					io.print(entry.toLongString());
+		if (list.length > 10) {
+			showNextPage();
+		} else {
+
+			if (list.length == 0) {
+				io.print(noMatches);
+			} else {
+				++shownPages;
+
+				if (list.length == 1) io.print(oneMatch);
+				else io.print(manyMatches);
+
+				for (Entry entry : list) {
+					if (shortStr) io.print(entry.toShortString());
+					else io.print(entry.toLongString());
 				}
 			}
 		}
+	}
+
+	public void sortPrevList(List<String> order) {
+		int n = prevList.length;
+		for (int j = order.size() - 1; j >= 0; --j) {
+			String comp = order.get(j);
+
+			int[] perm = null;
+			if (comp.equals("Id") || comp.equals("read")) {
+				// Sort by int
+				int[] data = new int[n];
+				for (int i = 0; i < n; ++i) {
+					if (comp.equals("read")) data[i] = prevList[i].isRead() ? 1 : 0;
+					else data[i] = prevList[i].getID();
+				}
+
+				perm = Sorter.sortInts(data);
+			} else {
+				// Sort by string
+				String[] data = new String[n];
+				for (int i = 0; i < n; ++i) {
+					data[i] = prevList[i].getMetadataEntry(comp);
+					if (data[i] == null) data[i] = "";
+				}
+				perm = Sorter.sortStrings(data);
+			}
+
+			Sorter.permute(prevList, perm);
+		}
+	}
+
+	public void sort() {
+		if (prevList == null || prevList.length == 0) {
+			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
+			return;
+		}
+
+		// Get parameters to sort by
+		List<String> order = new ArrayList<>();
+		for (int i = 1;; ++i) {
+			String pat = "" + i;
+
+			if (i == 1) pat += "st";
+			else if (i == 2) pat += "nd";
+			else if (i == 3) pat += "rd";
+			else pat += "th";
+
+			pat += " parameter to sort by: ";
+			String str = io.readWord(pat);
+
+			if (str == null || str.length() == 0) break;
+			order.add(str);
+		}
+	
+		// Sort
+		sortPrevList(order);
+
+		// Redisplay
+		showList(prevList, true, "No entries :(", "Entry:", "Entries:");
 	}
 
 	public void export() {
@@ -385,6 +468,9 @@ public class App {
 				case "s":
 					search();
 					break;
+				case "sort":
+					sort();
+					break;
 				case "delete":
 				case "d":
 					delete();
@@ -406,6 +492,10 @@ public class App {
 				case "ls":
 				case "l":
 					list();
+					break;
+				case "next":
+				case "n":
+					showNextPage();
 					break;
 				case "help":
 				case "h":
