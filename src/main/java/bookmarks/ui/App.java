@@ -54,6 +54,8 @@ public class App {
 		if (prevList == null || prevList.length == 0) {
 			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
 			return;
+		}
+		
 	}
 		
 	public void showNextPage() {
