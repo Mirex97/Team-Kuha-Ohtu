@@ -54,7 +54,8 @@ public class App {
 		if (prevList == null || prevList.length == 0) {
 			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
 			return;
-
+	}
+		
 	public void showNextPage() {
 		int currPage = shownPages;
 		int totalPages = (prevList.length + ENTRIES_PER_PAGE - 1) / ENTRIES_PER_PAGE; // Round up
