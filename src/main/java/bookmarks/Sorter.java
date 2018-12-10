@@ -1,10 +1,9 @@
-package bookmarks.domain;
+package bookmarks;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sorter {
-	
 	private static int min(int a, int b) {
 		return (a < b ? a : b);
 	}
@@ -28,6 +27,7 @@ public class Sorter {
 	// Returns permutation that stably sorts the strings
 	// Does string mergesort for sorting.
 	public static int[] sortStrings(String[] data) {
+		// Pointless change
 		int n = data.length;
 
 		int[] lcp = new int[n]; // LCP-array
@@ -36,29 +36,30 @@ public class Sorter {
 
 		// tmp variables for storing data not in place
 		int[] tmpLcp = new int[n];
-		int[] tmpPerm = new int[n];	
+		int[] tmpPerm = new int[n];
 
 		for (int hl = 1; hl < n; hl *= 2) {
+
 			// Merge sections of length 2 * hl
 			for (int a = 0; a+hl < n; a += 2*hl) {
 				int b = a + hl;
 				int c = min(n, b + hl);
 				// Merge parts [a, b) and [b, c)
-				
+
 				int i = 0;
 				int j = 0;
 				while(true) {
-					int t = i+j; // Where the chosen entry will go
+					int t = a+i+j; // Where the chosen entry will go
 					if (t == c) break;
 
 					boolean pa = true; // Do we pick the one from the first segment
 					if (a+i != b && b+j != c) {
 						// Compare first non-matching character
-						int lp = getLcp(data[a+i], data[b+j], min(lcp[a+i], lcp[b+j]));
-						pa = compChar(data[a+i], data[b+j], lp);
+						int lp = getLcp(data[perm[a+i]], data[perm[b+j]], min(lcp[a+i], lcp[b+j]));
+						pa = compChar(data[perm[a+i]], data[perm[b+j]], lp);
 						
 						if (pa) lcp[b+j] = lp;
-						else lcp[a+j] = lp;
+						else lcp[a+i] = lp;
 					} else if (a+i == b) {
 						pa = false; // first part fully used
 					}
@@ -75,16 +76,16 @@ public class Sorter {
 						++j;
 					}
 				}
+				for (int x = a; x < c; ++x) {
+					perm[x] = tmpPerm[x];
+					lcp[x] = tmpLcp[x];
+				}
 			}
-
-			// Swap back from tmp-buffers
-			int[] tmpTmp = tmpLcp;
-			tmpLcp = lcp;
-			lcp = tmpTmp;
-
-			tmpTmp = tmpPerm;
-			tmpPerm = perm;
-			perm = tmpTmp;
+			/*
+			for (int i = 0; i < n; ++i) System.out.print(" " + perm[i]);
+			System.out.print("\n");
+			for (int i = 0; i < n; ++i) System.out.println("\t" + data[perm[i]]);
+			*/
 		}
 
 		return perm;
@@ -93,16 +94,21 @@ public class Sorter {
 	// Permutes the given array with the given permutation (0-indexed)
 	public static <T> void permute(T[] data, int[] perm) {
 		int n = perm.length;
+
+		// Reverse the permutation
+		int[] pr = new int[n];
+		for (int i = 0; i < n; ++i) pr[perm[i]] = i;
+
 		for (int i = 0; i < n; ++i) {
-			int t = perm[i];
+			int t = pr[i];
 			while(t != i) {
 				// Do a swap
 				T tmp = data[i];
 				data[i] = data[t];
 				data[t] = tmp;
-				perm[i] = perm[t];
-				perm[t] = t;
-				t = perm[i];
+				pr[i] = pr[t];
+				pr[t] = t;
+				t = pr[i];
 			}
 		}
 	}
