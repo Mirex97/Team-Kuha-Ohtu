@@ -106,6 +106,10 @@ public class Entry implements IDObject {
 		this.metadata = metadata;
 	}
 
+	public String getMetadataEntry(String key) {
+		return metadata.get(key);
+	}
+
 	public String toShortString() {
 		return String.format("%d. %s: \"%s\" by %s", id, this.getType(), metadata.get("Title"), metadata.get("Author"));
 	}

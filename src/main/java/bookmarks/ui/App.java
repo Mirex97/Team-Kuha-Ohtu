@@ -17,7 +17,7 @@ public class App {
 	public boolean isNewUser;
 	private IO io;
 	private Tags tags;
-	private List<Entry> prevList;
+	private Entry[] prevList;
 
 	public App(IO io, String db) {
 		this.io = io;
@@ -39,12 +39,19 @@ public class App {
 		this.tags = new Tags(io, tagDao, entryDao);
 	}
 
-	public void showList(List<Entry> list, boolean shortStr, String noMatches, String oneMatch, String manyMatches) {
+	public void sort(List<String> order) {
+		if (prevList == null || prevList.length == 0) {
+			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
+			return;
+		}
+	}
+
+	public void showList(Entry[] list, boolean shortStr, String noMatches, String oneMatch, String manyMatches) {
 		prevList = list;
-		if (list.isEmpty()) {
+		if (list.length == 0) {
 			io.print(noMatches);
 		} else {
-			if (list.size() == 1) io.print(oneMatch);
+			if (list.length == 1) io.print(oneMatch);
 			else io.print(manyMatches);
 
 			for (Entry entry : list) {
@@ -55,16 +62,18 @@ public class App {
 	}
 
 	public void export() {
-		if (prevList == null || prevList.isEmpty()) {
+		if (prevList == null || prevList.length == 0) {
 			io.print("Nothing to export. Try using `list`, `search` or `view` first");
 			return;
 		}
 		String fileName = io.readLine("File to export to: ");
 		if (fileName != null) {
 			try {
-				io.writeFile(fileName, prevList.stream()
-					.map(Entry::toLongString)
-					.collect(Collectors.joining("\n")));
+				String str = "";
+				for (Entry entry : prevList) {
+					str += entry.toLongString() + "\n";
+				}
+				io.writeFile(fileName, str);
 				io.print("Export successful");
 			} catch (IOException e) {
 				io.print("Failed to write file");
@@ -264,15 +273,16 @@ public class App {
 			return;
 		}
 
-		List<Entry> list = new ArrayList<Entry>();
-		list.add(entry);
+		Entry[] list = new Entry[1];
+		list[0] = entry;
 		showList(list, false, "", "", "");
 	}
 
 	public void search() {
 		String query = io.readLine("Term to search: ");
 		try {
-			List<Entry> entries = entryDao.search(query);
+			List<Entry> data = entryDao.search(query);
+			Entry[] entries = data.toArray(new Entry[0]);
 			showList(entries, true, "No results :(", "Match:", "Matches:");
 		} catch (Exception e) {
 			io.print("Failed to search :(");
@@ -285,9 +295,10 @@ public class App {
 		boolean unreadOnly = listUnread.startsWith("y") || listUnread.startsWith("u");
 
 		try {
-			List<Entry> entries = unreadOnly
+			List<Entry> data = unreadOnly
 				? entryDao.findAllUnread()
 				: entryDao.findAll();
+			Entry[] entries = data.toArray(new Entry[0]);
 
 			String showStr = (unreadOnly ? "\nUnread Entries:" : "\nEntries:");
 			showList(entries, true, "No entries :(", showStr, showStr);
