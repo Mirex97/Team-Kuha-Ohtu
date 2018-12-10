@@ -302,18 +302,20 @@ public class Stepdefs {
 	public void systemWillRespondWithTheHelpPage() throws Throwable {
 		assertEquals("(shortcut) command - description", io.readOutput());
 		assertEquals("(a) add    - add a new entry", io.readOutput());
-		assertEquals("(e) edit   - edit an existing entry", io.readOutput());
-		assertEquals("(x) export - export the previously printed list", io.readOutput());
 		assertEquals("(d) delete - delete an existing entry", io.readOutput());
+		assertEquals("(e) edit   - edit an existing entry", io.readOutput());
+		assertEquals("(f) find   - search for an entry", io.readOutput());
+		assertEquals("(h) help   - print this screen", io.readOutput());
+		assertEquals("(i) intro  - takes you to the introduction", io.readOutput());
+		assertEquals("(l) list   - list all entries", io.readOutput());
+		assertEquals("(n) next   - show next page of pagination", io.readOutput());
+		assertEquals("(q) quit   - exits the program", io.readOutput());
 		assertEquals("(r) read   - mark an entry as read", io.readOutput());
+		assertEquals("(t) tags   - takes you to tag section", io.readOutput());
 		assertEquals("(u) unread - mark an entry as unread", io.readOutput());
 		assertEquals("(v) view   - view the full details of an existing entry", io.readOutput());
-		assertEquals("(l) list   - list ALL entries", io.readOutput());
-		assertEquals("(s) search - search for an entry", io.readOutput());
-		assertEquals("(t) tags   - takes you to tag section", io.readOutput());
-		assertEquals("(i) intro  - takes you to the introduction", io.readOutput());
-		assertEquals("(h) help   - print this screen", io.readOutput());
-		assertEquals("(q) quit   - exits the program", io.readOutput());
+		assertEquals("(x) export - export the previously printed list", io.readOutput());
+		
 		assertEquals("Type command to view more detailed help, or press enter to cancel.", io.readOutput());
 		assertEquals("help> ", io.readOutput());
 		io.writeInput(AbstractIO.EndOfTransmission);
