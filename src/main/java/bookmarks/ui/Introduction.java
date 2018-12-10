@@ -109,58 +109,52 @@ public class Introduction {
 	public void run() {
 		// Maximum length of prints (80 characters):
 		//.print("                                                                                ");
-		io.print("Welcome to bookmarks v0.1.0!");
-		io.print("Bookmarks can keep a list of things you want to read, listen, watch or simply");
-		io.print("remember later.");
-		io.print("");
-		io.print("This is an introduction/demo. The introduction will pause between some");
-		io.print("paragraphs. Press enter whenever `**` is printed to unpause. You can");
-		io.print("also press CTRL+D or type cancel at any pause to stop the introduction.");
+		io.print("Welcome to bookmarks v0.1.0!\n" +
+				  "Bookmarks can keep a list of things you want to read, listen, watch or simply\n" +
+				  "remember later.\n\n" +
+				  "This is an introduction/demo. The introduction will pause between some\n" +
+				  "paragraphs. Press enter whenever `**` is printed to unpause. You can\n" +
+				  "also press CTRL+D or type cancel at any pause to stop the introduction.\n");
 		if (readPause()) return;
-		io.print("");
-
-		io.print("Bookmarks is a command-line application, which means all input is text.");
-		io.print("Input is split into two main types: commands and questions.");
+		io.print("\nBookmarks is a command-line application, which means all input is text.\n" +
+				 "Input is split into two main types: commands and questions.\n");
 		if (readPause()) return;
-		io.print("Command prompts want a command, such as `add` or `list`. Commands are always a");
-		io.print("single word and command prompts end with a greater-than sign.  The main command");
-		io.print("prompt is just `> `, whereas subsections like tags and help will have something");
-		io.print("like `tags> ` as the prompt.");
+		io.print("Command prompts want a command, such as `add` or `list`. Commands are always a\n" +
+				 "single word and command prompts end with a greater-than sign.  The main command\n" +
+				 "prompt is just `> `, whereas subsections like tags and help will have something\n" +
+				 "like `tags> ` as the prompt.\n");
 		if (readPause()) return;
 		promptDemo();
 		if (readPause()) return;
-		io.print("Questions ask for things like entry IDs, search queries, or input data.");
-		io.print("Question prompts end with a colon.");
-		io.print("Sometimes questions will have a default value.  The default value is indicated");
-		io.print("with square brackets.  If you provide no value to a question with a default");
-		io.print("value, the default value will be used as your answer.");
+		io.print("Questions ask for things like entry IDs, search queries, or input data.\n" +
+				 "Question prompts end with a colon.\n" +
+				 "Sometimes questions will have a default value.  The default value is indicated\n" +
+				 "with square brackets.  If you provide no value to a question with a default\n" +
+				 "value, the default value will be used as your answer.\n");
 		if (readPause()) return;
 		questionDemo();
 		if (readPause()) return;
-		io.print("Also, some questions are simple yes/no questions. In those cases, the square");
-		io.print("brackets contain the options with the default option as a capital letter.");
-		io.print("In other words, [y/N] means a yes/no question that defaults to No, and [Y/n]");
-		io.print("means a yes/no question that defaults to Yes.");
+		io.print("Also, some questions are simple yes/no questions. In those cases, the square\n" +
+				 "brackets contain the options with the default option as a capital letter.\n" +
+				 "In other words, [y/N] means a yes/no question that defaults to No, and [Y/n]\n" +
+				 "means a yes/no question that defaults to Yes.\n");
 		if (readPause()) return;
 		yesNoQuestionDemo();
-
-		io.print("Since commands are always a single word, you can also type the answer to the");
-		io.print("first question after the command.  For example, when using `view`, you can");
-		io.print("either type `view` and then `5` when prompted, or simply `view 5` all at once.");
-		io.print("To save a few keystrokes, you can type the first letter of a command instead of");
-		io.print("the whole command");
+		io.print("Since commands are always a single word, you can also type the answer to the\n" +
+				 "first question after the command.  For example, when using `view`, you can\n" +
+				 "either type `view` and then `5` when prompted, or simply `view 5` all at once.\n" +
+				 "To save a few keystrokes, you can type the first letter of a command instead of\n" +
+				 "the whole command\n");
 		if (readPause()) return;
 		shortcutDemo();
 		if (readPause()) return;
-		io.print("");
-		io.print("Here's the list of commands:");
+		io.print("\nHere's the list of commands:\n");
 		app.printHelp();
-		io.print("");
-		io.print("You can type \"help\" to bring up the list again at any time. The help command");
-		io.print("will also let you view more detailed descriptions of commands.");
+		io.print("\nYou can type \"help\" to bring up the list again at any time. The help command\n" +
+				 "will also let you view more detailed descriptions of commands.\n");
 		if (readPause()) return;
 
-		io.print("Introduction complete. Press enter to go to application.");
+		io.print("Introduction complete. Press enter to go to application.\n");
 		io.readLine("");
 	}
 
