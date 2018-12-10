@@ -68,3 +68,10 @@ Feature: User can use shortcuts
         Scenario: User can type i to get intro using shortcut command
             When command "i" is selected
             Then system will respond with the introduction
+
+        Scenario: User can give invalid shortcut and system will give uncorrect command
+            When command "z" is selected
+            Then system will respond with "Unknown command. Type "help" for help."
+
+
+
