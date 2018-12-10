@@ -73,5 +73,16 @@ Feature: User can use shortcuts
             When command "z" is selected
             Then system will respond with "Unknown command. Type "help" for help."
 
-
+        Scenario: User can see list by page using shortcut command
+            Given the book "The No. 1 Ladies Detective Agency" by "Alexander McCall Smith" has been added
+            When command "l" is selected
+            Then system will respond with "List only unread entries [y/N]? "
+            When user types "n"
+            Then system will respond with "Entries:"
+            And system will respond with '1. book: "The No. 1 Ladies Detective Agency" by Alexander McCall Smith'
+            When command "p" is selected
+            Then system will respond with "Page to show: "
+            And user types "1"
+            Then system will respond with "Page 1 out of 1:"
+            And system will respond with '1. book: "The No. 1 Ladies Detective Agency" by Alexander McCall Smith'
 
