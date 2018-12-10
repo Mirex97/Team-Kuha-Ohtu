@@ -29,12 +29,14 @@ Feature: User can sort lists
 		Then system will respond with "1st parameter to sort by: "
 		When user types "type"
 		Then system will respond with "2nd parameter to sort by: "
-		When user types "Id"
+		When user types "Title"
 		Then system will respond with "3rd parameter to sort by: "
+		When user types "Id"
+		Then system will respond with "4th parameter to sort by: "
 		When user types ""
 		Then system will respond with "Entries:"
 		And system will respond with '4. blog: "Consistency models" by Nicola Apicella'
-		And system will respond with '1. book: "The No. 1 Ladies Detective Agency" by Alexander McCall Smith'
 		And system will respond with '2. book: "In Search of Lost Time" by Marcel Proust'
+		And system will respond with '1. book: "The No. 1 Ladies Detective Agency" by Alexander McCall Smith'
 		And system will respond with '3. video: "Merge sort algorithm" by mycodeschool'
 		
