@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import bookmarks.Sorter;
 import bookmarks.dao.*;
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
@@ -39,13 +40,6 @@ public class App {
 		this.tags = new Tags(io, tagDao, entryDao);
 	}
 
-	public void sort(List<String> order) {
-		if (prevList == null || prevList.length == 0) {
-			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
-			return;
-		}
-	}
-
 	public void showList(Entry[] list, boolean shortStr, String noMatches, String oneMatch, String manyMatches) {
 		prevList = list;
 		if (list.length == 0) {
@@ -59,6 +53,69 @@ public class App {
 				else io.print(entry.toLongString());
 			}
 		}
+	}
+
+	public void sortPrevList(List<String> order) {
+		int n = prevList.length;
+		for (int j = order.size() - 1; j >= 0; --j) {
+			String comp = order.get(j);
+			System.out.println("comp: '" + comp + "'");
+
+			int[] perm = null;
+			if (comp.equals("Id") || comp.equals("read")) {
+				// Sort by int
+				int[] data = new int[n];
+				for (int i = 0; i < n; ++i) {
+					if (comp.equals("read")) data[i] = prevList[i].isRead() ? 1 : 0;
+					else data[i] = prevList[i].getID();
+				}
+
+				for (int i = 0; i < n; ++i) System.out.print(" " + data[i]);
+				System.out.print("\n");
+
+				perm = Sorter.sortInts(data);
+			} else {
+				// Sort by string
+				String[] data = new String[n];
+				for (int i = 0; i < n; ++i) {
+					data[i] = prevList[i].getMetadataEntry(comp);
+					if (data[i] == null) data[i] = "";
+				}
+				perm = Sorter.sortStrings(data);
+			}
+
+			Sorter.permute(prevList, perm);
+		}
+	}
+
+	public void sort() {
+		if (prevList == null || prevList.length == 0) {
+			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
+			return;
+		}
+
+		// Get parameters to sort by
+		List<String> order = new ArrayList<>();
+		for (int i = 1;; ++i) {
+			String pat = "" + i;
+
+			if (i == 1) pat += "st";
+			else if (i == 2) pat += "nd";
+			else if (i == 3) pat += "rd";
+			else pat += "th";
+
+			pat += " parameter to sort by: ";
+			String str = io.readWord(pat);
+
+			if (str == null || str.length() == 0) break;
+			order.add(str);
+		}
+	
+		// Sort
+		sortPrevList(order);
+
+		// Redisplay
+		showList(prevList, true, "No entries :(", "Entry:", "Entries:");
 	}
 
 	public void export() {
@@ -375,6 +432,9 @@ public class App {
 				case "find":
 				case "s":
 					search();
+					break;
+				case "sort":
+					sort();
 					break;
 				case "delete":
 				case "d":

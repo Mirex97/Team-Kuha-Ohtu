@@ -24,17 +24,64 @@ public class Sorter {
 		return a.charAt(i) <= b.charAt(i);
 	}
 
-	// Returns permutation that stably sorts the strings
+	// Returns the permutation that stably sorts the input integers
+	// Just does mergesort. This should be replaced by just calling some library function probably
+	public static int[] sortInts(int[] data) {
+		int n = data.length;
+
+		int[] perm = new int[n];
+		for (int i = 0; i < n; ++i) perm[i] = i;
+		int[] tmpPerm = new int[n];
+
+		for (int hl = 1; hl < n; hl *= 2) {
+			// Merge sections of length 2*hl
+			for (int a = 0; a + hl < n; a += 2 * hl) {
+				int b = a + hl;
+				int c = min(b + hl, n);
+				// Merge [a, b) and [b, c)
+
+				int i = 0;
+				int j = 0;
+				while(true) {
+					int t = a+i+j;
+					if (t == c) break;
+					
+					boolean pa = true;
+					if (a+i != b && b+j != c) {
+						pa = (data[perm[a+i]] <= data[perm[b+j]]);
+					} else if (a+i == b) {
+						pa = false;
+					}
+
+					if (pa) {
+						tmpPerm[t] = perm[a+i];
+						++i;
+					} else {
+						tmpPerm[t] = perm[b+j];
+						++j;
+					}
+				}
+
+				// Move data back from auxiliary array
+				for (int x = a; x < c; ++x) {
+					perm[x] = tmpPerm[x];
+				}
+			}
+		}
+
+		return perm;
+	}
+
+	// Returns the permutation that stably sorts the input strings
 	// Does string mergesort for sorting.
 	public static int[] sortStrings(String[] data) {
-		// Pointless change
 		int n = data.length;
 
 		int[] lcp = new int[n]; // LCP-array
-		int[] perm = new int[n]; // Resulting permutation
+		int[] perm = new int[n]; // Result permutation
 		for (int i = 0; i < n; ++i) perm[i] = i;
 
-		// tmp variables for storing data not in place
+		// tmp variables for storing data
 		int[] tmpLcp = new int[n];
 		int[] tmpPerm = new int[n];
 
@@ -76,20 +123,18 @@ public class Sorter {
 						++j;
 					}
 				}
+
+				// Move data back from auxiliary arrays
 				for (int x = a; x < c; ++x) {
 					perm[x] = tmpPerm[x];
 					lcp[x] = tmpLcp[x];
 				}
 			}
-			/*
-			for (int i = 0; i < n; ++i) System.out.print(" " + perm[i]);
-			System.out.print("\n");
-			for (int i = 0; i < n; ++i) System.out.println("\t" + data[perm[i]]);
-			*/
 		}
 
 		return perm;
 	}
+
 
 	// Permutes the given array with the given permutation (0-indexed)
 	public static <T> void permute(T[] data, int[] perm) {
