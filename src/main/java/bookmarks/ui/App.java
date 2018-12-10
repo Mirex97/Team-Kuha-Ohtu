@@ -18,7 +18,10 @@ public class App {
 	public boolean isNewUser;
 	private IO io;
 	private Tags tags;
+
+	static final int ENTRIES_PER_PAGE = 10;
 	private Entry[] prevList;
+	private int shownPages;
 
 	public App(IO io, String db) {
 		this.io = io;
@@ -40,17 +43,42 @@ public class App {
 		this.tags = new Tags(io, tagDao, entryDao);
 	}
 
+	public void showNextPage() {
+		int currPage = shownPages;
+		int totalPages = (prevList.length + ENTRIES_PER_PAGE - 1) / ENTRIES_PER_PAGE; // Round up
+		int first = currPage * ENTRIES_PER_PAGE;
+
+		if (first >= prevList.length) {
+			io.print("Nothing to show");
+		} else {
+			io.print("Page " + (currPage+1) + " out of " + (totalPages) + ":");
+			for (int i = first; (i < prevList.length) && (i < first + ENTRIES_PER_PAGE); ++i) {
+				io.print(prevList[i].toShortString());
+			}
+		}
+
+		++shownPages;
+	}
+
 	public void showList(Entry[] list, boolean shortStr, String noMatches, String oneMatch, String manyMatches) {
 		prevList = list;
-		if (list.length == 0) {
-			io.print(noMatches);
-		} else {
-			if (list.length == 1) io.print(oneMatch);
-			else io.print(manyMatches);
+		shownPages = 0;
 
-			for (Entry entry : list) {
-				if (shortStr) io.print(entry.toShortString());
-				else io.print(entry.toLongString());
+		if (list.length > 10) {
+			showNextPage();
+		} else {
+			if (list.length == 0) {
+				io.print(noMatches);
+			} else {
+				++shownPages;
+
+				if (list.length == 1) io.print(oneMatch);
+				else io.print(manyMatches);
+
+				for (Entry entry : list) {
+					if (shortStr) io.print(entry.toShortString());
+					else io.print(entry.toLongString());
+				}
 			}
 		}
 	}
@@ -59,7 +87,6 @@ public class App {
 		int n = prevList.length;
 		for (int j = order.size() - 1; j >= 0; --j) {
 			String comp = order.get(j);
-			System.out.println("comp: '" + comp + "'");
 
 			int[] perm = null;
 			if (comp.equals("Id") || comp.equals("read")) {
@@ -69,9 +96,6 @@ public class App {
 					if (comp.equals("read")) data[i] = prevList[i].isRead() ? 1 : 0;
 					else data[i] = prevList[i].getID();
 				}
-
-				for (int i = 0; i < n; ++i) System.out.print(" " + data[i]);
-				System.out.print("\n");
 
 				perm = Sorter.sortInts(data);
 			} else {
@@ -457,6 +481,10 @@ public class App {
 				case "ls":
 				case "l":
 					list();
+					break;
+				case "next":
+				case "n":
+					showNextPage();
 					break;
 				case "help":
 				case "h":
