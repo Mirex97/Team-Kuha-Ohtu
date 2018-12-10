@@ -23,7 +23,7 @@ public class App {
 	static final int ENTRIES_PER_PAGE = 10;
 	private Entry[] prevList;
 	public Database database;
-	private int shownPages;
+	private int currPage;
 
 	public App(IO io, String db) {
 		this.io = io;
@@ -58,8 +58,7 @@ public class App {
 
 	}
 
-	public void showNextPage() {
-		int currPage = shownPages;
+	public void showPage() {
 		int totalPages = (prevList.length + ENTRIES_PER_PAGE - 1) / ENTRIES_PER_PAGE; // Round up
 		int first = currPage * ENTRIES_PER_PAGE;
 
@@ -70,15 +69,27 @@ public class App {
 			for (int i = first; (i < prevList.length) && (i < first + ENTRIES_PER_PAGE); ++i) {
 				io.print(prevList[i].toShortString());
 			}
-
 		}
+	}
 
-		++shownPages;
+	public void showNextPage() {
+		++currPage;
+		showPage();
+	}
+
+	public void showGivenPage() {
+		int i = io.readInt("Page to show: ") - 1;
+		if (i < 0) {
+			io.print("Please give a positive index.");
+		} else {
+			currPage = i;
+			showPage();
+		}
 	}
 
 	public void showList(Entry[] list, boolean shortStr, String noMatches, String oneMatch, String manyMatches) {
 		prevList = list;
-		shownPages = 0;
+		currPage = -1;
 
 		if (list.length > 10) {
 			showNextPage();
@@ -87,7 +98,7 @@ public class App {
 			if (list.length == 0) {
 				io.print(noMatches);
 			} else {
-				++shownPages;
+				++currPage;
 
 				if (list.length == 1) io.print(oneMatch);
 				else io.print(manyMatches);
@@ -174,7 +185,6 @@ public class App {
 		} catch (IOException e) {
 			io.print("Failed to write file");
 		}
-
 	}
 
 	public void add() {
@@ -412,6 +422,7 @@ public class App {
 		io.print("(i) intro  - takes you to the introduction");
 		io.print("(l) list   - list all entries");
 		io.print("(n) next   - show next page of pagination");
+		io.print("(p) page   - show given page of pagination");
 		io.print("(q) quit   - exits the program");
 		io.print("(r) read   - mark an entry as read");
 		io.print("(t) tags   - takes you to tag section");
@@ -500,6 +511,10 @@ public class App {
 				case "next":
 				case "n":
 					showNextPage();
+					break;
+				case "page":
+				case "p":
+					showGivenPage();
 					break;
 				case "help":
 				case "h":

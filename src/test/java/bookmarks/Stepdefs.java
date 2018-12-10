@@ -309,6 +309,7 @@ public class Stepdefs {
 		assertEquals("(i) intro  - takes you to the introduction", io.readOutput());
 		assertEquals("(l) list   - list all entries", io.readOutput());
 		assertEquals("(n) next   - show next page of pagination", io.readOutput());
+		assertEquals("(p) page   - show given page of pagination", io.readOutput());
 		assertEquals("(q) quit   - exits the program", io.readOutput());
 		assertEquals("(r) read   - mark an entry as read", io.readOutput());
 		assertEquals("(t) tags   - takes you to tag section", io.readOutput());

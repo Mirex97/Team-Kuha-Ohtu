@@ -22,7 +22,7 @@ public class AppTest {
 	@BeforeClass
 	public static void before() {
 		io = new StubIO();
-		app = new App(io, "test.db");
+		app = new App(io, ":memory:");
 	}
 
 	@After
@@ -31,18 +31,6 @@ public class AppTest {
 		io.clearOutput();
 	}
 
-	@AfterClass
-	public static void teardownClass() throws SQLException {
-		app.database.closeConnection();
-		String rem = System.getProperty("user.dir").replace('\\', '/') + "/test.db";
-		File remove = new File(rem);
-		if (remove.exists()) {
-			remove.delete();
-		} else {
-			
-		}
-	}
-	
 	@Test
 	public void sortTest() {
 		List<String> orders = new ArrayList<String>();
