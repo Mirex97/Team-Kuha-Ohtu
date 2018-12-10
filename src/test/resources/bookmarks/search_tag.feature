@@ -10,3 +10,9 @@ Feature: User can search tags
 		And tag find query "fantasy" is given
 		Then system will respond with "1 match"
 		And system will respond with '1. book: "The Empire Strikes Back" by Donald F. Glut'
+
+        Scenario: User searches for nonexisting tag
+                Then user has entered tag section
+		When tag command "find" is selected
+		And tag find query "fantasy" is given
+		Then system will respond with "No matches with tag :("
