@@ -320,6 +320,18 @@ public class Stepdefs {
 		assertEquals("help> ", io.readOutput());
 		io.writeInput(AbstractIO.EndOfTransmission);
 	}
+        
+        @Then("^system will respond with the introduction$")
+	public void systemWillRespondWithTheIntroduction() throws Throwable {
+		assertEquals("Welcome to bookmarks v0.1.0!", io.readOutput());
+		assertEquals("Bookmarks can keep a list of things you want to read, listen, watch or simply", io.readOutput());
+		assertEquals("remember later.", io.readOutput());
+		assertEquals("This is an introduction/demo. The introduction will pause between some", io.readOutput());
+		assertEquals("paragraphs. Press enter whenever `**` is printed to unpause. You can", io.readOutput());
+		assertEquals("also press CTRL+D or type cancel at any pause to stop the introduction.", io.readOutput());
+                assertEquals("**", io.readOutput());
+		io.writeInput(AbstractIO.EndOfTransmission);
+	}
 
 	@Then("^system will respond with the tag help page$")
 	public void systemWillRespondWithTheTagHelpPage() throws Throwable {
