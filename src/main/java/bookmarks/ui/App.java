@@ -405,18 +405,19 @@ public class App {
 	public void printHelp() {
 		io.print("(shortcut) command - description");
 		io.print("(a) add    - add a new entry");
-		io.print("(e) edit   - edit an existing entry");
-		io.print("(x) export - export the previously printed list");
 		io.print("(d) delete - delete an existing entry");
+		io.print("(e) edit   - edit an existing entry");
+		io.print("(f) find   - search for an entry");
+		io.print("(h) help   - print this screen");
+		io.print("(i) intro  - takes you to the introduction");
+		io.print("(l) list   - list all entries");
+		io.print("(n) next   - show next page of pagination");
+		io.print("(q) quit   - exits the program");
 		io.print("(r) read   - mark an entry as read");
+		io.print("(t) tags   - takes you to tag section");
 		io.print("(u) unread - mark an entry as unread");
 		io.print("(v) view   - view the full details of an existing entry");
-		io.print("(l) list   - list all entries");
-		io.print("(s) search - search for an entry");
-		io.print("(t) tags   - takes you to tag section");
-		io.print("(i) intro  - takes you to the introduction");
-		io.print("(h) help   - print this screen");
-		io.print("(q) quit   - exits the program");
+		io.print("(x) export - export the previously printed list");
 	}
 
 	public void help() {
@@ -465,12 +466,13 @@ public class App {
 				case "e":
 					edit();
 					break;
-				case "search":
 				case "find":
-				case "s":
+				case "search":
+				case "f":
 					search();
 					break;
 				case "sort":
+				case "s":
 					sort();
 					break;
 				case "delete":
