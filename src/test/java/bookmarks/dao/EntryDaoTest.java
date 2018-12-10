@@ -2,6 +2,8 @@ package bookmarks.dao;
 
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
+import bookmarks.io.StubIO;
+import bookmarks.ui.EntryTypes;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +14,7 @@ import static org.junit.Assert.*;
 
 public class EntryDaoTest {
 	EntryDao entryDao;
+	EntryTypes entryTypes;
 	Random r;
 
 	@Before
@@ -19,6 +22,7 @@ public class EntryDaoTest {
 		r = new Random(1337);
 		Database db = new Database("jdbc:sqlite::memory:");
 		db.createNewTables();
+		entryTypes = new EntryTypes(new StubIO());
 		entryDao = new EntryDao(db, new EntryTagDao(db, new TagDao(db)), new EntryMetadataDao(db));
 	}
 
@@ -33,8 +37,8 @@ public class EntryDaoTest {
 			tags.add(new Tag("tag", Integer.toString(r.nextInt(100))));
 		}
 		Map<String, String> metadata = new HashMap<>();
-		metadata.put("type", Entry.getTypes().stream()
-			.skip(r.nextInt(Entry.getTypes().size() - 1))
+		metadata.put("type", entryTypes.getTypes().stream()
+			.skip(r.nextInt(entryTypes.getTypes().size() - 1))
 			.findFirst().orElse("book"));
 		Entry e = new Entry(r.nextInt(), tags, metadata);
 		entryDao.save(e);

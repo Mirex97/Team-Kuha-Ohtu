@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class EntryTypes {
 	private IO io;
 	private Map<String, Entry.Type> types = new HashMap<>();
+	public boolean offlineMode = false;
 
 	public EntryTypes(IO io) {
 		this.io = io;
@@ -33,9 +34,9 @@ public class EntryTypes {
 		this.addEntryType(new SimpleEntryType("podcast",
 				new String[]{"Podcast name", "Title", "Author", "Description", "Comment"}),
 			"podcast", "p");
-		this.addEntryType(new SimpleEntryType("podcast",
+		this.addEntryType(new SimpleEntryType("meme",
 				new String[]{"Title", "Author", "Image", "Up text", "Bottom text", "Comment"}),
-			"podcast", "p");
+			"meme", "m");
 	}
 
 	public Entry.Type getType(String name) {
@@ -54,9 +55,10 @@ public class EntryTypes {
 	}
 
 	public class SimpleEntryType implements Entry.Type {
-		private String name;
-		private String[] fields;
-		private Map<String, InputValidators.Validator> validators;
+		String name;
+		String[] fields;
+		String[] readFields;
+		Map<String, InputValidators.Validator> validators;
 
 		public SimpleEntryType(String name, String[] fields) {
 			this(name, fields, new HashMap<>(InputValidators.ALL));
@@ -65,6 +67,7 @@ public class EntryTypes {
 		public SimpleEntryType(String name, String[] fields, Map<String, InputValidators.Validator> validators) {
 			this.name = name;
 			this.fields = fields;
+			this.readFields = fields;
 			this.validators = validators;
 		}
 
@@ -77,7 +80,7 @@ public class EntryTypes {
 		}
 
 		public void read(Entry e) throws EOFException {
-			for (String field : fields) {
+			for (String field : readFields) {
 				e.putMetadata(field, readSingleField(e, field));
 			}
 		}
@@ -98,6 +101,10 @@ public class EntryTypes {
 				}
 				return val;
 			}
+		}
+
+		public String toString() {
+			return this.name;
 		}
 
 		public String formatShort(Entry e) {
@@ -136,7 +143,8 @@ public class EntryTypes {
 		OpenLibrary library = new OpenLibrary();
 
 		public BookEntryType() {
-			super("book", new String[]{"Title", "Author", "Description", "Comment"}, new HashMap<>());
+			super("book", new String[]{"ISBN", "Title", "Author", "Description", "Comment"}, new HashMap<>());
+			this.readFields = new String[]{"Title", "Author", "Description", "Comment"};
 			addValidator("ISBN", InputValidators.ISBN);
 		}
 
@@ -161,7 +169,7 @@ public class EntryTypes {
 		public void read(Entry e) throws EOFException {
 			String isbn = readSingleField(e, "ISBN");
 			if (e.getMetadata("ISBN") == null) {
-				if (!isbn.isEmpty()) {
+				if (!offlineMode && !isbn.isEmpty()) {
 					io.print("Fetching book metadata from OpenLibrary...");
 					if (!fillFromOpenLibrary(e, isbn)) {
 						io.print("Failed to fetch metadata.");

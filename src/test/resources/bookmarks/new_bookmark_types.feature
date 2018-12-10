@@ -29,5 +29,5 @@ Feature: User can add a new bookmark of a different type
 	Scenario: User can add an article bookmark
 		When command "add" is selected
 		And type "article" is given
-		And title "Article", author "auto-thor", paper "The good one", description "Mildly wild", comment "Keep an eye on this" and tags "" are given
+		And title "Article", author "auto-thor", arxiv ID "123", description "Mildly wild", comment "Keep an eye on this" and tags "" are given
 		Then system will respond with "Entry created"

@@ -60,6 +60,10 @@ public class App {
 
 	}
 
+	public void setOfflineMode(boolean offline) {
+		this.entryTypes.offlineMode = offline;
+	}
+
 	public void showNextPage() {
 		int currPage = shownPages;
 		int totalPages = (prevList.length + ENTRIES_PER_PAGE - 1) / ENTRIES_PER_PAGE; // Round up
@@ -248,14 +252,14 @@ public class App {
 	}
 
 	private Set<Tag> readTags(Set<Tag> existingTags) {
-		String existingTagsStr = existingTags != null ? existingTags.stream()
+		String existingTagsStr = existingTags.stream()
 			.map(Tag::getName)
-			.collect(Collectors.joining(", ")) : null;
-		String newTags = io.readLine(String.format(existingTags != null ? "Tags [%s]: " : "Tags: ", existingTagsStr));
+			.collect(Collectors.joining(", "));
+		String newTags = io.readLine(String.format(!existingTags.isEmpty() ? "Tags [%s]: " : "Tags: ", existingTagsStr));
 		if (newTags.equals(AbstractIO.EndOfTransmission)) {
 			return null;
 		}
-		if (existingTags == null || !newTags.isEmpty()) {
+		if (!newTags.isEmpty()) {
 			return Arrays.stream(
 				newTags.split(","))
 				.map(s -> new Tag("tag", s.trim()))

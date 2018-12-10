@@ -19,7 +19,6 @@ import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 public class Stepdefs {
-
 	StubIO io;
 	App app;
 	ExecutorService exec;
@@ -29,6 +28,7 @@ public class Stepdefs {
 	public void setup() throws Throwable {
 		io = new StubIO();
 		app = new App(io, ":memory:");
+		app.setOfflineMode(true);
 		app.isNewUser = false;
 		exec = Executors.newSingleThreadExecutor();
 		future = exec.submit(app::run);
@@ -165,8 +165,8 @@ public class Stepdefs {
 
 	@When("^edit title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void editTitleAuthorISBNDescriptionCommentAndTagsAreGiven(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
-		giveEditInputs(new String[]{"Title", "Author", "ISBN", "Description", "Comment", "Tags"},
-			new String[]{title, author, isbn, description, comment, tags});
+		giveEditInputs(new String[]{"ISBN", "Title", "Author", "Description", "Comment", "Tags"},
+			new String[]{isbn, title, author, description, comment, tags});
 	}
 
 	private void giveEditInputs(String[] keys, String[] values) {
@@ -185,26 +185,26 @@ public class Stepdefs {
 	
 	@When("^user types \"([^\"]*)\" into field \"([^\"]*)\"$")
 	public void userTypesIntoField(String input, String field) throws Throwable {
-		assertEquals(field, io.readOutput());
+		assertEquals(field + ": ", io.readOutput());
 		io.writeInput(input);
 	}
 
 	@When("^title \"([^\"]*)\", author \"([^\"]*)\", isbn \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void titleAuthorISBNDescriptionCommentAndTagsAreGiven(String title, String author, String isbn, String description, String comment, String tags) throws Throwable {
-		giveInputs(new String[]{"Title", "Author", "ISBN", "Description", "Comment", "Tags"},
-			new String[]{title, author, isbn, description, comment, tags});
+		giveInputs(new String[]{"ISBN", "Title", "Author", "Description", "Comment", "Tags"},
+			new String[]{isbn, title, author, description, comment, tags});
 	}
 
 	@When("^title \"([^\"]*)\", author \"([^\"]*)\", link \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void titleAuthorLinkDescriptionCommentAndTagsAreGiven(String title, String author, String link, String description, String comment, String tags) throws Throwable {
-		giveInputs(new String[]{"Title", "Author", "Link", "Description", "Comment", "Tags"},
-			new String[]{title, author, link, description, comment, tags});
+		giveInputs(new String[]{"Link", "Title", "Author", "Description", "Comment", "Tags"},
+			new String[]{link, title, author, description, comment, tags});
 	}
 
 	@When("^title \"([^\"]*)\", author \"([^\"]*)\", podcast name \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
 	public void titleAuthorPodcastNameDescriptionCommentAndTagsAreGiven(String title, String author, String podcastName, String description, String comment, String tags) throws Throwable {
-		giveInputs(new String[]{"Title", "Author", "Podcast name", "Description", "Comment", "Tags"},
-			new String[]{title, author, podcastName, description, comment, tags});
+		giveInputs(new String[]{"Podcast name", "Title", "Author", "Description", "Comment", "Tags"},
+			new String[]{podcastName, title, author, description, comment, tags});
 	}
 
 	@When("^title \"([^\"]*)\", author \"([^\"]*)\", image \"([^\"]*)\", up text \"([^\"]*)\", bottom text \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
@@ -213,10 +213,10 @@ public class Stepdefs {
 			new String[]{title, author, image, up_text, bottom_text, comment, tags});
 	}
 
-	@When("^title \"([^\"]*)\", author \"([^\"]*)\", paper \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
-	public void titleAuthorArticleNameDescriptionCommentAndTagsAreGiven(String title, String author, String paper, String description, String comment, String tags) throws Throwable {
-		giveInputs(new String[]{"Title", "Author", "Paper", "Description", "Comment", "Tags"},
-			new String[]{title, author, paper, description, comment, tags});
+	@When("^title \"([^\"]*)\", author \"([^\"]*)\", arxiv ID \"([^\"]*)\", description \"([^\"]*)\", comment \"([^\"]*)\" and tags \"([^\"]*)\" are given$")
+	public void titleAuthorArticleNameDescriptionCommentAndTagsAreGiven(String paper, String title, String author, String description, String comment, String tags) throws Throwable {
+		giveInputs(new String[]{"arXiv ID", "Title", "Author", "Description", "Comment", "Tags"},
+			new String[]{paper, title, author, description, comment, tags});
 	}
 
 	private void giveInputs(String[] keys, String[] values) {
