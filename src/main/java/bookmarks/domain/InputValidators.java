@@ -50,7 +50,7 @@ public class InputValidators {
 		}
 	};
 
-	private static int calculateISBN10Checksum(String isbn) {
+	private static int calculateISBN10Checksum(String isbn) throws NumberFormatException {
 		int total = 0;
 		for (int i = 0; i < 9; i++) {
 			int digit = Integer.parseInt("" + isbn.charAt(i));
@@ -60,7 +60,7 @@ public class InputValidators {
 		return (11 - (total % 11)) % 11;
 	}
 
-	private static int calculateISBN13Checksum(String isbn) {
+	private static int calculateISBN13Checksum(String isbn) throws NumberFormatException {
 		int total = 0;
 		for (int i = 0; i < 12; i++) {
 			int digit = Integer.parseInt("" + isbn.charAt(i));

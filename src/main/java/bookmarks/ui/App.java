@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import bookmarks.Sorter;
 import bookmarks.dao.*;
 import bookmarks.domain.Entry;
 import bookmarks.domain.Tag;
@@ -13,23 +14,27 @@ import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
 public class App {
+	static final int ENTRIES_PER_PAGE = 10;
+
+	public Database database;
 	public EntryDao entryDao;
 	public TagDao tagDao;
 	public boolean isNewUser;
 	private IO io;
 	private Tags tags;
 	private EntryTypes entryTypes;
-	private List<Entry> prevList;
+	private Entry[] prevList;
+	private int shownPages;
 
 	public App(IO io, String db) {
 		this.io = io;
-		Database database;
 		try {
 			database = new Database("jdbc:sqlite:" + db);
 		} catch (SQLException e) {
 			System.out.println("Failed to connect to database");
 			System.exit(1);
 			return;
+
 		}
 		this.isNewUser = database.createNewTables();
 
@@ -42,39 +47,136 @@ public class App {
 		this.tags = new Tags(io, tagDao, entryDao);
 	}
 
-	public void showList(List<Entry> list, boolean shortStr, String noMatches, String oneMatch, String manyMatches) {
-		prevList = list;
-		if (list.isEmpty()) {
-			io.print(noMatches);
-		} else {
-			if (list.size() == 1) io.print(oneMatch);
-			else io.print(manyMatches);
 
-			for (Entry entry : list) {
-				if (shortStr) io.print(entry.toShortString());
-				else io.print(entry.toLongString());
+	public void clearPrevList() {
+		prevList = null;
+	}
+
+	public void sort(List<String> order) {
+		if (prevList == null || prevList.length == 0) {
+			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
+			return;
+		}
+
+	}
+
+	public void showNextPage() {
+		int currPage = shownPages;
+		int totalPages = (prevList.length + ENTRIES_PER_PAGE - 1) / ENTRIES_PER_PAGE; // Round up
+		int first = currPage * ENTRIES_PER_PAGE;
+
+		if (first >= prevList.length) {
+			io.print("Nothing to show");
+		} else {
+			io.print("Page " + (currPage + 1) + " out of " + (totalPages) + ":");
+			for (int i = first; (i < prevList.length) && (i < first + ENTRIES_PER_PAGE); ++i) {
+				io.print(prevList[i].toShortString());
+			}
+
+		}
+
+		++shownPages;
+	}
+
+	public void showList(Entry[] list, boolean shortStr, String noMatches, String oneMatch, String manyMatches) {
+		prevList = list;
+		shownPages = 0;
+
+		if (list.length > 10) {
+			showNextPage();
+		} else {
+
+			if (list.length == 0) {
+				io.print(noMatches);
+			} else {
+				++shownPages;
+
+				if (list.length == 1) io.print(oneMatch);
+				else io.print(manyMatches);
+
+				for (Entry entry : list) {
+					if (shortStr) io.print(entry.toShortString());
+					else io.print(entry.toLongString());
+				}
 			}
 		}
 	}
 
+	public void sortPrevList(List<String> order) {
+		int n = prevList.length;
+		for (int j = order.size() - 1; j >= 0; --j) {
+			String comp = order.get(j);
+
+			int[] perm = null;
+			if (comp.equals("Id") || comp.equals("read")) {
+				// Sort by int
+				int[] data = new int[n];
+				for (int i = 0; i < n; ++i) {
+					if (comp.equals("read")) data[i] = prevList[i].isRead() ? 1 : 0;
+					else data[i] = prevList[i].getID();
+				}
+
+				perm = Sorter.sortInts(data);
+			} else {
+				// Sort by string
+				String[] data = new String[n];
+				for (int i = 0; i < n; ++i) {
+					data[i] = prevList[i].getMetadataEntry(comp);
+					if (data[i] == null) data[i] = "";
+				}
+				perm = Sorter.sortStrings(data);
+			}
+
+			Sorter.permute(prevList, perm);
+		}
+	}
+
+	public void sort() {
+		if (prevList == null || prevList.length == 0) {
+			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
+			return;
+		}
+
+		// Get parameters to sort by
+		List<String> order = new ArrayList<>();
+		for (int i = 1; ; ++i) {
+			String pat = "" + i;
+
+			if (i == 1) pat += "st";
+			else if (i == 2) pat += "nd";
+			else if (i == 3) pat += "rd";
+			else pat += "th";
+
+			pat += " parameter to sort by: ";
+			String str = io.readWord(pat);
+
+			if (str == null || str.length() == 0) break;
+			order.add(str);
+		}
+
+		// Sort
+		sortPrevList(order);
+
+		// Redisplay
+		showList(prevList, true, "No entries :(", "Entry:", "Entries:");
+	}
+
 	public void export() {
-		if (prevList == null || prevList.isEmpty()) {
+		if (prevList == null || prevList.length == 0) {
 			io.print("Nothing to export. Try using `list`, `search` or `view` first");
 			return;
 		}
 		String fileName = io.readLine("File to export to: ");
-		if (fileName != null) {
-			try {
-				io.writeFile(fileName, prevList.stream()
-					.map(Entry::toLongString)
-					.collect(Collectors.joining("\n")));
-				io.print("Export successful");
-			} catch (IOException e) {
-				io.print("Failed to write file");
-			}
-		} else {
-			io.print("Exporting cancelled");
+		try {
+			String str = Arrays.stream(prevList)
+				.map(Entry::toLongString)
+				.collect(Collectors.joining("\n"));
+			io.writeFile(fileName, str);
+			io.print("Export successful");
+		} catch (IOException e) {
+			io.print("Failed to write file");
 		}
+
 	}
 
 	public void add() {
@@ -234,15 +336,16 @@ public class App {
 			return;
 		}
 
-		List<Entry> list = new ArrayList<Entry>();
-		list.add(entry);
+		Entry[] list = new Entry[1];
+		list[0] = entry;
 		showList(list, false, "", "", "");
 	}
 
 	public void search() {
 		String query = io.readLine("Term to search: ");
 		try {
-			List<Entry> entries = entryDao.search(query);
+			List<Entry> data = entryDao.search(query);
+			Entry[] entries = data.toArray(new Entry[0]);
 			showList(entries, true, "No results :(", "Match:", "Matches:");
 		} catch (Exception e) {
 			io.print("Failed to search :(");
@@ -255,9 +358,10 @@ public class App {
 		boolean unreadOnly = listUnread.startsWith("y") || listUnread.startsWith("u");
 
 		try {
-			List<Entry> entries = unreadOnly
+			List<Entry> data = unreadOnly
 				? entryDao.findAllUnread()
 				: entryDao.findAll();
+			Entry[] entries = data.toArray(new Entry[0]);
 
 			String showStr = (unreadOnly ? "\nUnread Entries:" : "\nEntries:");
 			showList(entries, true, "No entries :(", showStr, showStr);
@@ -335,6 +439,9 @@ public class App {
 				case "s":
 					search();
 					break;
+				case "sort":
+					sort();
+					break;
 				case "delete":
 				case "d":
 					delete();
@@ -356,6 +463,10 @@ public class App {
 				case "ls":
 				case "l":
 					list();
+					break;
+				case "next":
+				case "n":
+					showNextPage();
 					break;
 				case "help":
 				case "h":

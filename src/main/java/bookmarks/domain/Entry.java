@@ -92,6 +92,10 @@ public class Entry implements IDObject {
 		this.metadata = metadata;
 	}
 
+	public String getMetadataEntry(String key) {
+		return metadata.get(key);
+	}
+
 	public String toShortString() {
 		return this.getType().formatShort(this);
 	}

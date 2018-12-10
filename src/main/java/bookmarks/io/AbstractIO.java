@@ -30,7 +30,15 @@ public abstract class AbstractIO implements IO {
 			printPrompt(prompt);
 			return readLine();
 		}
-		String res = String.join(" ", wordQueue);
+		String res;
+		try {
+			res = String.join(" ", wordQueue);
+		} catch (NullPointerException e) {
+			return null;
+		}
+		if (res.isEmpty()) {
+			return null;
+		}
 		wordQueue.clear();
 		print(prompt + res);
 		return res;
