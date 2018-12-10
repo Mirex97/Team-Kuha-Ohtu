@@ -12,22 +12,24 @@ import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
 public class App {
+
 	public EntryDao entryDao;
 	public TagDao tagDao;
 	public boolean isNewUser;
 	private IO io;
 	private Tags tags;
 	private Entry[] prevList;
+	public Database database;
 
 	public App(IO io, String db) {
 		this.io = io;
-		Database database;
 		try {
 			database = new Database("jdbc:sqlite:" + db);
 		} catch (SQLException e) {
 			System.out.println("Failed to connect to database");
 			System.exit(1);
 			return;
+
 		}
 		this.isNewUser = database.createNewTables();
 
@@ -37,6 +39,10 @@ public class App {
 		entryDao = new EntryDao(database, entryTagDao, entryMetadataDao);
 
 		this.tags = new Tags(io, tagDao, entryDao);
+	}
+
+	public void clearPrevList() {
+		prevList = null;
 	}
 
 	public void sort(List<String> order) {
@@ -51,12 +57,18 @@ public class App {
 		if (list.length == 0) {
 			io.print(noMatches);
 		} else {
-			if (list.length == 1) io.print(oneMatch);
-			else io.print(manyMatches);
+			if (list.length == 1) {
+				io.print(oneMatch);
+			} else {
+				io.print(manyMatches);
+			}
 
 			for (Entry entry : list) {
-				if (shortStr) io.print(entry.toShortString());
-				else io.print(entry.toLongString());
+				if (shortStr) {
+					io.print(entry.toShortString());
+				} else {
+					io.print(entry.toLongString());
+				}
 			}
 		}
 	}
@@ -67,20 +79,17 @@ public class App {
 			return;
 		}
 		String fileName = io.readLine("File to export to: ");
-		if (fileName != null) {
-			try {
-				String str = "";
-				for (Entry entry : prevList) {
-					str += entry.toLongString() + "\n";
-				}
-				io.writeFile(fileName, str);
-				io.print("Export successful");
-			} catch (IOException e) {
-				io.print("Failed to write file");
+		try {
+			String str = "";
+			for (Entry entry : prevList) {
+				str += entry.toLongString() + "\n";
 			}
-		} else {
-			io.print("Exporting cancelled");
+			io.writeFile(fileName, str);
+			io.print("Export successful");
+		} catch (IOException e) {
+			io.print("Failed to write file");
 		}
+
 	}
 
 	public void add() {
