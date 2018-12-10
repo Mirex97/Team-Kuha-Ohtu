@@ -43,6 +43,9 @@ public class App {
 		entryDao = new EntryDao(database, entryTagDao, entryMetadataDao);
 
 		this.tags = new Tags(io, tagDao, entryDao);
+
+		prevList = new Entry[0];
+		currPage = -1;
 	}
 
 
