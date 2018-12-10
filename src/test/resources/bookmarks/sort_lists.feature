@@ -100,6 +100,6 @@ Feature: User can sort lists
 		And system will respond with '4. book: "Ulysses" by James Joyce'
 		And system will respond with '8. book: "War and Peace" by Leo Tolstoy'
 		
-		
-		
-		
+	Scenario: User gets an error message when there is nothing on a list
+		When command "sort" is selected
+		Then system will respond with "Nothing to sort. Try using `list`, `search` or `view` first"
