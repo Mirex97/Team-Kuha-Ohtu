@@ -55,9 +55,9 @@ public class App {
 			io.print("Nothing to sort. Try using `list`, `search` or `view` first");
 			return;
 		}
-		
+
 	}
-		
+
 	public void showNextPage() {
 		int currPage = shownPages;
 		int totalPages = (prevList.length + ENTRIES_PER_PAGE - 1) / ENTRIES_PER_PAGE; // Round up
@@ -66,7 +66,7 @@ public class App {
 		if (first >= prevList.length) {
 			io.print("Nothing to show");
 		} else {
-			io.print("Page " + (currPage+1) + " out of " + (totalPages) + ":");
+			io.print("Page " + (currPage + 1) + " out of " + (totalPages) + ":");
 			for (int i = first; (i < prevList.length) && (i < first + ENTRIES_PER_PAGE); ++i) {
 				io.print(prevList[i].toShortString());
 			}
@@ -137,7 +137,7 @@ public class App {
 
 		// Get parameters to sort by
 		List<String> order = new ArrayList<>();
-		for (int i = 1;; ++i) {
+		for (int i = 1; ; ++i) {
 			String pat = "" + i;
 
 			if (i == 1) pat += "st";
@@ -151,7 +151,7 @@ public class App {
 			if (str == null || str.length() == 0) break;
 			order.add(str);
 		}
-	
+
 		// Sort
 		sortPrevList(order);
 
@@ -166,10 +166,9 @@ public class App {
 		}
 		String fileName = io.readLine("File to export to: ");
 		try {
-			String str = "";
-			for (Entry entry : prevList) {
-				str += entry.toLongString() + "\n";
-			}
+			String str = Arrays.stream(prevList)
+				.map(Entry::toLongString)
+				.collect(Collectors.joining("\n"));
 			io.writeFile(fileName, str);
 			io.print("Export successful");
 		} catch (IOException e) {

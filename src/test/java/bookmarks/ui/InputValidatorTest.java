@@ -5,14 +5,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class InputValidatorTest {
-
 	@Test
 	public void validateIsbnCorrectChecksum() {
 		assertTrue(InputValidator.validateISBN("978-0-590-54178-7"));
 		assertTrue(InputValidator.validateISBN("978 0 590 54178 7"));
 		assertTrue(InputValidator.validateISBN("9780590541787"));
 		assertFalse(InputValidator.validateISBN("978-0-590-54178-8"));
-		
+
 		assertTrue(InputValidator.validateISBN("0-590-54178-1"));
 		assertTrue(InputValidator.validateISBN("0 590 54178 1"));
 		assertTrue(InputValidator.validateISBN("0590541781"));

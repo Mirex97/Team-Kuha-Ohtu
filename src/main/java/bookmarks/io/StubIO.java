@@ -14,11 +14,7 @@ public class StubIO extends AbstractIO {
 	private final Map<String, String> fileOutput = new HashMap<>();
 
 	public void writeInput(String input) {
-		try {
-			this.input.add(input);
-		} catch (Exception e) {
-
-		}
+		this.input.add(input);
 	}
 
 	public String readOutput() {

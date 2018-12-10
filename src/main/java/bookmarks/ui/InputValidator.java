@@ -8,11 +8,11 @@ public class InputValidator {
 
 		isbn = isbn.replaceAll("[- ]", "");
 
-		
+
 		if (isbn.length() == 10) {
 			try {
 				int checksum = calculateISBN10Checksum(isbn);
-				
+
 				if (checksum == 10) {
 					return ("" + isbn.charAt(9)).toLowerCase().equals("x");
 				}
@@ -22,7 +22,7 @@ public class InputValidator {
 				return false;
 			}
 		}
-			
+
 		if (isbn.length() != 13) {
 			return false;
 		}
@@ -39,7 +39,7 @@ public class InputValidator {
 			return false;
 		}
 	}
-	
+
 	private static int calculateISBN10Checksum(String isbn) throws NumberFormatException {
 		int total = 0;
 		for (int i = 0; i < 9; i++) {
@@ -49,7 +49,7 @@ public class InputValidator {
 
 		return (11 - (total % 11)) % 11;
 	}
-	
+
 	private static int calculateISBN13Checksum(String isbn) throws NumberFormatException {
 		int total = 0;
 		for (int i = 0; i < 12; i++) {
@@ -65,7 +65,7 @@ public class InputValidator {
 		if (checksum == 10) {
 			checksum = 0;
 		}
-		
+
 		return checksum;
 	}
 

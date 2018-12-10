@@ -42,22 +42,22 @@ public class Sorter {
 
 				int i = 0;
 				int j = 0;
-				while(true) {
-					int t = a+i+j;
+				while (true) {
+					int t = a + i + j;
 					if (t == c) break;
-					
+
 					boolean pa = true;
-					if (a+i != b && b+j != c) {
-						pa = (data[perm[a+i]] <= data[perm[b+j]]);
-					} else if (a+i == b) {
+					if (a + i != b && b + j != c) {
+						pa = (data[perm[a + i]] <= data[perm[b + j]]);
+					} else if (a + i == b) {
 						pa = false;
 					}
 
 					if (pa) {
-						tmpPerm[t] = perm[a+i];
+						tmpPerm[t] = perm[a + i];
 						++i;
 					} else {
-						tmpPerm[t] = perm[b+j];
+						tmpPerm[t] = perm[b + j];
 						++j;
 					}
 				}
@@ -88,38 +88,38 @@ public class Sorter {
 		for (int hl = 1; hl < n; hl *= 2) {
 
 			// Merge sections of length 2 * hl
-			for (int a = 0; a+hl < n; a += 2*hl) {
+			for (int a = 0; a + hl < n; a += 2 * hl) {
 				int b = a + hl;
 				int c = min(n, b + hl);
 				// Merge parts [a, b) and [b, c)
 
 				int i = 0;
 				int j = 0;
-				while(true) {
-					int t = a+i+j; // Where the chosen entry will go
+				while (true) {
+					int t = a + i + j; // Where the chosen entry will go
 					if (t == c) break;
 
 					boolean pa = true; // Do we pick the one from the first segment
-					if (a+i != b && b+j != c) {
+					if (a + i != b && b + j != c) {
 						// Compare first non-matching character
-						int lp = getLcp(data[perm[a+i]], data[perm[b+j]], min(lcp[a+i], lcp[b+j]));
-						pa = compChar(data[perm[a+i]], data[perm[b+j]], lp);
-						
-						if (pa) lcp[b+j] = lp;
-						else lcp[a+i] = lp;
-					} else if (a+i == b) {
+						int lp = getLcp(data[perm[a + i]], data[perm[b + j]], min(lcp[a + i], lcp[b + j]));
+						pa = compChar(data[perm[a + i]], data[perm[b + j]], lp);
+
+						if (pa) lcp[b + j] = lp;
+						else lcp[a + i] = lp;
+					} else if (a + i == b) {
 						pa = false; // first part fully used
 					}
 
 					if (pa) {
 						// Pick from first segment
-						tmpLcp[t] = lcp[a+i];
-						tmpPerm[t] = perm[a+i];
+						tmpLcp[t] = lcp[a + i];
+						tmpPerm[t] = perm[a + i];
 						++i;
 					} else {
 						// Pick from second segment
-						tmpLcp[t] = lcp[b+j];
-						tmpPerm[t] = perm[b+j];
+						tmpLcp[t] = lcp[b + j];
+						tmpPerm[t] = perm[b + j];
 						++j;
 					}
 				}
@@ -146,7 +146,7 @@ public class Sorter {
 
 		for (int i = 0; i < n; ++i) {
 			int t = pr[i];
-			while(t != i) {
+			while (t != i) {
 				// Do a swap
 				T tmp = data[i];
 				data[i] = data[t];
