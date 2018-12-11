@@ -58,10 +58,11 @@ public class AppTest {
 
 	@Test
 	public void exportTest() {
+		app.setOfflineMode(true);
 		app.export();
 		assertEquals("Nothing to export. Try using `list`, `search` or `view` first", io.readOutput());
 		io.writeInput("video");
-		io.writeInput("https://lol.com");
+		io.writeInput("https://www.youtube.com/watch?v=TzeBrDU-JaY");
 		io.writeInput("title");
 		io.writeInput("wat");
 		io.writeInput("miau");

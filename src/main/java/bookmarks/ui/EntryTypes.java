@@ -6,6 +6,8 @@ import bookmarks.domain.Tag;
 import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 import bookmarks.util.OpenLibrary;
+import bookmarks.util.YoutubeApi;
+import com.google.api.services.youtube.model.Video;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -184,10 +186,65 @@ public class EntryTypes {
 	}
 
 	public class VideoEntryType extends SimpleEntryType {
+		YoutubeApi youtubeInfo = new YoutubeApi();
+		
 		public VideoEntryType() {
 			super("video", new String[]{"Link", "Title", "Author", "Description", "Comment"});
+			this.readFields = new String[]{"Title", "Author", "Description", "Comment"};
+			addValidator("Link", InputValidators.LINK);
 		}
 
-		// TODO fetch video info by youtube URL
+		private boolean fillFromYoutubeApi(Entry entry, String id) {
+			Video video;
+			try {
+				video =  youtubeInfo.getYoutubeItemDetails(id);
+				if (video == null) {
+					return false;
+				}
+			} catch (Exception e) {
+				return false;
+			}
+			
+			entry.putMetadata("Title", video.getSnippet().getTitle());
+			entry.putMetadata("Author", video.getSnippet().getChannelTitle());
+			return true;
+		}
+		
+		@Override
+		public void read(Entry e) throws EOFException {
+			String link = readSingleField(e, "Link");
+			
+			String id = getIdFromLink(link);
+			if (e.getMetadata("Link") == null) {
+				if (!offlineMode && !id.isEmpty()) {
+					io.print("Fetching video metadata from YoutubeApi...");
+					if (!fillFromYoutubeApi(e, id)) {
+						io.print("Failed to fetch metadata.");
+					} else {
+						io.print("Metadata fetched successfully.");
+					}
+				}
+			}
+			e.putMetadata("Link", link);
+			super.read(e);
+		}
+		
+		private String getIdFromLink(String link) {
+			int index = link.indexOf("watch?v=");
+			if (index == -1) {
+				return "";
+			}
+			String id = "";
+			
+			for (int i = index + 8; i < link.length(); i++) {
+				if (link.charAt(i) == '&') {
+					break;
+				}
+				
+				id += link.charAt(i);
+			}
+			
+			return id;
+		}
 	}
 }

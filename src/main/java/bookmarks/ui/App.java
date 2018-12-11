@@ -215,7 +215,7 @@ public class App {
 			}
 		}
 		Map<String, String> metadata = new HashMap<>();
-		metadata.put("type", typeName);
+		metadata.put("type", type.getName());
 
 		Entry entry = new Entry(new HashSet<>(), metadata);
 		try {
