@@ -1,5 +1,6 @@
 package bookmarks.domain;
 
+import java.io.EOFException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -8,43 +9,20 @@ public class Entry implements IDObject {
 	private boolean read;
 	private Set<Tag> tags;
 	private Map<String, String> metadata;
+	private static Map<String, Entry.Type> types = new HashMap<>();
 
-	private static HashMap<String, String[]> typeFields = new HashMap<>();
-	private static HashMap<String, String> typeShortcuts = new HashMap<>();
-
-	static {
-		typeFields.put("book", new String[]{"Title", "Author", "ISBN", "Description", "Comment"});
-		typeFields.put("article", new String[]{"Title", "Author", "Paper", "Description", "Comment"});
-		typeFields.put("blog", new String[]{"Title", "Author", "Link", "Description", "Comment"});
-		typeFields.put("video", new String[]{"Title", "Author", "Link", "Description", "Comment"});
-		typeFields.put("podcast", new String[]{"Title", "Author", "Podcast name", "Description", "Comment"});
-		typeFields.put("meme", new String[]{"Title", "Author", "Image", "Up text", "Bottom text", "Comment"});
-
-		typeShortcuts.put("b", "book");
-		typeShortcuts.put("a", "article");
-		typeShortcuts.put("l", "blog");
-		typeShortcuts.put("v", "video");
-		typeShortcuts.put("p", "podcast");
-		typeShortcuts.put("m", "meme");
-
-		typeShortcuts.put("book", "book");
-		typeShortcuts.put("article", "article");
-		typeShortcuts.put("blog", "blog");
-		typeShortcuts.put("video", "video");
-		typeShortcuts.put("podcast", "podcast");
-		typeShortcuts.put("meme", "meme");
+	public static void registerType(Type type) {
+		types.put(type.getName(), type);
 	}
 
-	public static String[] getFieldsOfType(String type) {
-		return typeFields.get(type);
-	}
+	public interface Type {
+		public String getName();
 
-	public static String unshortenType(String type) {
-		return typeShortcuts.get(type);
-	}
+		public void read(Entry e) throws EOFException;
 
-	public static Set<String> getTypes() {
-		return typeFields.keySet();
+		public String formatShort(Entry e);
+
+		public String formatLong(Entry e);
 	}
 
 	public Entry(int id) {
@@ -86,12 +64,12 @@ public class Entry implements IDObject {
 		this.tags = tags;
 	}
 
-	public String getType() {
+	public String getTypeName() {
 		return this.metadata.get("type");
 	}
 
-	public String[] getFields() {
-		return getFieldsOfType(getType());
+	public Type getType() {
+		return types.get(this.getTypeName());
 	}
 
 	public void setTags(List<Tag> tags) {
@@ -100,6 +78,14 @@ public class Entry implements IDObject {
 
 	public Map<String, String> getMetadata() {
 		return metadata;
+	}
+
+	public String getMetadata(String key) {
+		return this.metadata.get(key);
+	}
+
+	public void putMetadata(String key, String value) {
+		this.metadata.put(key, value);
 	}
 
 	public void setMetadata(Map<String, String> metadata) {
@@ -111,30 +97,11 @@ public class Entry implements IDObject {
 	}
 
 	public String toShortString() {
-		return String.format("%d. %s: \"%s\" by %s", id, this.getType(), metadata.get("Title"), metadata.get("Author"));
+		return this.getType().formatShort(this);
 	}
 
 	public String toLongString() {
-		StringBuilder str = new StringBuilder();
-		str.append(String.format("\nEntry %d: \"%s\" by %s\n", id, metadata.get("Title"), metadata.get("Author")));
-		for (String field : getFields()) {
-			if (field.equals("Title") || field.equals("Author")) {
-				continue;
-			}
-			String val = metadata.get(field);
-			if (val != null && !val.isEmpty()) {
-				str.append(String.format("\n%s: %s", field, val));
-			}
-		}
-		String tags = getTags().stream()
-			.filter(t -> t.getType().equals("tag"))
-			.map(Tag::getName)
-			.collect(Collectors.joining(", "));
-		if (!tags.isEmpty()) {
-			str.append(String.format("\nTags: %s", tags));
-		}
-		str.append(String.format("\nIs read: %s", isRead() ? "Yes" : "No"));
-		return str.toString();
+		return this.getType().formatLong(this);
 	}
 
 	@Override

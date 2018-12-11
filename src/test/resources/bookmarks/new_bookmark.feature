@@ -39,6 +39,6 @@ Feature: User can add a new bookmark
 	Scenario: Adding can be cancelled when entering metadata
 		When command "add" is selected
 		And type "book" is given
-		Then system will respond with "Title: "
+		Then system will respond with "ISBN: "
 		When CTRL+D is pressed
 		Then system will respond with "Adding cancelled"

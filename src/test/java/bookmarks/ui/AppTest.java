@@ -3,13 +3,17 @@ package bookmarks.ui;
 import bookmarks.io.ConsoleIO;
 import bookmarks.io.IO;
 import bookmarks.io.StubIO;
+
 import java.io.File;
 import java.sql.SQLException;
 import java.util.*;
+
 import org.junit.After;
 import org.junit.AfterClass;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,7 +22,7 @@ public class AppTest {
 
 	static App app;
 	static StubIO io;
-	
+
 	@BeforeClass
 	public static void before() {
 		io = new StubIO();
@@ -55,11 +59,11 @@ public class AppTest {
 	@Test
 	public void exportTest() {
 		app.export();
-		assertEquals("Did not match!", "Nothing to export. Try using `list`, `search` or `view` first", io.readOutput());
+		assertEquals("Nothing to export. Try using `list`, `search` or `view` first", io.readOutput());
 		io.writeInput("video");
+		io.writeInput("https://lol.com");
 		io.writeInput("title");
 		io.writeInput("wat");
-		io.writeInput("https://lol.com");
 		io.writeInput("miau");
 		io.writeInput("quick, meh");
 		io.writeInput("test");

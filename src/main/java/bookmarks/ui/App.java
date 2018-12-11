@@ -1,5 +1,6 @@
 package bookmarks.ui;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
@@ -13,16 +14,17 @@ import bookmarks.io.AbstractIO;
 import bookmarks.io.IO;
 
 public class App {
+	static final int ENTRIES_PER_PAGE = 10;
 
+	public Database database;
 	public EntryDao entryDao;
 	public TagDao tagDao;
 	public boolean isNewUser;
 	private IO io;
 	private Tags tags;
-
-	static final int ENTRIES_PER_PAGE = 10;
+	private EntryTypes entryTypes;
 	private Entry[] prevList;
-	public Database database;
+	private int shownPages;
 	private int currPage;
 
 	public App(IO io, String db) {
@@ -37,6 +39,7 @@ public class App {
 		}
 		this.isNewUser = database.createNewTables();
 
+		entryTypes = new EntryTypes(io);
 		tagDao = new TagDao(database);
 		EntryTagDao entryTagDao = new EntryTagDao(database, tagDao);
 		EntryMetadataDao entryMetadataDao = new EntryMetadataDao(database);
@@ -59,6 +62,10 @@ public class App {
 			return;
 		}
 
+	}
+
+	public void setOfflineMode(boolean offline) {
+		this.entryTypes.offlineMode = offline;
 	}
 
 	public void showPage() {
@@ -191,40 +198,40 @@ public class App {
 	}
 
 	public void add() {
-		Map<String, String> metadata = new HashMap<>();
+		String typeName = null;
+		Entry.Type type = null;
 
-		String type = null;
-		String[] fields = null;
-
-		while (fields == null) {
-			type = io.readWord("Type: ");
-			if (type.equals(AbstractIO.EndOfTransmission)) {
+		while (type == null) {
+			typeName = io.readWord("Type: ");
+			if (typeName.equals(AbstractIO.EndOfTransmission)) {
 				io.print("Adding cancelled");
 				return;
 			}
 
-			type = Entry.unshortenType(type.toLowerCase());
-			if (type != null) {
-				fields = Entry.getFieldsOfType(type.toLowerCase());
-			}
+			type = entryTypes.getType(typeName);
 
-			if (fields == null) {
-				io.printf("Unrecognized type. Choose one of: %s", String.join(" ", Entry.getTypes()));
+			if (type == null) {
+				io.printf("Unrecognized type. Choose one of: %s", String.join(" ", entryTypes.getTypes()));
 			}
 		}
-		metadata.put("type", type);
+		Map<String, String> metadata = new HashMap<>();
+		metadata.put("type", typeName);
 
-		if (readFields(metadata, fields)) {
+		Entry entry = new Entry(new HashSet<>(), metadata);
+		try {
+			type.read(entry);
+		} catch (EOFException e) {
 			io.print("Adding cancelled");
 			return;
 		}
-		Set<Tag> tags = readTags(null);
+		Set<Tag> tags = readTags(entry.getTags());
 		if (tags == null) {
 			io.print("Adding cancelled");
 			return;
 		}
+		entry.setTags(tags);
 
-		saveEntry(new Entry(tags, metadata), "created");
+		saveEntry(entry, "created");
 	}
 
 	public void edit() {
@@ -233,7 +240,9 @@ public class App {
 			return;
 		}
 
-		if (readFields(entry.getMetadata(), entry.getFields())) {
+		try {
+			entry.getType().read(entry);
+		} catch (EOFException e) {
 			io.print("Editing cancelled");
 			return;
 		}
@@ -256,50 +265,15 @@ public class App {
 		}
 	}
 
-	private boolean readFields(Map<String, String> metadata, String[] fields) {
-		for (String field : fields) {
-			while (true) {
-				String label = field.substring(0, 1).toUpperCase() + field.substring(1);
-				String currentVal = metadata.get(field);
-				String val = io.readLine(String.format(currentVal == null ? "%s: " : "%s [%s]: ", label, currentVal));
-				if (val.equals(AbstractIO.EndOfTransmission)) {
-					return true;
-				}
-
-				if (currentVal == null || !val.isEmpty()) {
-					if (val.isEmpty() || validInput(field, val)) {
-						metadata.put(field, val);
-					} else {
-						io.print("\"" + val + "\" is not a valid " + field);
-						continue;
-					}
-				}
-				break;
-			}
-		}
-		return false;
-	}
-
-	private boolean validInput(String field, String input) {
-		switch (field) {
-			case "ISBN":
-				return InputValidator.validateISBN(input);
-			case "Link":
-				return InputValidator.validateLink(input);
-			default:
-				return true;
-		}
-	}
-
 	private Set<Tag> readTags(Set<Tag> existingTags) {
-		String existingTagsStr = existingTags != null ? existingTags.stream()
+		String existingTagsStr = existingTags.stream()
 			.map(Tag::getName)
-			.collect(Collectors.joining(", ")) : null;
-		String newTags = io.readLine(String.format(existingTags != null ? "Tags [%s]: " : "Tags: ", existingTagsStr));
+			.collect(Collectors.joining(", "));
+		String newTags = io.readLine(String.format(!existingTags.isEmpty() ? "Tags [%s]: " : "Tags: ", existingTagsStr));
 		if (newTags.equals(AbstractIO.EndOfTransmission)) {
 			return null;
 		}
-		if (existingTags == null || !newTags.isEmpty()) {
+		if (!newTags.isEmpty()) {
 			return Arrays.stream(
 				newTags.split(","))
 				.map(s -> new Tag("tag", s.trim()))

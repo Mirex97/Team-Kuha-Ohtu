@@ -67,7 +67,7 @@ public class Tags {
 		io.print("(b) back   - return back to home");
 		io.print("(d) delete - delete an existing tag");
 		io.print("(h) help   - print this screen");
-		io.print("(l) list   - list all tags");
+		io.print("(l) list   - list ALL tags");
 		io.print("(s) search - search for entries with tag");
 	}
 
