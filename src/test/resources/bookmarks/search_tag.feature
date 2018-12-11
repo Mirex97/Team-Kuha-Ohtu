@@ -16,3 +16,8 @@ Feature: User can search tags
 		When tag command "find" is selected
 		And tag find query "fantasy" is given
 		Then system will respond with "No matches with tag :("
+
+        Scenario: User enter unknown command
+                Then user has entered tag section
+		When tag command "fond" is selected
+		Then system will respond with "Unknown command. Type "help" for help."
