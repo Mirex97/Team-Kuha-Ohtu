@@ -1,4 +1,5 @@
 Feature: User can delete existing tags
+
 	Scenario: Tag is added and user can delete it
 		When command "add" is selected
 		And type "book" is given
@@ -20,3 +21,10 @@ Feature: User can delete existing tags
 		When tag command "delete" is selected
 		And tag ID 1 and confirmation "n" to delete is given
 		Then system will respond with "Deletion cancelled"
+
+        Scenario: User tries to delete nonexisting tag
+                Given user has entered tag section
+		When tag command "delete" is selected
+		And system will respond with "ID of tag to delete: "
+                And user types "1"
+		Then system will respond with "Tag not found"

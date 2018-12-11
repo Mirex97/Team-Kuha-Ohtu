@@ -321,6 +321,41 @@ public class Stepdefs {
 		assertEquals("help> ", io.readOutput());
 		io.writeInput(AbstractIO.EndOfTransmission);
 	}
+        
+        	@Then("^system will respond with the main help page without exit$")
+	public void systemWillRespondWithTheHelpPageWithoutExit() throws Throwable {
+		assertEquals("(shortcut) command - description", io.readOutput());
+		assertEquals("(a) add    - add a new entry", io.readOutput());
+		assertEquals("(d) delete - delete an existing entry", io.readOutput());
+		assertEquals("(e) edit   - edit an existing entry", io.readOutput());
+		assertEquals("(f) find   - search for an entry", io.readOutput());
+		assertEquals("(h) help   - print this screen", io.readOutput());
+		assertEquals("(i) intro  - takes you to the introduction", io.readOutput());
+		assertEquals("(l) list   - list all entries", io.readOutput());
+		assertEquals("(n) next   - show next page of pagination", io.readOutput());
+		assertEquals("(p) page   - show given page of pagination", io.readOutput());
+		assertEquals("(q) quit   - exits the program", io.readOutput());
+		assertEquals("(r) read   - mark an entry as read", io.readOutput());
+		assertEquals("(t) tags   - takes you to tag section", io.readOutput());
+		assertEquals("(u) unread - mark an entry as unread", io.readOutput());
+		assertEquals("(v) view   - view the full details of an existing entry", io.readOutput());
+		assertEquals("(x) export - export the previously printed list", io.readOutput());
+
+		assertEquals("Type command to view more detailed help, or press enter to cancel.", io.readOutput());
+		assertEquals("help> ", io.readOutput());
+	}
+        
+        @Then("^system will respond with the introduction$")
+	public void systemWillRespondWithTheIntroduction() throws Throwable {
+		assertEquals("Welcome to bookmarks v0.1.0!", io.readOutput());
+		assertEquals("Bookmarks can keep a list of things you want to read, listen, watch or simply", io.readOutput());
+		assertEquals("remember later.", io.readOutput());
+		assertEquals("This is an introduction/demo. The introduction will pause between some", io.readOutput());
+		assertEquals("paragraphs. Press enter whenever `**` is printed to unpause. You can", io.readOutput());
+		assertEquals("also press CTRL+D or type cancel at any pause to stop the introduction.", io.readOutput());
+                assertEquals("**", io.readOutput());
+		io.writeInput(AbstractIO.EndOfTransmission);
+	}
 
 	@Then("^system will respond with the tag help page$")
 	public void systemWillRespondWithTheTagHelpPage() throws Throwable {

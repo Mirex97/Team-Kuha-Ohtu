@@ -75,6 +75,7 @@ public class AppTest {
 		io.writeInput("List Export");
 		app.export();
 		io.readOutput();
-		assertEquals("Export successful", io.readOutput());
-	}
+		assertEquals("Did not work!", "Export successful", io.readOutput());
+		
+	}     
 }

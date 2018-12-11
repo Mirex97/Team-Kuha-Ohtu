@@ -106,6 +106,74 @@ public class Introduction {
 		lineText("DEMO END");
 	}
 
+	private void exportDemo() {
+		lineText("DEMO");
+
+		System.out.print("> ");
+		sleep(500);
+		lagWrite("list\n");
+
+		System.out.print("List only unread entries [y/N]? ");
+		sleep(500);
+		lagWrite("\n");
+
+		System.out.println("Entries:");
+		System.out.println("1. \"B\" by A");
+		System.out.println("2. \"A\" by B");
+		System.out.println("3. \"A\" by A");
+		System.out.println("4. \"B\" by B");
+		System.out.print("\n");
+
+		System.out.print("> ");
+		sleep(500);
+		lagWrite("export\n");
+
+		System.out.print("File to export to: ");
+		sleep(500);
+		lagWrite("books.txt\n");
+		System.out.println("Export successful");
+
+		lineText("DEMO END");
+	}
+
+	private void sortDemo() {
+		lineText("DEMO");
+		System.out.print("> ");
+		sleep(500);
+		lagWrite("list\n");
+
+		System.out.print("List only unread entries [y/N]? ");
+		sleep(500);
+		lagWrite("\n");
+
+		System.out.println("Entries:");
+		System.out.println("1. \"B\" by A");
+		System.out.println("2. \"A\" by B");
+		System.out.println("3. \"A\" by A");
+		System.out.println("4. \"B\" by B");
+		System.out.print("\n");
+		
+		System.out.print("> ");
+		sleep(500);
+		lagWrite("sort Author Title\n");
+
+		System.out.println("1st parameter to sort by: Author");
+		System.out.println("2nd parameter to sort by: Title");
+		System.out.print("3rd parameter to sort by: ");
+
+		sleep(500);
+		lagWrite("\n");
+
+		System.out.println("Entries:");
+		System.out.println("3. \"A\" by A");
+		System.out.println("1. \"B\" by A");
+		System.out.println("1. \"A\" by B");
+		System.out.println("4. \"B\" by B");
+		System.out.print("\n");
+		
+		lineText("DEMO END");
+	}
+
 	public void run() {
 		// Maximum length of prints (80 characters):
 		//.print("                                                                                ");
@@ -152,6 +220,21 @@ public class Introduction {
 		if (readPause()) return;
 		shortcutDemo();
 		if (readPause()) return;
+		
+		io.print("The program keeps track of the last shown list. You can set this list with");
+		io.print("commands 'list', 'search' and 'show'. Two commands exist that operate on this");
+		io.print("list: 'export' and 'sort'. Export prints the list into a .txt file");
+		if (readPause()) return;
+		exportDemo();
+		if (readPause()) return;
+
+		io.print("Sort sorts the list, by the given properties, into alphabetical order.");
+		io.print("If some entries in the list do not have some property, they appear before");
+		io.print("entries that do. You can also sort by 'Id', in which case the sort is numeric.");
+		if (readPause()) return;
+		sortDemo();
+		if (readPause()) return;
+
 		io.print("");
 		io.print("Here's the list of commands:");
 		app.printHelp();
